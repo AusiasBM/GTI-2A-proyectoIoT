@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
     }
     public void SignIn(View view){
         Intent intent = new Intent(this, SignIn.class);
+        intent.putExtra(SignIn.metodo, "nada");
         startActivity(intent);
         finish();
     }

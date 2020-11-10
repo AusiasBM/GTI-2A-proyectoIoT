@@ -28,6 +28,9 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
+        <activity
+            android:name=".presentacion.ResActivity"
+            android:screenOrientation="portrait" />
 
         <activity android:name=".presentacion.MainActivity"
             android:screenOrientation="portrait"/>
@@ -46,9 +49,7 @@
         <activity
             android:name=".casos_uso.SignUp"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".presentacion.ResActivity"
-            android:screenOrientation="portrait" />
+
         <activity
             android:name=".presentacion.InfoActivity"
             android:label="Información"

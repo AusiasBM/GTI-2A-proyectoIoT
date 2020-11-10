@@ -20,6 +20,7 @@ import com.example.proyecto2a.presentacion.InfoActivity;
 import com.example.proyecto2a.presentacion.MainActivity;
 import com.example.proyecto2a.presentacion.ResActivity;
 import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
@@ -27,8 +28,11 @@ import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
 
 public class SignUp extends AppCompatActivity implements View.OnClickListener, GoogleApiClient.OnConnectionFailedListener {
 
@@ -45,15 +49,34 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener, G
 
     //Declaramos un objeto firebaseAuth
     private FirebaseAuth firebaseAuth;
+    private FirebaseAuth.AuthStateListener firebaseAuthListener;
 
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (firebaseAuthListener != null) {
+            firebaseAuth.removeAuthStateListener(firebaseAuthListener);
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        /*if (firebaseAuth.getCurrentUser().isEmailVerified()) {
+            final String email = TextEmail.getText().toString();
+            Toast.makeText(SignUp.this, "Usuario registrado, revise su email para la verificación", Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(SignUp.this, ResActivity.class);
+            intent.putExtra(ResActivity.user, email);
+            intent.putExtra(ResActivity.metodo, "email");
+            startActivity(intent);
+        }*/
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
-
-        //inicializamos el objeto firebaseAuth
-        firebaseAuth = FirebaseAuth.getInstance();
 
 
         //Referenciamos los views
@@ -82,6 +105,7 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener, G
         //Inicio sesion con Google
         GoogleSignInOptions gso =
                 new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                        .requestIdToken(getString(R.string.default_web_client_id))
                         .requestEmail()
                         .build();
 
@@ -100,17 +124,20 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener, G
             }
         });
 
+
+        //inicializamos el objeto firebaseAuth
+        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user != null) {
+                    goRes();
+                }
+            }
+        };
         //attaching listener to button
         btnRegistrar.setOnClickListener((View.OnClickListener) this);
-/*
-        GoogleSignInOptions gso =
-                new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                        .requestEmail()
-                        .build();
-
-        GoogleSignInClient mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-*/
-        //----------------------------------------------------
     }
 
 
@@ -121,15 +148,11 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener, G
 
     }
 
-    private void loguearGoogle() {
-
-    }
-
     private void registrarUsuario() {
 
         //Obtenemos el email y la contraseña desde las cajas de texto
         final String email = TextEmail.getText().toString();
-        String password = TextPassword.getText().toString();
+        final String password = TextPassword.getText().toString();
         String confirm = TextPassConf.getText().toString();
 
         //Verificamos que las cajas de texto no esten vacías
@@ -137,7 +160,7 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener, G
             Toast.makeText(this, "Se debe ingresar un email", Toast.LENGTH_LONG).show();
             //Abrir teclado
             TextEmail.requestFocus();
-            InputMethodManager imm = (InputMethodManager)getSystemService(this.INPUT_METHOD_SERVICE);
+            InputMethodManager imm = (InputMethodManager) getSystemService(this.INPUT_METHOD_SERVICE);
             imm.showSoftInput(TextEmail, InputMethodManager.SHOW_IMPLICIT);
             return;
         }
@@ -146,7 +169,7 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener, G
             Toast.makeText(this, "Falta ingresar la contraseña", Toast.LENGTH_LONG).show();
             //Abrir teclado
             TextPassword.requestFocus();
-            InputMethodManager imm = (InputMethodManager)getSystemService(this.INPUT_METHOD_SERVICE);
+            InputMethodManager imm = (InputMethodManager) getSystemService(this.INPUT_METHOD_SERVICE);
             imm.showSoftInput(TextPassword, InputMethodManager.SHOW_IMPLICIT);
             return;
         }
@@ -155,7 +178,7 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener, G
             Toast.makeText(this, "Las contraseñas no coinciden", Toast.LENGTH_LONG).show();
             //Abrir teclado
             TextPassword.requestFocus();
-            InputMethodManager imm = (InputMethodManager)getSystemService(this.INPUT_METHOD_SERVICE);
+            InputMethodManager imm = (InputMethodManager) getSystemService(this.INPUT_METHOD_SERVICE);
             imm.showSoftInput(TextPassword, InputMethodManager.SHOW_IMPLICIT);
             return;
         }
@@ -171,12 +194,23 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener, G
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         //checking if success
                         if (task.isSuccessful()) {
-                            int pos = email.indexOf("@");
-                            String user = email.substring(0, pos);
-                            Toast.makeText(SignUp.this, "Se ha registrado el usuario con el email: " + TextEmail.getText(), Toast.LENGTH_LONG).show();
-                            Intent intent = new Intent(SignUp.this, ResActivity.class);
-                            intent.putExtra(ResActivity.user, email);
-                            startActivity(intent);
+                            firebaseAuth.getCurrentUser().sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        Toast.makeText(SignUp.this, "Usuario registrado, revise su email para la verificación", Toast.LENGTH_LONG).show();
+                                        Intent intent = new Intent(SignUp.this, SignIn.class);
+                                        intent.putExtra(SignIn.metodo, "verif");
+                                        intent.putExtra(SignIn.email, email);
+                                        intent.putExtra(SignIn.pass, password);
+                                        startActivity(intent);
+                                    } else {
+                                        Toast.makeText(SignUp.this, task.getException().getMessage(), Toast.LENGTH_LONG).show();
+
+                                    }
+                                }
+                            });
+
                         } else {
 
                             Toast.makeText(SignUp.this, "No se pudo registrar el usuario ", Toast.LENGTH_LONG).show();
@@ -212,19 +246,34 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener, G
 
     private void handleSignInResult(GoogleSignInResult result) {
         if (result.isSuccess()) {
-            goRes();
+            firebaseAuthWithGoogle(result.getSignInAccount());
         } else {
             Toast.makeText(this, "No se pudo iniciar Sesión", Toast.LENGTH_SHORT).show();
         }
     }
 
+    private void firebaseAuthWithGoogle(GoogleSignInAccount signInAccount) {
+        AuthCredential credential = GoogleAuthProvider.getCredential(signInAccount.getIdToken(), null);
+        firebaseAuth.signInWithCredential(credential).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (!task.isSuccessful()) {
+                    Toast.makeText(getApplicationContext(), "No se pudo Autenticar con Firebase", Toast.LENGTH_SHORT).show();
+                } else {
+                    goRes();
+                }
+            }
+        });
+    }
+
     private void goRes() {
         Intent intent = new Intent(this, ResActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra(ResActivity.metodo, "email");
         startActivity(intent);
     }
 
-    public void lanzarInfo(View view){
+    public void lanzarInfo(View view) {
         Intent i = new Intent(this, InfoActivity.class);
         startActivity(i);
     }

@@ -22,6 +22,7 @@ import com.example.proyecto2a.R;
 import com.example.proyecto2a.presentacion.MainActivity;
 import com.example.proyecto2a.presentacion.ResActivity;
 import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
@@ -29,12 +30,18 @@ import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
 
 public class SignIn extends AppCompatActivity implements View.OnClickListener, GoogleApiClient.OnConnectionFailedListener {
 
+    public static String email ="email";
+    public static String metodo="metodo";
+    public static String pass="contra";
     //defining view objects
     private EditText TextEmail;
     private EditText TextPassword;
@@ -50,9 +57,18 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener, G
 
     //Declaramos un objeto firebaseAuth
     private FirebaseAuth firebaseAuth;
+    private FirebaseAuth.AuthStateListener firebaseAuthListener;
 
 
-    //Declaramos un objeto firebaseAuth
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (firebaseAuthListener != null){
+            firebaseAuth.removeAuthStateListener(firebaseAuthListener);
+        }
+    }
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,6 +105,7 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener, G
         //Inicio sesion con Google
         GoogleSignInOptions gso =
                 new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                        .requestIdToken(getString(R.string.default_web_client_id))
                         .requestEmail()
                         .build();
 
@@ -108,6 +125,29 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener, G
         });
 
 
+
+
+        //inicializamos el objeto firebaseAuth
+        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user= firebaseAuth.getCurrentUser();
+                if (user!=null){
+                    goRes();
+                }
+            }
+        };
+        String method = "";
+        method = getIntent().getStringExtra(metodo);
+        Toast.makeText(SignIn.this, method, Toast.LENGTH_LONG).show();
+        assert method != null;
+        if (!method.equals("nada")){
+            String user = getIntent().getStringExtra(email);
+            String contraseña = getIntent().getStringExtra(pass);
+            TextEmail.setText(user);
+            TextPassword.setText(contraseña);
+        }
     }
 
     public void SignUp(View view) {
@@ -160,12 +200,19 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener, G
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         //checking if success
                         if (task.isSuccessful()) {
-                            int pos = email.indexOf("@");
-                            String user = email.substring(0, pos);
-                            Toast.makeText(SignIn.this, "Bienvenido: " + TextEmail.getText(), Toast.LENGTH_LONG).show();
-                            Intent intencion = new Intent(getApplication(), ResActivity.class);
-                            intencion.putExtra(ResActivity.user, user);
-                            startActivity(intencion);
+                            if (firebaseAuth.getCurrentUser().isEmailVerified()) {
+                                int pos = email.indexOf("@");
+                                String user = email.substring(0, pos);
+                                Toast.makeText(SignIn.this, "Bienvenido: " + TextEmail.getText(), Toast.LENGTH_LONG).show();
+                                Intent intencion = new Intent(getApplication(), ResActivity.class);
+                                intencion.putExtra(ResActivity.user, user);
+                                intencion.putExtra(ResActivity.metodo, "email");
+                                startActivity(intencion);
+                            }else {
+                                Toast.makeText(SignIn.this, "Por favor verifique su email" , Toast.LENGTH_LONG).show();
+
+                            }
+
 
 
                         } else {
@@ -206,10 +253,24 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener, G
 
     private void handleSignInResult(GoogleSignInResult result) {
         if (result.isSuccess()) {
-            goRes();
+            firebaseAuthWithGoogle(result.getSignInAccount());
         } else {
             Toast.makeText(this, "No se pudo iniciar Sesión", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void firebaseAuthWithGoogle(GoogleSignInAccount signInAccount) {
+        AuthCredential credential = GoogleAuthProvider.getCredential(signInAccount.getIdToken(), null);
+        firebaseAuth.signInWithCredential(credential).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (!task.isSuccessful()) {
+                    Toast.makeText(getApplicationContext(), "No se pudo Autenticar con Firebase", Toast.LENGTH_SHORT).show();
+                }else {
+                    goRes();
+                }
+            }
+        });
     }
 
     private void goRes() {

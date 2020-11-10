@@ -1,5 +1,6 @@
 package com.example.proyecto2a.presentacion;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -31,22 +32,36 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.util.Objects;
+
 public class ResActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, OnMapReadyCallback {
     public static final String user = "names";
     public static final String metodo = "metodo";
+    private static String method="sin iniciar";
     TextView txtUser;
     private GoogleApiClient googleApiClient;
     private GoogleMap mMap;
+    //Declaramos un objeto firebaseAuth
+    private FirebaseAuth firebaseAuth;
+    private FirebaseAuth.AuthStateListener firebaseAuthListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.result);
         txtUser = (TextView) findViewById(R.id.textser);
-        String user = getIntent().getStringExtra("names");
-        String metodo = getIntent().getStringExtra("metodo");
+        /*String user = getIntent().getStringExtra("names");
+        if (user!=null){
+            String metodo = getIntent().getStringExtra("metodo");
+            this.method=metodo;
+        }
+
         FirebaseUser usuario = FirebaseAuth.getInstance().getCurrentUser();
-        txtUser.setText("¡Bienvenido " + user + "!");
+        if (usuario==null){
+            goMain();
+        }else{
+            txtUser.setText("¡Bienvenido " + usuario + "!");
+        }*/
         GoogleSignInOptions gso =
                 new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                         .requestEmail()
@@ -61,33 +76,35 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        //inicializamos el objeto firebaseAuth
+        firebaseAuth = FirebaseAuth.getInstance();
+
+        firebaseAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user==null){
+                    goMain();
+                }else {
+                    setUserData(user);
+                }
+            }
+        };
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        OptionalPendingResult<GoogleSignInResult> opr = Auth.GoogleSignInApi.silentSignIn(googleApiClient);
-        if (opr.isDone()) {
-            GoogleSignInResult result = opr.get();
-            handleSignInResult(result);
-        } else {
-            opr.setResultCallback(new ResultCallback<GoogleSignInResult>() {
-                @Override
-                public void onResult(@NonNull GoogleSignInResult googleSignInResult) {
-                    handleSignInResult(googleSignInResult);
-                }
-            });
-        }
+        firebaseAuth.addAuthStateListener(firebaseAuthListener);
+
     }
 
-    private void handleSignInResult(GoogleSignInResult result) {
-        if (result.isSuccess()) {
-            GoogleSignInAccount account = result.getSignInAccount();
-            String user = account.getDisplayName();
-            txtUser.setText("¡Bienvenido " + "\n" + user + "!");
-        } else {
-//            goMain();
-//            Toast.makeText(this, "No se pudo iniciar Sesión", Toast.LENGTH_SHORT).show();
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (firebaseAuthListener != null){
+            firebaseAuth.removeAuthStateListener(firebaseAuthListener);
         }
     }
 
@@ -108,6 +125,7 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
             public void onResult(@NonNull Status status) {
                 if (status.isSuccess()){
                     goMain();
+                    finish();
                 } else {
                     Toast.makeText(getApplicationContext(), "No se pudo cerrar sesion", Toast.LENGTH_SHORT).show();
                 }
@@ -144,5 +162,15 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
     public void lanzaAsistente(View view) {
         Intent i = new Intent(this, Asistente.class);
         startActivity(i);
+    }
+
+
+    private void setUserData (FirebaseUser user){
+        txtUser.setText("¡Bienvenido " + "\n" + user.getDisplayName() + "!");
+        if (Objects.equals(user.getDisplayName(), "")){
+            goMain();
+        }if (user.getDisplayName()==null){
+            txtUser.setText("¡Bienvenido " + "\n" + user.getEmail() + "!");
+        }
     }
 }
