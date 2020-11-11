@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,14 +29,8 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.GeoPoint;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.Objects;
 
@@ -51,11 +44,6 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
     //Declaramos un objeto firebaseAuth
     private FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener firebaseAuthListener;
-    private String TAG = "Exception";
-
-    private String nombreEstacion;
-    private double lat;
-    private double lon;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +72,11 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
 
+///
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+
         //inicializamos el objeto firebaseAuth
         firebaseAuth = FirebaseAuth.getInstance();
 
@@ -98,34 +91,6 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
                 }
             }
         };
-
-        //Carga del fragment del mapa
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
-
-        //Consulta a bbdd para cargar las estaciones
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        //Obtención de la colección "estaciones" en la base datos
-        db.collection("estaciones")
-            .get()
-            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                    if (task.isSuccessful()) {
-                        //Obtenció de cada estació de su ubicación y su geoposición
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            nombreEstacion = (String) document.getData().get("ubicacion");
-                            GeoPoint p = (GeoPoint) document.getData().get("pos");
-                            lon = p.getLongitude();
-                            lat = p.getLatitude();
-                            onMapReady(mMap);
-                        }
-                    } else {
-                        Log.d(TAG, "Error getting documents: ", task.getException());
-                    }
-                }
-        });
     }
 
     @Override
@@ -185,11 +150,9 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
         mMap = googleMap;
 
         // Add a marker in Sydney and move the camera
-        LatLng pos = new LatLng(lat, lon);
-        mMap.addMarker(new MarkerOptions().position(pos).title(nombreEstacion).icon(BitmapDescriptorFactory.
-                fromResource(R.drawable.icon_pat)).anchor(0.5f, 1f));
-        mMap.getUiSettings().setZoomControlsEnabled(true);
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(pos,17));
+        LatLng gandia = new LatLng( 38.999997, -0.170201);
+        mMap.addMarker(new MarkerOptions().position(gandia).title("STANT PATINETES").icon(BitmapDescriptorFactory.fromResource(R.drawable.icono_patinete_maps_primary)));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(gandia,12));
     }
 
     @Override
