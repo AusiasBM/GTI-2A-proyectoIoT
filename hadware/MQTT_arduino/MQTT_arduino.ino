@@ -2,12 +2,24 @@
 #include <ArduinoMqttClient.h>
 #include <WiFi.h>
 
+#include <SPI.h>
+#include <MFRC522.h>
+#define RST_PIN 22 //Pin 9 para el reset del RC522 no es necesario conctarlo
+#define SS_PIN 21 //Pin 10 para el SS (SDA) del RC522
+#define SIZE_BUFFER 18;
+#define MAX_SIZE_BLOCK 16;
+MFRC522 mfrc522(SS_PIN, RST_PIN); ///Creamos el objeto para el RC522
+MFRC522::StatusCode status; //variable to get card status
+
+
 char ssid[] = "Team_2-1";        // your network SSID (name)
 char pass[] = "Team_2-1";    // your network password (use for WPA, or use as key for WEP)
 
 
 WiFiClient wifiClient;
 MqttClient mqttClient(wifiClient);
+
+const int cerradura = 14;
 
 const char broker[]    = "mqtt.eclipse.org";
 int        port        = 1883;
@@ -23,6 +35,8 @@ int count = 0;
 void setup() {
   //Initialize serial and wait for port to open:
   Serial.begin(9600);
+  SPI.begin(); //Iniciamos el Bus SPI
+  mfrc522.PCD_Init(); // Iniciamos el MFRC522 - Cuando pone PCD se refiere al modulo lector
   while (!Serial) {
     ; // wait for serial port to connect. Needed for native USB port only
   }
@@ -93,49 +107,50 @@ void setup() {
   Serial.print("Waiting for messages on topic: ");
   Serial.println(inTopic);
   Serial.println();
+
+  pinMode(cerradura, OUTPUT);
+  digitalWrite(cerradura, LOW);
 }
 
+byte ActualUID[7]; //almacenará el código del Tag leído
+
 void loop() {
-  // call poll() regularly to allow the library to receive MQTT messages and
-  // send MQTT keep alives which avoids being disconnected by the broker
   mqttClient.poll();
 
-  // avoid having delays in loop, we'll use the strategy from BlinkWithoutDelay
-  // see: File -> Examples -> 02.Digital -> BlinkWithoutDelay for more info
-  unsigned long currentMillis = millis();
+  if ( mfrc522.PICC_IsNewCardPresent())
+  {
 
-  if (currentMillis - previousMillis >= interval) {
-    // save the last time a message was sent
-    previousMillis = currentMillis;
+    //Seleccionamos una tarjeta
+    if ( mfrc522.PICC_ReadCardSerial())
+    {
+      
+      String payload = "";
+      for (byte i = 0; i < mfrc522.uid.size; i++) {
+        //M5.Lcd.print(mfrc522.uid.uidByte[i] < 0x10 ? " 0" : " ");
+        //M5.Lcd.print(mfrc522.uid.uidByte[i], HEX);
+        ActualUID[i]=mfrc522.uid.uidByte[i];
+        payload += String(ActualUID[i], HEX);
+      }
 
-    String payload;
-
-    payload += "hello world!";
-    payload += " ";
-    payload += count;
-
-    Serial.print("Sending message to topic: ");
-    Serial.println(outTopic);
-    Serial.println(payload);
-
-    // send message, the Print interface can be used to set the message contents
-    // in this case we know the size ahead of time, so the message payload can be streamed
-
-    bool retained = false;
-    int qos = 1;
-    bool dup = false;
-
-    mqttClient.beginMessage(outTopic, payload.length(), retained, qos, dup);
-    mqttClient.print(payload);
-    mqttClient.endMessage();
-
-    Serial.println();
-
-    count++;
+        Serial.print("Sending message to topic: ");
+        Serial.println(outTopic);
+        Serial.println(payload);
+   
+        bool retained = false;
+        int qos = 1;
+        bool dup = false;
+    
+        mqttClient.beginMessage(outTopic, payload.length(), retained, qos, dup);
+        mqttClient.print(payload);
+        mqttClient.endMessage();
+    
+        Serial.println();
+    }
   }
 }
 
 void onMqttMessage(int messageSize) {
+  String cadena = "";
   // we received a message, print out the topic and contents
   Serial.print("Received a message with topic '");
   Serial.print(mqttClient.messageTopic());
@@ -151,9 +166,19 @@ void onMqttMessage(int messageSize) {
 
   // use the Stream interface to print the contents
   while (mqttClient.available()) {
-    Serial.print((char)mqttClient.read());
+    cadena += (char)mqttClient.read();
   }
+  Serial.println(cadena);
+
+  if(cadena == "ON"){
+    digitalWrite(cerradura, HIGH);
+    delay(1000);
+    digitalWrite(cerradura, LOW);
+  }
+  
   Serial.println();
 
   Serial.println();
+
+
 }
