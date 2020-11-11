@@ -2,10 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> parent of 444e723... Merge remote-tracking branch 'origin/develop' into develop
     <list default="true" id="bff85fac-a16b-4159-8010-14ec9565228e" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
       <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_firebaseui_firebase_ui_common_6_3_0_aar.xml" afterDir="false" />
@@ -57,6 +61,8 @@
 >>>>>>> creacion_menu_dialog
 =======
 >>>>>>> parent of 444e723... Merge remote-tracking branch 'origin/develop' into develop
+=======
+>>>>>>> parent of 444e723... Merge remote-tracking branch 'origin/develop' into develop
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -66,12 +72,15 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
   <component name="ExecutionTargetManager" SELECTED_TARGET="Nexus_5_API_30" />
 >>>>>>> develop
 =======
   <component name="ExecutionTargetManager" SELECTED_TARGET="Emulador_1" />
 >>>>>>> creacion_menu_dialog
+=======
+>>>>>>> parent of 444e723... Merge remote-tracking branch 'origin/develop' into develop
 =======
 >>>>>>> parent of 444e723... Merge remote-tracking branch 'origin/develop' into develop
   <component name="ExternalProjectsData">
@@ -116,6 +125,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -125,6 +135,8 @@
 >>>>>>> develop
 =======
 >>>>>>> creacion_menu_dialog
+=======
+>>>>>>> parent of 444e723... Merge remote-tracking branch 'origin/develop' into develop
 =======
 >>>>>>> parent of 444e723... Merge remote-tracking branch 'origin/develop' into develop
   <component name="RunManager">
@@ -138,6 +150,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     <configuration name="app" type="AndroidRunConfigurationType" factoryName="Android App">
 =======
     <configuration name="app" type="AndroidRunConfigurationType" factoryName="Android App" activateToolWindowBeforeRun="false">
@@ -145,6 +158,9 @@
 =======
     <configuration name="app" type="AndroidRunConfigurationType" factoryName="Android App" activateToolWindowBeforeRun="false">
 >>>>>>> creacion_menu_dialog
+=======
+    <configuration name="app" type="AndroidRunConfigurationType" factoryName="Android App">
+>>>>>>> parent of 444e723... Merge remote-tracking branch 'origin/develop' into develop
 =======
     <configuration name="app" type="AndroidRunConfigurationType" factoryName="Android App">
 >>>>>>> parent of 444e723... Merge remote-tracking branch 'origin/develop' into develop
