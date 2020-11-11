@@ -6,6 +6,7 @@
     </shared>
   </component>
   <component name="ChangeListManager">
+<<<<<<< HEAD
     <list default="true" id="bff85fac-a16b-4159-8010-14ec9565228e" name="Default Changelist" comment="">
 <<<<<<< HEAD
       <change beforePath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" afterDir="false" />
@@ -55,6 +56,10 @@
       <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/proyecto2a/presentacion/ResActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/proyecto2a/presentacion/ResActivity.java" afterDir="false" />
 >>>>>>> develop
+=======
+    <list default="true" id="ca67400f-a45b-4691-a010-b00cedcd0d69" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+>>>>>>> creacion_menu_dialog
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -62,9 +67,13 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
   <component name="ExecutionTargetManager" SELECTED_TARGET="Nexus_5_API_30" />
 >>>>>>> develop
+=======
+  <component name="ExecutionTargetManager" SELECTED_TARGET="Emulador_1" />
+>>>>>>> creacion_menu_dialog
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
@@ -77,6 +86,16 @@
       </state>
     </system>
   </component>
+<<<<<<< HEAD
+=======
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="layoutResourceFile" />
+      </list>
+    </option>
+  </component>
+>>>>>>> creacion_menu_dialog
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
   </component>
@@ -95,6 +114,7 @@
     <property name="settings.editor.selected.configurable" value="AndroidSdkUpdater" />
   </component>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -102,6 +122,8 @@
     </key>
   </component>
 >>>>>>> develop
+=======
+>>>>>>> creacion_menu_dialog
   <component name="RunManager">
     <configuration default="true" type="AndroidJUnit" factoryName="Android JUnit">
       <option name="TEST_OBJECT" value="class" />
@@ -111,10 +133,14 @@
       </method>
     </configuration>
 <<<<<<< HEAD
+<<<<<<< HEAD
     <configuration name="app" type="AndroidRunConfigurationType" factoryName="Android App">
 =======
     <configuration name="app" type="AndroidRunConfigurationType" factoryName="Android App" activateToolWindowBeforeRun="false">
 >>>>>>> develop
+=======
+    <configuration name="app" type="AndroidRunConfigurationType" factoryName="Android App" activateToolWindowBeforeRun="false">
+>>>>>>> creacion_menu_dialog
       <module name="app" />
       <option name="DEPLOY" value="true" />
       <option name="DEPLOY_APK_FROM_BUNDLE" value="false" />
@@ -171,7 +197,7 @@
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="bff85fac-a16b-4159-8010-14ec9565228e" name="Default Changelist" comment="" />
+      <changelist id="ca67400f-a45b-4691-a010-b00cedcd0d69" name="Default Changelist" comment="" />
       <created>1605030837694</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
@@ -180,9 +206,32 @@
     <servers />
   </component>
   <component name="WindowStateProjectService">
+<<<<<<< HEAD
     <state x="455" y="244" key="com.intellij.ide.util.TipDialog" timestamp="1605095241548">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="455" y="244" key="com.intellij.ide.util.TipDialog/0.0.1536.824@0.0.1536.824" timestamp="1605095241548" />
+=======
+    <state width="1491" height="210" key="GridCell.Tab.0.bottom" timestamp="1605097867061">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1491" height="210" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1605097867061" />
+    <state width="1491" height="210" key="GridCell.Tab.0.center" timestamp="1605097867060">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1491" height="210" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1605097867060" />
+    <state width="1491" height="210" key="GridCell.Tab.0.left" timestamp="1605097867059">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1491" height="210" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1605097867059" />
+    <state width="1491" height="210" key="GridCell.Tab.0.right" timestamp="1605097867060">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1491" height="210" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1605097867060" />
+    <state x="455" y="244" key="com.intellij.ide.util.TipDialog" timestamp="1605097792478">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="455" y="244" key="com.intellij.ide.util.TipDialog/0.0.1536.824@0.0.1536.824" timestamp="1605097792478" />
+>>>>>>> creacion_menu_dialog
   </component>
 </project>
