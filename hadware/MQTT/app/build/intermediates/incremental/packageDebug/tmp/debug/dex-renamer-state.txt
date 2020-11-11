@@ -1,0 +1,4 @@
+#Wed Nov 11 14:09:34 CET 2020
+base.0=/Users/ausiasbm/Documents/UPV/GTI/2 GTI/1º Cuatrimestre/Proyecto internet de las cosas y Aplicaciones móviles/proyectoIoT/hadware/MQTT/app/build/intermediates/dex/debug/mergeDexDebug/classes.dex
+path.0=classes.dex
+renamed.0=classes.dex
