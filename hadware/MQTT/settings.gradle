@@ -1,4 +1,0 @@
-include ':comun'
-include ':androidthings'
-include ':app'
-rootProject.name = "MQTT"

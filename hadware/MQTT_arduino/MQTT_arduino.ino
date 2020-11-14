@@ -24,8 +24,8 @@ const int cerradura = 14;
 const char broker[]    = "mqtt.eclipse.org";
 int        port        = 1883;
 const char willTopic[] = "arduino/will";
-const char inTopic[]   = "arduino/in";
-const char outTopic[]  = "arduino/out";
+const char cerraduraTopic[]   = "arduino/cerradura";
+const char RFIDTopic[]  = "arduino/rfid";
 
 const long interval = 5000;
 unsigned long previousMillis = 0;
@@ -53,19 +53,6 @@ void setup() {
   Serial.println("You're connected to the network");
   Serial.println();
 
-  // You can provide a unique client ID, if not set the library uses Arduin-millis()
-  // Each client must have a unique client ID
-  // mqttClient.setId("clientId");
-
-  // You can provide a username and password for authentication
-  // mqttClient.setUsernamePassword("username", "password");
-
-  // By default the library connects with the "clean session" flag set,
-  // you can disable this behaviour by using
-  // mqttClient.setCleanSession(false);
-
-  // set a will message, used by the broker when the connection dies unexpectantly
-  // you must know the size of the message before hand, and it must be set before connecting
   String willPayload = "oh no!";
   bool willRetain = true;
   int willQos = 1;
@@ -91,7 +78,7 @@ void setup() {
   mqttClient.onMessage(onMqttMessage);
 
   Serial.print("Suscribiendote al topic: ");
-  Serial.println(inTopic);
+  Serial.println(cerraduraTopic);
   Serial.println();
 
   // subscribe to a topic
@@ -99,13 +86,13 @@ void setup() {
   // the the library supports subscribing at QoS 0, 1, or 2
   int subscribeQos = 1;
 
-  mqttClient.subscribe(inTopic, subscribeQos);
+  mqttClient.subscribe(cerraduraTopic, subscribeQos);
 
   // topics can be unsubscribed using:
-  // mqttClient.unsubscribe(inTopic);
+  // mqttClient.unsubscribe(cerraduraTopic);
 
   Serial.print("Waiting for messages on topic: ");
-  Serial.println(inTopic);
+  Serial.println(cerraduraTopic);
   Serial.println();
 
   pinMode(cerradura, OUTPUT);
@@ -133,14 +120,16 @@ void loop() {
       }
 
         Serial.print("Sending message to topic: ");
-        Serial.println(outTopic);
+        Serial.println(RFIDTopic);
         Serial.println(payload);
    
         bool retained = false;
         int qos = 1;
         bool dup = false;
+
+        delay(2000); // Este delay es para cuando el usuario esté poniendo la tarjeta en el lector solo se envie una vez.
     
-        mqttClient.beginMessage(outTopic, payload.length(), retained, qos, dup);
+        mqttClient.beginMessage(RFIDTopic, payload.length(), retained, qos, dup);
         mqttClient.print(payload);
         mqttClient.endMessage();
     
@@ -170,7 +159,7 @@ void onMqttMessage(int messageSize) {
   }
   Serial.println(cadena);
 
-  if(cadena == "ON"){
+  if(cadena == "cerradura ON"){
     digitalWrite(cerradura, HIGH);
     delay(1000);
     digitalWrite(cerradura, LOW);
