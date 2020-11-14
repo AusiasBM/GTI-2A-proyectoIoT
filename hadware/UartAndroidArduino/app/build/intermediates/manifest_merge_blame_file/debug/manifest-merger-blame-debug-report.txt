@@ -1,0 +1,46 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.example.uartandroidarduino"
+4    android:versionCode="1"
+5    android:versionName="1.0" >
+6
+7    <uses-sdk
+8        android:minSdkVersion="24"
+8-->/Users/ausiasbm/Documents/UPV/GTI/2 GTI/1º Cuatrimestre/Proyecto internet de las cosas y Aplicaciones móviles/proyectoIoT/hadware/UartAndroidArduino/app/src/main/AndroidManifest.xml
+9        android:targetSdkVersion="30" />
+9-->/Users/ausiasbm/Documents/UPV/GTI/2 GTI/1º Cuatrimestre/Proyecto internet de las cosas y Aplicaciones móviles/proyectoIoT/hadware/UartAndroidArduino/app/src/main/AndroidManifest.xml
+10
+11    <uses-permission android:name="com.google.android.things.permission.USE_PERIPHERAL_IO" />
+11-->/Users/ausiasbm/Documents/UPV/GTI/2 GTI/1º Cuatrimestre/Proyecto internet de las cosas y Aplicaciones móviles/proyectoIoT/hadware/UartAndroidArduino/app/src/main/AndroidManifest.xml:4:5-93
+11-->/Users/ausiasbm/Documents/UPV/GTI/2 GTI/1º Cuatrimestre/Proyecto internet de las cosas y Aplicaciones móviles/proyectoIoT/hadware/UartAndroidArduino/app/src/main/AndroidManifest.xml:4:22-91
+12
+13    <application
+13-->/Users/ausiasbm/Documents/UPV/GTI/2 GTI/1º Cuatrimestre/Proyecto internet de las cosas y Aplicaciones móviles/proyectoIoT/hadware/UartAndroidArduino/app/src/main/AndroidManifest.xml:5:5-15:19
+14        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+14-->[androidx.core:core:1.3.1] /Users/ausiasbm/.gradle/caches/transforms-2/files-2.1/ae3468b444d41a56f261ecbb8448fe17/core-1.3.1/AndroidManifest.xml:24:18-86
+15        android:debuggable="true"
+16        android:extractNativeLibs="false"
+17        android:label="@string/app_name"
+17-->/Users/ausiasbm/Documents/UPV/GTI/2 GTI/1º Cuatrimestre/Proyecto internet de las cosas y Aplicaciones móviles/proyectoIoT/hadware/UartAndroidArduino/app/src/main/AndroidManifest.xml:5:18-50
+18        android:testOnly="true" >
+19        <uses-library android:name="com.google.android.things" />
+19-->/Users/ausiasbm/Documents/UPV/GTI/2 GTI/1º Cuatrimestre/Proyecto internet de las cosas y Aplicaciones móviles/proyectoIoT/hadware/UartAndroidArduino/app/src/main/AndroidManifest.xml:6:9-66
+19-->/Users/ausiasbm/Documents/UPV/GTI/2 GTI/1º Cuatrimestre/Proyecto internet de las cosas y Aplicaciones móviles/proyectoIoT/hadware/UartAndroidArduino/app/src/main/AndroidManifest.xml:6:23-63
+20
+21        <activity android:name="com.example.uartandroidarduino.MainActivity" >
+21-->/Users/ausiasbm/Documents/UPV/GTI/2 GTI/1º Cuatrimestre/Proyecto internet de las cosas y Aplicaciones móviles/proyectoIoT/hadware/UartAndroidArduino/app/src/main/AndroidManifest.xml:8:9-14:20
+21-->/Users/ausiasbm/Documents/UPV/GTI/2 GTI/1º Cuatrimestre/Proyecto internet de las cosas y Aplicaciones móviles/proyectoIoT/hadware/UartAndroidArduino/app/src/main/AndroidManifest.xml:8:19-47
+22            <intent-filter>
+22-->/Users/ausiasbm/Documents/UPV/GTI/2 GTI/1º Cuatrimestre/Proyecto internet de las cosas y Aplicaciones móviles/proyectoIoT/hadware/UartAndroidArduino/app/src/main/AndroidManifest.xml:9:13-13:29
+23                <action android:name="android.intent.action.MAIN" />
+23-->/Users/ausiasbm/Documents/UPV/GTI/2 GTI/1º Cuatrimestre/Proyecto internet de las cosas y Aplicaciones móviles/proyectoIoT/hadware/UartAndroidArduino/app/src/main/AndroidManifest.xml:10:17-69
+23-->/Users/ausiasbm/Documents/UPV/GTI/2 GTI/1º Cuatrimestre/Proyecto internet de las cosas y Aplicaciones móviles/proyectoIoT/hadware/UartAndroidArduino/app/src/main/AndroidManifest.xml:10:25-66
+24
+25                <category android:name="android.intent.category.LAUNCHER" />
+25-->/Users/ausiasbm/Documents/UPV/GTI/2 GTI/1º Cuatrimestre/Proyecto internet de las cosas y Aplicaciones móviles/proyectoIoT/hadware/UartAndroidArduino/app/src/main/AndroidManifest.xml:12:17-77
+25-->/Users/ausiasbm/Documents/UPV/GTI/2 GTI/1º Cuatrimestre/Proyecto internet de las cosas y Aplicaciones móviles/proyectoIoT/hadware/UartAndroidArduino/app/src/main/AndroidManifest.xml:12:27-74
+26            </intent-filter>
+27        </activity>
+28    </application>
+29
+30</manifest>
