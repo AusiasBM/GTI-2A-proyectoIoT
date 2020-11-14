@@ -62,9 +62,13 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
   <component name="ExecutionTargetManager" SELECTED_TARGET="Nexus_5_API_30" />
 >>>>>>> develop
+=======
+  <component name="ExecutionTargetManager" SELECTED_TARGET="Pixel_3a_API_30" />
+>>>>>>> reconectando_sensores_sprint1_mqtt
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
@@ -77,9 +81,12 @@
       </state>
     </system>
   </component>
+<<<<<<< HEAD
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
   </component>
+=======
+>>>>>>> reconectando_sensores_sprint1_mqtt
   <component name="ProjectId" id="1k6pLIIZBnP3zDoicXGqx3Mpw6F" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
@@ -95,6 +102,7 @@
     <property name="settings.editor.selected.configurable" value="AndroidSdkUpdater" />
   </component>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -102,6 +110,8 @@
     </key>
   </component>
 >>>>>>> develop
+=======
+>>>>>>> reconectando_sensores_sprint1_mqtt
   <component name="RunManager">
     <configuration default="true" type="AndroidJUnit" factoryName="Android JUnit">
       <option name="TEST_OBJECT" value="class" />
@@ -111,10 +121,14 @@
       </method>
     </configuration>
 <<<<<<< HEAD
+<<<<<<< HEAD
     <configuration name="app" type="AndroidRunConfigurationType" factoryName="Android App">
 =======
     <configuration name="app" type="AndroidRunConfigurationType" factoryName="Android App" activateToolWindowBeforeRun="false">
 >>>>>>> develop
+=======
+    <configuration name="app" type="AndroidRunConfigurationType" factoryName="Android App">
+>>>>>>> reconectando_sensores_sprint1_mqtt
       <module name="app" />
       <option name="DEPLOY" value="true" />
       <option name="DEPLOY_APK_FROM_BUNDLE" value="false" />
