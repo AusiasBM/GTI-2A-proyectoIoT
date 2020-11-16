@@ -12,8 +12,8 @@ MFRC522 mfrc522(SS_PIN, RST_PIN); ///Creamos el objeto para el RC522
 MFRC522::StatusCode status; //variable to get card status
 
 
-char ssid[] = "Team_2-1";        // your network SSID (name)
-char pass[] = "Team_2-1";    // your network password (use for WPA, or use as key for WEP)
+char ssid[] = "TP-Link_701E";        // your network SSID (name)
+char pass[] = "28333401";    // your network password (use for WPA, or use as key for WEP)
 
 
 WiFiClient wifiClient;

@@ -41,7 +41,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.Objects;
 
-public class ResActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, OnMapReadyCallback {
+public class  ResActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, OnMapReadyCallback {
     public static final String user = "names";
     public static final String metodo = "metodo";
     private static String method="sin iniciar";
