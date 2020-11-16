@@ -6,8 +6,11 @@
 #include <MFRC522.h>
 #define RST_PIN 22 //Pin 9 para el reset del RC522 no es necesario conctarlo
 #define SS_PIN 21 //Pin 10 para el SS (SDA) del RC522
+#define pinSensorMagnetico 27 //Pin 27 para el sensor magnético
+
 #define SIZE_BUFFER 18;
 #define MAX_SIZE_BLOCK 16;
+
 MFRC522 mfrc522(SS_PIN, RST_PIN); ///Creamos el objeto para el RC522
 MFRC522::StatusCode status; //variable to get card status
 
@@ -26,6 +29,7 @@ int        port        = 1883;
 const char willTopic[] = "arduino/will";
 const char cerraduraTopic[]   = "arduino/cerradura";
 const char RFIDTopic[]  = "arduino/rfid";
+const char magneticoTopic[]  = "arduino/magnetico";
 
 const long interval = 5000;
 unsigned long previousMillis = 0;
@@ -97,21 +101,49 @@ void setup() {
 
   pinMode(cerradura, OUTPUT);
   digitalWrite(cerradura, LOW);
+
+  //Sensor magnético
+  pinMode(pinSensorMagnetico, INPUT_PULLUP); //DEFINE PIN COMO ENTRADA / "_PULLUP" PARA ACTIVAR EL RESISTOR INTERNO
+  //DE ARDUINO PARA GARANTIRAE QUE NO EXISTA VARIACIÓN ENTRE 0 (LOW) y 1 (HIGH)
 }
 
 byte ActualUID[7]; //almacenará el código del Tag leído
 
+bool estadoAnteriorCerradura = false;//Variable para evitar envios constantes cuando la cerradura está cerrada
+
 void loop() {
+  bool retained = false;
+  int qos = 1;
+  bool dup = false;
+  String payload = "";
   mqttClient.poll();
 
+  //Sensor magnético
+  if (digitalRead(pinSensorMagnetico) == HIGH){//SI LA LECTURA DEL PIN ES HIGH...
+    if (estadoAnteriorCerradura == false){
+      payload = "cerraduraAbierta";
+      mqttClient.beginMessage(magneticoTopic, payload.length(), retained, qos, dup);
+      mqttClient.print(payload);
+      mqttClient.endMessage();
+      estadoAnteriorCerradura = true;
+    }
+  }
+  else{ //SEÑAL, FALSA
+     if(estadoAnteriorCerradura == true && digitalRead(pinSensorMagnetico) == LOW){
+      payload = "cerraduraCerrada";
+      mqttClient.beginMessage(magneticoTopic, payload.length(), retained, qos, dup);
+      mqttClient.print(payload);
+      mqttClient.endMessage();
+      estadoAnteriorCerradura = false;
+     }
+  }
+  
   if ( mfrc522.PICC_IsNewCardPresent())
   {
 
     //Seleccionamos una tarjeta
     if ( mfrc522.PICC_ReadCardSerial())
     {
-      
-      String payload = "";
       for (byte i = 0; i < mfrc522.uid.size; i++) {
         //M5.Lcd.print(mfrc522.uid.uidByte[i] < 0x10 ? " 0" : " ");
         //M5.Lcd.print(mfrc522.uid.uidByte[i], HEX);
@@ -122,10 +154,6 @@ void loop() {
         Serial.print("Sending message to topic: ");
         Serial.println(RFIDTopic);
         Serial.println(payload);
-   
-        bool retained = false;
-        int qos = 1;
-        bool dup = false;
 
         delay(2000); // Este delay es para cuando el usuario esté poniendo la tarjeta en el lector solo se envie una vez.
     
