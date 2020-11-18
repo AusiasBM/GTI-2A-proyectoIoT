@@ -176,6 +176,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:background="@drawable/boton_iniciosesion"
+        android:onClick="abreTaquilla"
         android:text="Abrir taquilla"
         android:textSize="18dp"
         app:layout_constraintBottom_toTopOf="@+id/textView5"
