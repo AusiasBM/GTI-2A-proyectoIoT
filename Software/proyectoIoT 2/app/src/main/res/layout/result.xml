@@ -16,12 +16,12 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:background="#FFFFFF"
+        android:fitsSystemWindows="true"
         android:fontFamily="@font/poppins_medium"
         android:textSize="16dp"
-        app:itemTextColor="@color/colorPrimary"
-        app:itemIconTint="@color/colorPrimary"
-        android:fitsSystemWindows="true"
         app:headerLayout="@layout/cabecera_drawer"
+        app:itemIconTint="@color/colorPrimary"
+        app:itemTextColor="@color/colorPrimary"
         app:menu="@menu/menu_drawer" />
 
 </androidx.drawerlayout.widget.DrawerLayout>

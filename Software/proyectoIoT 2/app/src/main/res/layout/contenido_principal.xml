@@ -54,14 +54,23 @@
             android:background="#FFFFFF"
             tools:context="com.example.proyecto2a.presentacion.ResActivity">
 
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline"
+                android:layout_width="10dp"
+                android:layout_height="110dp"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_begin="57dp" />
+
             <fragment
                 android:id="@+id/map"
                 android:name="com.google.android.gms.maps.SupportMapFragment"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                tools:context=".presentacion.ResActivity"
-                tools:layout_editor_absoluteX="135dp"
-                tools:layout_editor_absoluteY="0dp" />
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/guideline"
+                tools:context=".presentacion.ResActivity" />
 
             <TextView
                 android:id="@+id/textser"
