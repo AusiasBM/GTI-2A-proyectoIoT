@@ -55,7 +55,7 @@
                         android:layout_width="25dp"
                         android:layout_height="25dp"
                         android:layout_marginStart="5dp"
-                        android:background="@drawable/info_dark"
+                        android:background="@drawable/info"
                         android:contentDescription="@string/info_registro"
                         android:onClick="lanzarInfo" />
                 </LinearLayout>
@@ -114,11 +114,11 @@
 
                     <ImageView
                         android:id="@+id/imageView4"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="25dp"
+                        android:layout_height="40dp"
                         android:layout_marginEnd="10dp"
                         android:contentDescription="@string/et_contraseña"
-                        app:srcCompat="@android:drawable/ic_lock_idle_lock" />
+                        app:srcCompat="@drawable/candao" />
 
                     <EditText
                         android:id="@+id/et_pass_up"
@@ -145,11 +145,11 @@
 
                     <ImageView
                         android:id="@+id/imageView5"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="25dp"
+                        android:layout_height="40dp"
                         android:layout_marginEnd="10dp"
                         android:contentDescription="@string/et_contraseña"
-                        app:srcCompat="@android:drawable/ic_lock_idle_lock" />
+                        app:srcCompat="@drawable/candao" />
 
                     <EditText
                         android:id="@+id/et_pass_verify"

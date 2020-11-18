@@ -6,7 +6,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
@@ -22,11 +24,13 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -37,8 +41,12 @@ public class MenuDialogActivity<AddMember> extends AppCompatActivity {
     private TextView nombreLugar;
     private TextView patinesText;
     private TextView taquillasText;
+    private TextView taquillaSel;
     private Spinner spinner;
     private Spinner spinnerPats;
+    private Button botonAbre;
+    private Button botonReserva;
+    private Button botonAlquila;
     double latitud;
     String id = "0";
     double longitud;
@@ -53,6 +61,13 @@ public class MenuDialogActivity<AddMember> extends AppCompatActivity {
         nombreLugar = (TextView) findViewById(R.id.TituloLugar);
         patinesText = (TextView) findViewById(R.id.PatinesDispo);
         taquillasText = (TextView) findViewById(R.id.taquillasDispo);
+        taquillaSel = (TextView) findViewById(R.id.textView6);
+        botonReserva = findViewById(R.id.button2);
+        botonReserva.setVisibility(View.VISIBLE);
+        botonAlquila = findViewById(R.id.button);
+        botonAlquila.setVisibility(View.VISIBLE);
+        botonAbre = findViewById(R.id.button3);
+        botonAbre.setVisibility(View.GONE);
         spinner = (Spinner) findViewById(R.id.spinnerTaquillas);
         spinnerPats = (Spinner) findViewById(R.id.spinner2);
         final ArrayList<String> arrayList = new ArrayList<>();
@@ -79,82 +94,88 @@ public class MenuDialogActivity<AddMember> extends AppCompatActivity {
             }
         });
 
-        final ArrayList<Object>[] ListaTaquillas = new ArrayList[1];
-        final ArrayList<Object>[] ListaPatines = new ArrayList[1];
 
+        Query lista = db.collection("estaciones").document(id).collection("taquillas").whereEqualTo("ocupada", false).whereEqualTo("patinNuestro", false);
+        final List<String> taquillas = new ArrayList<>();
+        taquillas.add("Taquillas disponibles");
+        final ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, taquillas);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        lista.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        String subject = "Taquilla "+document.getId();
+                        taquillas.add(subject);
+                        taquillasDisponibles++;
+                    }
+                    adapter.notifyDataSetChanged();
+                }
+            }
+        });
+        taquillasText.setText(Integer.toString(taquillasDisponibles));
 
-        db.collection("estaciones").document(id).collection("taquillas").document("taquillasAlquiler").get()
-                .addOnCompleteListener(
-                        new OnCompleteListener<DocumentSnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                if (task.isSuccessful()) {
-                                    Log.d("Prova de retorn", "" + ((HashMap) ((ArrayList<Object>) task.getResult().getData().get("taquillas")).get(0)).get("ocupada"));
-                                    Log.e("Prova de retorn 22", "" + ((String) ((HashMap) ((ArrayList<Object>) task.getResult().getData().get("taquillas")).get(1)).get("idUsuario")).length());
-                                    ListaTaquillas[0] = (ArrayList<Object>) task.getResult().getData().get("taquillas");
-                                    for (int i = 0; i < ListaTaquillas[0].size(); i++) {
-                                        if (((HashMap) ((ArrayList<Object>) task.getResult().getData().get("taquillas")).get(i)).get("ocupada").equals(false)) {
-                                            taquillasDisponibles++;
-                                            arrayList.add("Taquilla " + Integer.toString(i));
-                                        }
-                                    }
+        Query listaPatinetes = db.collection("estaciones").document(id).collection("taquillas").whereEqualTo("ocupada", false).whereEqualTo("patinNuestro", true);
+        final List<String> patines = new ArrayList<>();
+        patines.add("Patines disponibles");
+        final ArrayAdapter<String> adaperPatines = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, patines);
+        adaperPatines.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerPats.setAdapter(adaperPatines);
+        listaPatinetes.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        String subject = "Patinete "+document.getId();
+                        patines.add(subject);
+                        patinesDisponibles++;
+                    }
+                    adaperPatines.notifyDataSetChanged();
+                }
+            }
+        });
 
-                                    taquillasText.setText(Integer.toString(taquillasDisponibles));
+        patinesText.setText(Integer.toString(patinesDisponibles));
 
-                                    //GeoPoint dato2 = task.getResult().getGeoPoint("pos");
-                                    //ArrayList<Object> a = new ArrayList<Object>();
-                                    // a = dato1.get("lista");
-                                    //Log.d("Firestore", "" + ((ArrayList) dato1.get("lista")).size());
-                                    //for (int i = 0; i < ((ArrayList) dato1.get("lista")).size();i++){
-                                    //Log.d("PROVA" + i,""+ ((HashMap) ((ArrayList) dato1.get("lista")).get(i)).get("pos").getClass());
-                                    // ubicacion = ((HashMap) ((ArrayList) dato1.get("lista")).get(i)).get("ubicacion").toString();
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+/*
+                switch (position) {
+                    case 0 :
+                        int indzex = s1.getSelectedItemPosition();
+                        powerfactorEditText.setVisibility(View.GONE);
+                        final  EditText editText = (EditText)findViewById(R.id.voltageEditText);
+                        final  EditText editText2 = (EditText)findViewById(R.id.ampEditText);
 
+                    case 1:
+                        int index = s1.getSelectedItemPosition();
+                        powerfactorEditText.setVisibility(View.VISIBLE);
+                        break;
 
-                                    // }
+                }
+*/
 
+            String opcion = spinner.getSelectedItem().toString();
+            if (!opcion.equals("Taquillas disponibles")){
+                taquillaSel(opcion);
+            }
 
-                                    //Informacion i= task.getResult().toObject(Informacion.class);
-                                    //Log.d("PROVA",""+ a);
-                                } else {
-                                    Log.e("Firestore", "Error al leer", task.getException());
-                                }
-                            }
+            }
 
-                        });//
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
 
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, arrayList);
-        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(arrayAdapter);
-
-        db.collection("estaciones").document(id).collection("taquillas").document("taquillasAlquilerPatinete").get()
-                .addOnCompleteListener(
-                        new OnCompleteListener<DocumentSnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                if (task.isSuccessful()) {
-                                    ListaPatines[0] = (ArrayList<Object>) task.getResult().getData().get("taquillas");
-                                    for (int i = 0; i < ListaPatines[0].size(); i++) {
-                                        if (((HashMap) ((ArrayList<Object>) task.getResult().getData().get("taquillas")).get(i)).get("ocupada").equals(false)) {
-                                            patinesDisponibles++;
-                                            arrayList2.add("Patinete " + Integer.toString(i));
-                                        }
-                                    }
-
-                                    patinesText.setText(Integer.toString(patinesDisponibles));
-
-                                } else {
-                                    Log.e("Firestore", "Error al leer", task.getException());
-                                }
-                            }
-
-                        });
-        ArrayAdapter<String> arrayAdapterPats = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, arrayList2);
-        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerPats.setAdapter(arrayAdapterPats);
-
-
+            }
+        });
     }
 
+    public void taquillaSel(String opcion) {
+        botonAbre.setVisibility(View.VISIBLE);
+        botonReserva.setVisibility(View.GONE);
+        taquillaSel.setText(opcion);
+    }
 
     public void googleMaps(View view) {
         String uri = String.format(Locale.ENGLISH, "http://maps.google.com/maps?q=loc:%f,%f", latitud, longitud);
