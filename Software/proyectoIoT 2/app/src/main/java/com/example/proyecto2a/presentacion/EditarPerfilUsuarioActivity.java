@@ -199,6 +199,14 @@ public class EditarPerfilUsuarioActivity extends AppCompatActivity {
                 });
     }
 
+    @Override
+    public void onBackPressed() {
+        actualizarPerfilUsuario();
+        Intent intent = new Intent(this, ResActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
 }
 
 

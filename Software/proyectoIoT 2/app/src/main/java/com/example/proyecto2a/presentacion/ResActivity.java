@@ -335,5 +335,10 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
         }
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    public void onBackPressed() {
+
+    }
 }
 

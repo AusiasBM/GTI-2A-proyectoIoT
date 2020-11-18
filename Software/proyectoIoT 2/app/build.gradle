@@ -45,11 +45,6 @@ dependencies {
     implementation 'com.firebaseui:firebase-ui-firestore:6.3.0'
     implementation 'com.android.support:multidex:1.0.3'
     implementation 'de.hdodenhof:circleimageview:3.1.0'
-<<<<<<< HEAD
     implementation 'com.android.volley:volley:1.1.0'
-
-=======
     implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.1.1'
->>>>>>> develop
-
 }
