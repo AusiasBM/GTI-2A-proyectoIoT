@@ -2,7 +2,7 @@ package com.example.proyecto2a.modelo;
 
 
 public class Usuario {
-    private String uId, nombre, correo, dirección, población, llave;
+    private String uId, nombre, correo, dirección, población, llave, foto;
     private int telefono;
 
 
@@ -57,6 +57,14 @@ public class Usuario {
 
     public void setPoblación(String población) {
         this.población = población;
+    }
+
+    public String getFoto() {
+        return foto;
+    }
+
+    public void setFoto(String foto) {
+        this.foto = foto;
     }
 
     public String getLlave() {

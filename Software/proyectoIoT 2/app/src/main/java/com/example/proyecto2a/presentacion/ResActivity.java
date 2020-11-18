@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -70,6 +71,9 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
     private double[] lats = new double[100];
     private double[] longs = new double[100];
     private DrawerLayout drawerLayout;
+
+    private LocationManager manejador;
+    private Location mejorLocaliz;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,6 +143,9 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
                         }
                     }
                 });
+
+        manejador = (LocationManager) getSystemService(LOCATION_SERVICE);
+
     }
 
     private void agregarToolbar() {
@@ -186,20 +193,6 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
 
     }
 
-    public void logOut(View view) {
-        Auth.GoogleSignInApi.signOut(googleApiClient).setResultCallback(new ResultCallback<Status>() {
-            @Override
-            public void onResult(@NonNull Status status) {
-                if (status.isSuccess()) {
-                    goMain();
-                    finish();
-                } else {
-                    Toast.makeText(getApplicationContext(), "No se pudo cerrar sesion", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-    }
-
     public void logOut() {
         Auth.GoogleSignInApi.signOut(googleApiClient).setResultCallback(new ResultCallback<Status>() {
             @Override
@@ -207,19 +200,6 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
                 if (status.isSuccess()) {
                     goMain();
                     finish();
-                } else {
-                    Toast.makeText(getApplicationContext(), "No se pudo cerrar sesion", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-    }
-
-    public void revoke(View view) {
-        Auth.GoogleSignInApi.revokeAccess(googleApiClient).setResultCallback(new ResultCallback<Status>() {
-            @Override
-            public void onResult(@NonNull Status status) {
-                if (status.isSuccess()) {
-                    goMain();
                 } else {
                     Toast.makeText(getApplicationContext(), "No se pudo cerrar sesion", Toast.LENGTH_SHORT).show();
                 }
@@ -253,6 +233,18 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
                 return false;
             }
         });
+
+
+        if(ActivityCompat.checkSelfPermission(this,
+                android.Manifest.permission.ACCESS_FINE_LOCATION)==
+                PackageManager.PERMISSION_GRANTED){
+
+            mMap.setMyLocationEnabled(true);
+            mMap.getUiSettings().setZoomControlsEnabled(true);
+            mMap.getUiSettings().setCompassEnabled(true);
+            mMap.getUiSettings().setMyLocationButtonEnabled(true);
+        }
+
     }
 
     @Override

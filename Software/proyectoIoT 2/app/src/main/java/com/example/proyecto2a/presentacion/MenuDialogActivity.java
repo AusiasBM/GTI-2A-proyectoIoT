@@ -18,6 +18,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.proyecto2a.R;
+import com.example.proyecto2a.datos.Mqtt;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -27,6 +28,11 @@ import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+
+import org.eclipse.paho.client.mqttv3.MqttClient;
+import org.eclipse.paho.client.mqttv3.MqttException;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -53,6 +59,7 @@ public class MenuDialogActivity<AddMember> extends AppCompatActivity {
     int taquillasDisponibles;
     int PatinesDisponibles;
     int patinesDisponibles = 0;
+    public static MqttClient client = null;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -169,6 +176,15 @@ public class MenuDialogActivity<AddMember> extends AppCompatActivity {
 
             }
         });
+
+        try {
+            Log.i(Mqtt.TAG, "Conectando al broker " + Mqtt.broker);
+            client = new MqttClient(Mqtt.broker, Mqtt.clientId,
+                    new MemoryPersistence());
+            client.connect();
+        } catch (MqttException e) {
+            Log.e(Mqtt.TAG, "Error al conectar.", e);
+        }
     }
 
     public void taquillaSel(String opcion) {
@@ -185,7 +201,25 @@ public class MenuDialogActivity<AddMember> extends AppCompatActivity {
     }
 
     public void cerrar(View view) {
+        try {
+            Log.i(Mqtt.TAG, "Desconectado");
+            client.disconnect();
+        } catch (MqttException e) {
+            Log.e(Mqtt.TAG, "Error al desconectar.", e);
+        }
         finish();
+    }
+
+    public void abreTaquilla (View view){
+        try {
+            Log.i(Mqtt.TAG, "Publicando mensaje: " + "cerradura ON");
+            MqttMessage message = new MqttMessage("cerradura ON".getBytes());
+            message.setQos(Mqtt.qos);
+            message.setRetained(false);
+            client.publish(Mqtt.topicRoot+"cerradura", message);
+        } catch (MqttException e) {
+            Log.e(Mqtt.TAG, "Error al publicar.", e);
+        }
     }
 
 
