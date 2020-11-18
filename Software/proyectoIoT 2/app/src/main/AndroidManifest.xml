@@ -64,7 +64,7 @@
             android:name=".presentacion.MenuDialogActivity"
             android:theme="@style/NoLabel" />
         <activity
-            android:name=".casos_uso.Perfil"
+            android:name=".presentacion.EditarPerfilUsuarioActivity"
             android:screenOrientation="portrait" />
 
         <activity android:name=".casos_uso.Asistente"

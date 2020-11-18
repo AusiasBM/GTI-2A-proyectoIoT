@@ -24,6 +24,12 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="et_contraseña_verify">Verify Password</string>
 
+    <!-- Info Registro-->
+    <string name="info_registro">
+    Once you have registered, you will be asked for the data necessary to validate your identity and, depending on the method of payment chosen, the documents required to make use of our services.
+    </string>
+
+    <!-- Menú-->
     <string name="menu_home">Home</string>
     <string name="menu_perfil">Profile</string>
     <string name="menu_cerrarSesion">Close sesion</string>
@@ -35,9 +41,12 @@
     <string name="phone_title">Phone</string>
     <string name="address_title">Address</string>
     <string name="email_title">Email</string>
+    <string name="city_title">City</string>
 
-    <!-- Info Registro-->
-    <string name="info_registro">
-    Once you have registered, you will be asked for the data necessary to validate your identity and, depending on the method of payment chosen, the documents required to make use of our services.
-    </string>
+    <!-- Info usuario-->
+    <string name="et_nombreUsuario">Add your name</string>
+    <string name="et_telefonoUsuario">Add your phone</string>
+    <string name="et_correoUsuario">Add your mail</string>
+    <string name="et_direccionUsuario">Add your address</string>
+    <string name="et_apellidosUsuario">Add your second name</string>
 </resources>

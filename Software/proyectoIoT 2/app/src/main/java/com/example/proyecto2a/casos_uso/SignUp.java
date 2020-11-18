@@ -16,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.proyecto2a.R;
+import com.example.proyecto2a.datos.Usuarios;
 import com.example.proyecto2a.presentacion.InfoActivity;
 import com.example.proyecto2a.presentacion.MainActivity;
 import com.example.proyecto2a.presentacion.ResActivity;

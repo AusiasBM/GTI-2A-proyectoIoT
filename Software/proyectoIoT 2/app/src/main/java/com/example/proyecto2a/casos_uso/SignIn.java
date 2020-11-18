@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -19,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.proyecto2a.R;
+import com.example.proyecto2a.datos.Usuarios;
 import com.example.proyecto2a.presentacion.MainActivity;
 import com.example.proyecto2a.presentacion.ResActivity;
 import com.google.android.gms.auth.api.Auth;
@@ -36,6 +38,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class SignIn extends AppCompatActivity implements View.OnClickListener, GoogleApiClient.OnConnectionFailedListener {
 
@@ -200,13 +204,14 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener, G
                         //checking if success
                         if (task.isSuccessful()) {
                             if (firebaseAuth.getCurrentUser().isEmailVerified()) {
-                                int pos = email.indexOf("@");
-                                String user = email.substring(0, pos);
-                                Toast.makeText(SignIn.this, "Bienvenido: " + TextEmail.getText(), Toast.LENGTH_LONG).show();
-                                Intent intencion = new Intent(getApplication(), ResActivity.class);
-                                intencion.putExtra(ResActivity.user, user);
-                                intencion.putExtra(ResActivity.metodo, "email");
-                                startActivity(intencion);
+                                goRes();
+                                //int pos = email.indexOf("@");
+                                //String user = email.substring(0, pos);
+                                //Toast.makeText(SignIn.this, "Bienvenido: " + TextEmail.getText(), Toast.LENGTH_LONG).show();
+                                //Intent intencion = new Intent(getApplication(), ResActivity.class);
+                                //intencion.putExtra(ResActivity.user, user);
+                                //intencion.putExtra(ResActivity.metodo, "email");
+                                //startActivity(intencion);
                             }else {
                                 Toast.makeText(SignIn.this, "Por favor verifique su email" , Toast.LENGTH_LONG).show();
 
@@ -273,6 +278,28 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener, G
     }
 
     private void goRes() {
+        //Creación de un objeto FirebaseUser
+        final FirebaseUser usuario = firebaseAuth.getInstance().getCurrentUser();
+
+        Log.d("PROVA DE UID", "" + usuario.getUid());
+        //Creación de un nuevo documento (id = uId de firebaseAuth)en la bbdd de Firestore con el correo
+        final Usuarios usuarios = new Usuarios();
+        usuarios.getUsuarios().document(usuario.getUid()).get().addOnCompleteListener(
+                new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful() && task.getResult().exists() == false){
+                            Log.d("PROVA DE REGISTRE TRUE", "" + task.getResult().exists());
+                            usuarios.guardarUsuario(usuario.getEmail(), usuario.getUid());
+                        }else{
+                            Log.d("PROVA DE REGISTRE FALSE", "" + usuario.getUid());
+                        }
+                    }
+        });
+
+
+
+        //Abrir la actividad ResActivity
         Intent intent = new Intent(this, ResActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);

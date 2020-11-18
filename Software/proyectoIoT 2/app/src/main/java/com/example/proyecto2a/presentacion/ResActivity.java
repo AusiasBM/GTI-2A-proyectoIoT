@@ -1,8 +1,11 @@
 package com.example.proyecto2a.presentacion;
 
-import android.annotation.SuppressLint;
+import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Intent;
-import android.net.Uri;
+import android.content.pm.PackageManager;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -10,27 +13,22 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.appcompat.widget.Toolbar;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 
 import com.example.proyecto2a.R;
 import com.example.proyecto2a.casos_uso.Asistente;
-import com.example.proyecto2a.casos_uso.Perfil;
-import com.example.proyecto2a.casos_uso.SignIn;
 import com.google.android.gms.auth.api.Auth;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -54,15 +52,17 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.Objects;
 
 public class ResActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, OnMapReadyCallback {
-    public static final String user = "names";
+
+
     public static final String metodo = "metodo";
-    private static String method="sin iniciar";
+    private static String method = "sin iniciar";
     TextView txtUser;
     private GoogleApiClient googleApiClient;
     private GoogleMap mMap;
     //Declaramos un objeto firebaseAuth
     private FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener firebaseAuthListener;
+    private FirebaseUser user;
     private String TAG = "Exception";
     private int totalEstaciones;
 
@@ -100,10 +100,10 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
         firebaseAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user==null){
+                user = firebaseAuth.getCurrentUser();
+                if (user == null) {
                     goMain();
-                }else {
+                } else {
                     setUserData(user);
                 }
             }
@@ -118,27 +118,27 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         //Obtención de la colección "estaciones" en la base datos
         db.collection("estaciones")
-            .get()
-            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                    if (task.isSuccessful()) {
-                        //Obtenció de cada estació de su ubicación y su geoposición
-                        int i = 0;
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            nombresEstaciones[i] = (String) document.getData().get("ubicacion");
-                            GeoPoint p = (GeoPoint) document.getData().get("pos");
-                            longs[i] = p.getLongitude();
-                            lats[i] = p.getLatitude();
-                            i++;
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            //Obtenció de cada estació de su ubicación y su geoposición
+                            int i = 0;
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                nombresEstaciones[i] = (String) document.getData().get("ubicacion");
+                                GeoPoint p = (GeoPoint) document.getData().get("pos");
+                                longs[i] = p.getLongitude();
+                                lats[i] = p.getLatitude();
+                                i++;
+                            }
+                            totalEstaciones = i;
+                            onMapReady(mMap);
+                        } else {
+                            Log.d(TAG, "Error getting documents: ", task.getException());
                         }
-                        totalEstaciones = i;
-                        onMapReady(mMap);
-                    } else {
-                        Log.d(TAG, "Error getting documents: ", task.getException());
                     }
-                }
-        });
+                });
     }
 
     private void agregarToolbar() {
@@ -170,7 +170,7 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
     @Override
     protected void onStop() {
         super.onStop();
-        if (firebaseAuthListener != null){
+        if (firebaseAuthListener != null) {
             firebaseAuth.removeAuthStateListener(firebaseAuthListener);
         }
     }
@@ -186,11 +186,11 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
 
     }
 
-    public void logOut(View view){
+    public void logOut(View view) {
         Auth.GoogleSignInApi.signOut(googleApiClient).setResultCallback(new ResultCallback<Status>() {
             @Override
             public void onResult(@NonNull Status status) {
-                if (status.isSuccess()){
+                if (status.isSuccess()) {
                     goMain();
                     finish();
                 } else {
@@ -200,11 +200,11 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
         });
     }
 
-    public void logOut(){
+    public void logOut() {
         Auth.GoogleSignInApi.signOut(googleApiClient).setResultCallback(new ResultCallback<Status>() {
             @Override
             public void onResult(@NonNull Status status) {
-                if (status.isSuccess()){
+                if (status.isSuccess()) {
                     goMain();
                     finish();
                 } else {
@@ -214,11 +214,11 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
         });
     }
 
-    public void revoke(View view){
+    public void revoke(View view) {
         Auth.GoogleSignInApi.revokeAccess(googleApiClient).setResultCallback(new ResultCallback<Status>() {
             @Override
             public void onResult(@NonNull Status status) {
-                if (status.isSuccess()){
+                if (status.isSuccess()) {
                     goMain();
                 } else {
                     Toast.makeText(getApplicationContext(), "No se pudo cerrar sesion", Toast.LENGTH_SHORT).show();
@@ -226,21 +226,23 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
             }
         });
     }
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         String nombre;
         LatLng[] posiciones = new LatLng[totalEstaciones];
-        for (int i = 0; i<totalEstaciones; i++) {
+        for (int i = 0; i < totalEstaciones; i++) {
             posiciones[i] = new LatLng(lats[i], longs[i]);
         }
+
         // Add a marker in Sydney and move the camera
-        for (int i =0; i<totalEstaciones; i++){
+        for (int i = 0; i < totalEstaciones; i++) {
             mMap.addMarker(new MarkerOptions().position(posiciones[i]).title(nombresEstaciones[i]).icon(BitmapDescriptorFactory.
                     fromResource(R.drawable.icon_pat)).anchor(0.5f, 1f));
             mMap.getUiSettings().setZoomControlsEnabled(true);
             nombre = nombresEstaciones[i];
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(posiciones[0],13));
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(posiciones[0], 13));
             final String finalNombre = nombre;
 
         }
@@ -251,16 +253,11 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
                 return false;
             }
         });
-
     }
 
     @Override
     public void onPointerCaptureChanged(boolean hasCapture) {
 
-    }
-    public void lanzaAsistente(View view) {
-        Intent i = new Intent(this, Asistente.class);
-        startActivity(i);
     }
 
     public void lanzaAsistente() {
@@ -268,8 +265,12 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
         startActivity(i);
     }
     public void lanzarPerfil(){
-        Intent intent=new Intent(this, Perfil.class);
+        Intent intent=new Intent(this, EditarPerfilUsuarioActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        //Pasar el id del usuario para modificar el perfil en la base de datos de firestore
+        intent.putExtra("id", user.getUid());
         startActivity(intent);
+
     }
 
 
@@ -342,6 +343,5 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
         }
         return super.onOptionsItemSelected(item);
     }
-
 }
 
