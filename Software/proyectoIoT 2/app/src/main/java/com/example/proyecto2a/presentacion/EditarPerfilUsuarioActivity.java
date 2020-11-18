@@ -104,17 +104,44 @@ public class EditarPerfilUsuarioActivity extends AppCompatActivity {
 
     public void actualizarPerfilUsuario(){
         try{
-            usuario.setNombre(nombre.getText().toString());
-            usuario.setTelefono(Integer.parseInt(telefono.getText().toString()));
-            usuario.setDirección(direccion.getText().toString());
-            usuario.setPoblación(poblacion.getText().toString());
+            //Los if comprueban que los campos estén llenos o sinó se encarga de que los campos
+            // que se actualizan en la bbdd contengan una cadena vacía para que, en caso de no
+            //completar todos los campos (se deje alguno vacío) se puedan guardar el resto en Firestore
+            if(nombre.getText().toString().equals(null)){
+                usuario.setNombre("");
+            }else {
+                usuario.setNombre(nombre.getText().toString());
+            }
+
+            //En caso de que se introduzca un número de teléfono de menos o mas cifras de las que tocan, enviar un toast
+            //avisando del error
+            if (telefono.getText().toString().length() != 9 && telefono.getText().toString().length() != 0) {
+                usuario.setTelefono(0);
+                Toast.makeText(this, "Número de teléfono incorrecto", Toast.LENGTH_SHORT).show();
+            } else if(telefono.getText().toString().length() == 0){
+                usuario.setTelefono(0);
+            } else {
+                usuario.setTelefono(Integer.parseInt(telefono.getText().toString()));
+            }
+
+            if(direccion.getText().toString().length() == 0){
+                usuario.setDirección("");
+            }else {
+                usuario.setDirección(direccion.getText().toString());
+            }
+
+            if(poblacion.getText().toString().length() == 0){
+                usuario.setPoblación("");
+            }else {
+                usuario.setPoblación(poblacion.getText().toString());
+            }
+
             //Llamar al método actualizarUsuarios de la clase Usuarios
             usuarios.actualizarUsuario(idUsuario, usuario);
             Toast.makeText(this, "Guardados los cambios", Toast.LENGTH_SHORT).show();
         }catch (Exception e){
            // Toast.makeText(this, "Error al modificar", Toast.LENGTH_SHORT).show();
         }
-
     }
 
     public void volverHome(View view){
@@ -130,7 +157,7 @@ public class EditarPerfilUsuarioActivity extends AppCompatActivity {
         super.onStop();
     }
 
-
+    
     //Cargar el usuario del perfil
     public void cargarUsuarioPerfil(String idUsuario){
         usuarios.getUsuarios().document(idUsuario).get().addOnCompleteListener(
