@@ -124,10 +124,6 @@ public class MainActivity extends AppCompatActivity implements MqttCallback {
 
     private void topicMagnetico(final String payload) {
 
-        final boolean[] puertaAbierta = {false};
-
-        final ArrayList<Map<String, Object>> usuarios = new ArrayList<>();
-
         db.collection("usuarios")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
