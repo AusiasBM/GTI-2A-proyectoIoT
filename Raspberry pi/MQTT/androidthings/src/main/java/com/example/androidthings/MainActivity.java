@@ -88,6 +88,15 @@ public class MainActivity extends AppCompatActivity implements MqttCallback {
         } catch (MqttException e) {
             Log.e(Mqtt.TAG, "Error al suscribir.", e);
         }
+
+        // Nos suscribimos al topic magnetico
+        try {
+            Log.i(Mqtt.TAG, "Suscrito a " + topicRoot+"magnetico");
+            client.subscribe(topicRoot+"magnetico", qos);
+            client.setCallback(this);
+        } catch (MqttException e) {
+            Log.e(Mqtt.TAG, "Error al suscribir.", e);
+        }
     }
 
     // Se ejecuta cuando se pierde la conexión
@@ -104,18 +113,53 @@ public class MainActivity extends AppCompatActivity implements MqttCallback {
         Log.d(Mqtt.TAG, "Recibiendo: " + topic + "->" + payload);
 
         if(topic.equals(topicRoot+"rfid")){
-            topicEstadoPuerta(payload);
+            topicRfid(payload);
+        }
+
+        if(topic.equals(topicRoot+"magnetico")){
+            topicMagnetico(payload);
         }
 
     }
 
-    public void topicEstadoPuerta(final String payload){
+    private void topicMagnetico(final String payload) {
 
         final boolean[] puertaAbierta = {false};
 
         final ArrayList<Map<String, Object>> usuarios = new ArrayList<>();
 
-        db.collection("clientes")
+        db.collection("usuarios")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            // Actualiza el estado de la puerta en fireStore
+                            if (payload.equals("cerraduraAbierta")){
+                                db.collection("estaciones/0/taquillas/")
+                                        .document("0")
+                                        .update("puertaAbierta", true);
+                            }else if (payload.equals("cerraduraCerrada")){
+                                db.collection("estaciones/0/taquillas/")
+                                        .document("0")
+                                        .update("puertaAbierta", false);
+                            }
+
+                        } else {
+                            Log.w(Mqtt.TAG, "Error getting documents.", task.getException());
+                        }
+
+                    }
+                });
+    }
+
+    public void topicRfid(final String payload){
+
+        final boolean[] puertaAbierta = {false};
+
+        final ArrayList<Map<String, Object>> usuarios = new ArrayList<>();
+
+        db.collection("usuarios")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -133,13 +177,6 @@ public class MainActivity extends AppCompatActivity implements MqttCallback {
                         } else {
                             Log.w(Mqtt.TAG, "Error getting documents.", task.getException());
                         }
-                        //Log.d("Hola", usuarios.get(0).get("llave").toString());
-
-                        // Actualiza el estado de la puerta en fireStore
-                        db.collection("estaciones/0/taquillas/")
-                                .document("0")
-                                .update("puertaAbierta", puertaAbierta[0]);
-
                         if (puertaAbierta[0]){
                             enviarMensaje(null);
                         }
