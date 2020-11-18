@@ -24,7 +24,7 @@ MqttClient mqttClient(wifiClient);
 
 const int cerradura = 14;
 
-const char broker[]    = "mqtt.eclipse.org";
+const char broker[]    = "broker.hivemq.com";
 int        port        = 1883;
 const char willTopic[] = "arduino/will";
 const char cerraduraTopic[]   = "arduino/cerradura";
@@ -100,7 +100,7 @@ void setup() {
   Serial.println();
 
   pinMode(cerradura, OUTPUT);
-  digitalWrite(cerradura, LOW);
+  digitalWrite(cerradura, HIGH);
 
   //Sensor magnético
   pinMode(pinSensorMagnetico, INPUT_PULLUP); //DEFINE PIN COMO ENTRADA / "_PULLUP" PARA ACTIVAR EL RESISTOR INTERNO
@@ -141,12 +141,11 @@ void loop() {
   if ( mfrc522.PICC_IsNewCardPresent())
   {
 
+    payload = "";
     //Seleccionamos una tarjeta
     if ( mfrc522.PICC_ReadCardSerial())
     {
       for (byte i = 0; i < mfrc522.uid.size; i++) {
-        //M5.Lcd.print(mfrc522.uid.uidByte[i] < 0x10 ? " 0" : " ");
-        //M5.Lcd.print(mfrc522.uid.uidByte[i], HEX);
         ActualUID[i]=mfrc522.uid.uidByte[i];
         payload += String(ActualUID[i], HEX);
       }
@@ -188,9 +187,9 @@ void onMqttMessage(int messageSize) {
   Serial.println(cadena);
 
   if(cadena == "cerradura ON"){
-    digitalWrite(cerradura, HIGH);
-    delay(1000);
     digitalWrite(cerradura, LOW);
+    delay(1000);
+    digitalWrite(cerradura, HIGH);
   }
   
   Serial.println();
