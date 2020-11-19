@@ -1,12 +1,14 @@
 
 #include <ArduinoMqttClient.h>
 #include <WiFi.h>
-
+#include <Servo.h>
+ 
 #include <SPI.h>
 #include <MFRC522.h>
 #define RST_PIN 22 //Pin 9 para el reset del RC522 no es necesario conctarlo
 #define SS_PIN 21 //Pin 10 para el SS (SDA) del RC522
 #define pinSensorMagnetico 27 //Pin 27 para el sensor magnético
+
 
 #define SIZE_BUFFER 18;
 #define MAX_SIZE_BLOCK 16;
@@ -14,6 +16,9 @@
 MFRC522 mfrc522(SS_PIN, RST_PIN); ///Creamos el objeto para el RC522
 MFRC522::StatusCode status; //variable to get card status
 
+Servo myservo;  // crea el objeto servo
+ 
+int pos = 0;    // posicion del servo
 
 char ssid[] = "Team_2-1";        // your network SSID (name)
 char pass[] = "Team_2-1";    // your network password (use for WPA, or use as key for WEP)
@@ -30,6 +35,7 @@ const char willTopic[] = "arduino/will";
 const char cerraduraTopic[]   = "arduino/cerradura";
 const char RFIDTopic[]  = "arduino/rfid";
 const char magneticoTopic[]  = "arduino/magnetico";
+const char alarmaTopic[]  = "arduino/alarma";
 
 const long interval = 5000;
 unsigned long previousMillis = 0;
@@ -44,6 +50,8 @@ void setup() {
   while (!Serial) {
     ; // wait for serial port to connect. Needed for native USB port only
   }
+
+  myservo.attach(13);  // vincula el servo al pin digital 13
 
   // attempt to connect to Wifi network:
   Serial.print("Attempting to connect to WPA SSID: ");
@@ -83,7 +91,7 @@ void setup() {
 
   Serial.print("Suscribiendote al topic: ");
   Serial.println(cerraduraTopic);
-  Serial.println();
+  Serial.println(alarmaTopic);
 
   // subscribe to a topic
   // the second parameter set's the QoS of the subscription,
@@ -91,13 +99,14 @@ void setup() {
   int subscribeQos = 1;
 
   mqttClient.subscribe(cerraduraTopic, subscribeQos);
+  mqttClient.subscribe(alarmaTopic, subscribeQos);
 
   // topics can be unsubscribed using:
   // mqttClient.unsubscribe(cerraduraTopic);
 
   Serial.print("Waiting for messages on topic: ");
   Serial.println(cerraduraTopic);
-  Serial.println();
+  Serial.println(alarmaTopic);
 
   pinMode(cerradura, OUTPUT);
   digitalWrite(cerradura, HIGH);
@@ -138,6 +147,7 @@ void loop() {
      }
   }
   
+   
   if ( mfrc522.PICC_IsNewCardPresent())
   {
 
@@ -187,11 +197,41 @@ void onMqttMessage(int messageSize) {
   Serial.println(cadena);
 
   if(cadena == "cerradura ON"){
+    Serial.println(cadena);
     digitalWrite(cerradura, LOW);
     delay(1000);
     digitalWrite(cerradura, HIGH);
   }
-  
+
+  if(cadena == "servo move"){
+    Serial.println(cadena);
+    //varia la posicion de 0 a 180, con esperas de 15ms
+   for (pos = 0; pos <= 180; pos += 1) 
+   {
+      myservo.write(pos);              
+      delay(15);                       
+   }
+ 
+   //varia la posicion de 0 a 180, con esperas de 15ms
+   for (pos = 180; pos >= 0; pos -= 1) 
+   {
+      myservo.write(pos);              
+      delay(1);                       
+   }
+
+   for (pos = 0; pos <= 180; pos += 1) 
+   {
+      myservo.write(pos);              
+      delay(15);                       
+   }
+ 
+   //varia la posicion de 0 a 180, con esperas de 15ms
+   for (pos = 180; pos >= 0; pos -= 1) 
+   {
+      myservo.write(pos);              
+      delay(1);                       
+   }
+  }
   Serial.println();
 
   Serial.println();
