@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -52,8 +53,10 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.Objects;
 
-public class ResActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, OnMapReadyCallback {
+public class ResActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, OnMapReadyCallback, GoogleMap.OnMapClickListener {
 
+
+    final private int REQUEST_CODE_ASK_PERMISSION = 111;
 
     public static final String metodo = "metodo";
     private static String method = "sin iniciar";
@@ -145,6 +148,7 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
                 });
 
         manejador = (LocationManager) getSystemService(LOCATION_SERVICE);
+        solicitarPermisos();
 
     }
 
@@ -209,13 +213,13 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+
         mMap = googleMap;
         String nombre;
         LatLng[] posiciones = new LatLng[totalEstaciones];
         for (int i = 0; i < totalEstaciones; i++) {
             posiciones[i] = new LatLng(lats[i], longs[i]);
         }
-
         // Add a marker in Sydney and move the camera
         for (int i = 0; i < totalEstaciones; i++) {
             mMap.addMarker(new MarkerOptions().position(posiciones[i]).title(nombresEstaciones[i]).icon(BitmapDescriptorFactory.
@@ -224,8 +228,8 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
             nombre = nombresEstaciones[i];
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(posiciones[0], 13));
             final String finalNombre = nombre;
-
         }
+
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
@@ -234,10 +238,9 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
             }
         });
 
-
-        if(ActivityCompat.checkSelfPermission(this,
-                android.Manifest.permission.ACCESS_FINE_LOCATION)==
-                PackageManager.PERMISSION_GRANTED){
+        if (ActivityCompat.checkSelfPermission(this,
+                android.Manifest.permission.ACCESS_FINE_LOCATION) ==
+                PackageManager.PERMISSION_GRANTED) {
 
             mMap.setMyLocationEnabled(true);
             mMap.getUiSettings().setZoomControlsEnabled(true);
@@ -245,6 +248,12 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
             mMap.getUiSettings().setMyLocationButtonEnabled(true);
         }
 
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        mMap.setMyLocationEnabled(true);
+        mMap.getUiSettings().setMyLocationButtonEnabled(true);
     }
 
     @Override
@@ -256,8 +265,9 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
         Intent i = new Intent(this, Asistente.class);
         startActivity(i);
     }
-    public void lanzarPerfil(){
-        Intent intent=new Intent(this, EditarPerfilUsuarioActivity.class);
+
+    public void lanzarPerfil() {
+        Intent intent = new Intent(this, EditarPerfilUsuarioActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         //Pasar el id del usuario para modificar el perfil en la base de datos de firestore
         intent.putExtra("id", user.getUid());
@@ -277,11 +287,12 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
     }
 
 
-    private void setUserData (FirebaseUser user){
+    private void setUserData(FirebaseUser user) {
         //txtUser.setText("¡Bienvenido " + "\n" + user.getDisplayName() + "!");
-        if (Objects.equals(user.getDisplayName(), "")){
+        if (Objects.equals(user.getDisplayName(), "")) {
             goMain();
-        }if (user.getDisplayName()==null){
+        }
+        if (user.getDisplayName() == null) {
             //txtUser.setText("¡Bienvenido " + "\n" + user.getEmail() + "!");
         }
     }
@@ -339,6 +350,20 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
     @Override
     public void onBackPressed() {
 
+    }
+
+    public void onMapClick(LatLng latLng) {
+
+    }
+
+    private void solicitarPermisos() {
+        int permisoUbicacion = ActivityCompat.checkSelfPermission(ResActivity.this, Manifest.permission.ACCESS_FINE_LOCATION);
+
+        if (permisoUbicacion != PackageManager.PERMISSION_GRANTED) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE_ASK_PERMISSION);
+            }
+        }
     }
 }
 
