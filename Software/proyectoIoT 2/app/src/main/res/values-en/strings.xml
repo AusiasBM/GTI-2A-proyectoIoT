@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">TRICOOPARK</string>
+
+    <!--General-->
+    <string name="logo">logo</string>
+    <string name="nombre_empresa">TRICOOPARK®</string>
+
+
+    <!--Landing Page-->
+    <string name="txt_reclamo">The best decision for your electric scooter</string>
+    <string name="btn_iniciarSesion">Sign In</string>
+    <string name="btn_registro">Sign Up</string>
+
+    <!--Registrarse y iniciar Sesion-->
+    <string name="et_usuario">User name</string>
+    <string name="et_email">E-mail</string>
+    <string name="et_contraseña">Password</string>
+    <string name="bt_google">Log in with Google</string>
+    <string name="et_MensajeInicioSesion">Already have an account?</string>
+    <string name="et_MensajeCuentaLink">Sign In</string>
+    <string name="et_MensajeRegistro">You do not have an account yet?</string>
+    <string name="et_MensajeRegistroLink">Log up</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="et_contraseña_verify">Verify Password</string>
+
+    <!-- Info Registro-->
+    <string name="info_registro">
+    Once you have registered, you will be asked for the data necessary to validate your identity and, depending on the method of payment chosen, the documents required to make use of our services.
+    </string>
+
+    <!-- Menú-->
+    <string name="menu_home">Home</string>
+    <string name="menu_perfil">Profile</string>
+    <string name="menu_cerrarSesion">Close sesion</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="nav_asist">Asistencia_opcion</string>
+
+    <string name="back_to_home">Back to\nHome</string>
+    <string name="username_title">Username</string>
+    <string name="phone_title">Phone</string>
+    <string name="address_title">Address</string>
+    <string name="email_title">Email</string>
+    <string name="city_title">City</string>
+
+    <!-- Info usuario-->
+    <string name="et_nombreUsuario">Add your name</string>
+    <string name="et_telefonoUsuario">Add your phone</string>
+    <string name="et_correoUsuario">Add your mail</string>
+    <string name="et_direccionUsuario">Add your address</string>
+    <string name="et_apellidosUsuario">Add your second name</string>
+</resources>

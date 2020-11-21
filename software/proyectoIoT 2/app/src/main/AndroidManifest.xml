@@ -7,7 +7,13 @@
          Google Maps Android API v2, but you must specify either coarse or fine
          location permissions for the "MyLocation" functionality.
     -->
+<<<<<<< HEAD:software/proyectoIoT 2/app/src/main/AndroidManifest.xml
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+=======
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+>>>>>>> Sprint2:Software/proyectoIoT 2/app/src/main/AndroidManifest.xml
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -59,6 +65,13 @@
             android:label="Información"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.Dialog" />
+
+        <activity
+            android:name=".presentacion.MenuDialogActivity"
+            android:theme="@style/NoLabel" />
+        <activity
+            android:name=".presentacion.EditarPerfilUsuarioActivity"
+            android:screenOrientation="portrait" />
 
         <activity android:name=".casos_uso.Asistente"
             android:label="¡Contacta con nosotros!"
