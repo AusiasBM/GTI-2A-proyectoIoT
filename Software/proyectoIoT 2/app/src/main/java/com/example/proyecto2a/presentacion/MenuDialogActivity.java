@@ -1,5 +1,6 @@
 package com.example.proyecto2a.presentacion;
 
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -16,12 +17,18 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.proyecto2a.R;
 import com.example.proyecto2a.datos.Mqtt;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
@@ -54,18 +61,21 @@ public class MenuDialogActivity<AddMember> extends AppCompatActivity {
     private Button botonReserva;
     private Button botonAlquila;
     double latitud;
-    String id = "0";
+    public String id = "0";
     double longitud;
     int taquillasDisponibles;
     int PatinesDisponibles;
     int patinesDisponibles = 0;
+    public String idUser;
     public static MqttClient client = null;
+    private String[] nombres = new String[]{"Taquillas","Patinetes"};
 
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+       super.onCreate(savedInstanceState);
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_menu_dialog);
-        nombreLugar = (TextView) findViewById(R.id.TituloLugar);
+
+       /*
         patinesText = (TextView) findViewById(R.id.PatinesDispo);
         taquillasText = (TextView) findViewById(R.id.taquillasDispo);
         taquillaSel = (TextView) findViewById(R.id.textView6);
@@ -81,11 +91,7 @@ public class MenuDialogActivity<AddMember> extends AppCompatActivity {
         final ArrayList<String> arrayList2 = new ArrayList<>();
         taquillasDisponibles = 0;
         PatinesDisponibles = 0;
-        String nombre = getIntent().getStringExtra("nombre");
-        latitud = getIntent().getDoubleExtra("lat", 0);
-        longitud = getIntent().getDoubleExtra("long", 0);
-        LatLng pos = new LatLng(latitud, longitud);
-        nombreLugar.setText(nombre);
+
         //Consulta a bbdd para cargar las estaciones
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("estaciones").whereEqualTo("ubicacion", nombre).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -148,7 +154,7 @@ public class MenuDialogActivity<AddMember> extends AppCompatActivity {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-/*
+*//*
                 switch (position) {
                     case 0 :
                         int indzex = s1.getSelectedItemPosition();
@@ -162,7 +168,7 @@ public class MenuDialogActivity<AddMember> extends AppCompatActivity {
                         break;
 
                 }
-*/
+*//*
 
             String opcion = spinner.getSelectedItem().toString();
             if (!opcion.equals("Taquillas disponibles")){
@@ -184,6 +190,79 @@ public class MenuDialogActivity<AddMember> extends AppCompatActivity {
             client.connect();
         } catch (MqttException e) {
             Log.e(Mqtt.TAG, "Error al conectar.", e);
+        }*/
+        //Consulta a bbdd para cargar las estaciones
+        idUser = getIntent().getStringExtra("idUser");
+        String nombre = getIntent().getStringExtra("nombre");
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("estaciones").whereEqualTo("ubicacion", nombre).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        id = (String) document.getId();
+                    }
+                } else {
+                    finish();
+                }
+            }
+        });
+        nombreLugar = (TextView) findViewById(R.id.TituloLugar);
+
+        latitud = getIntent().getDoubleExtra("lat", 0);
+        longitud = getIntent().getDoubleExtra("long", 0);
+        LatLng pos = new LatLng(latitud, longitud);
+        nombreLugar.setText(nombre);
+        ViewPager2 viewPager = findViewById(R.id.viewpager);
+        viewPager.setAdapter(new MiPagerAdapter(this));
+        TabLayout tabs = findViewById(R.id.tabs);
+        new TabLayoutMediator(tabs, viewPager,
+                new TabLayoutMediator.TabConfigurationStrategy() {
+                    @Override
+                    public void onConfigureTab(@NonNull TabLayout.Tab tab, int position){
+                        tab.setText(nombres[position]);
+                    }
+                }
+        ).attach();
+
+        try {
+            Log.i(Mqtt.TAG, "Conectando al broker " + Mqtt.broker);
+            client = new MqttClient(Mqtt.broker, Mqtt.clientId,
+                    new MemoryPersistence());
+            client.connect();
+        } catch (MqttException e) {
+            Log.e(Mqtt.TAG, "Error al conectar.", e);
+        }
+    }
+
+
+    public class MiPagerAdapter extends FragmentStateAdapter {
+        String nombre = getIntent().getStringExtra("nombre");
+        public MiPagerAdapter(FragmentActivity activity){
+            super(activity);
+        }
+        @Override
+        public int getItemCount() {
+            return 2;
+        }
+        @Override @NonNull
+        public Fragment createFragment(int position) {
+
+            switch (position) {
+                case 0: Fragment fr=new Tab1();
+                    Bundle args = new Bundle();
+                    args.putString("CID", nombre);
+                    args.putString("idUser", idUser);
+                    fr.setArguments(args);
+                    return fr;
+                case 1: Fragment frr=new Tab2();
+                    Bundle arrgs = new Bundle();
+                    arrgs.putString("CID", nombre);
+                    arrgs.putString("idUser", idUser);
+                    frr.setArguments(arrgs);
+                    return frr;
+            }
+            return null;
         }
     }
 
@@ -208,6 +287,17 @@ public class MenuDialogActivity<AddMember> extends AppCompatActivity {
             Log.e(Mqtt.TAG, "Error al desconectar.", e);
         }
         finish();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        try {
+            Log.i(Mqtt.TAG, "Desconectado");
+            client.disconnect();
+        } catch (MqttException e) {
+            Log.e(Mqtt.TAG, "Error al desconectar.", e);
+        }
     }
 
     public void abreTaquilla (View view){

@@ -281,6 +281,7 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
         i.putExtra("nombre", nom);
         double longitud = pos.longitude;
         double latitud = pos.latitude;
+        i.putExtra("idUser", user.getUid());
         i.putExtra("lat", latitud);
         i.putExtra("long", longitud);
         startActivity(i);

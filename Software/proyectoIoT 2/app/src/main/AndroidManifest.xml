@@ -64,7 +64,15 @@
 
         <activity
             android:name=".presentacion.MenuDialogActivity"
-            android:theme="@style/NoLabel" />
+            android:theme="@style/NoLabel"
+            />
+
+        <activity
+            android:name=".presentacion.MensajeActivity"
+            android:theme="@style/NoLabel"
+            />
+
+
         <activity
             android:name=".presentacion.EditarPerfilUsuarioActivity"
             android:screenOrientation="portrait" />
