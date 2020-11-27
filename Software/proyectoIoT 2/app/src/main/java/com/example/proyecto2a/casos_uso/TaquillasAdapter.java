@@ -60,9 +60,12 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
         if (taquilla.isOcupada()) {
             holder.boton.setVisibility(View.GONE);
             holder.boton2.setVisibility(View.VISIBLE);
+            holder.botoncancela.setVisibility(View.VISIBLE);
 
         } else {
             holder.boton2.setVisibility(View.GONE);
+            holder.botoncancela.setVisibility(View.GONE);
+
         }
     }
 
@@ -92,6 +95,7 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
         TextView textViewNombre;
         Button boton;
         Button boton2;
+        Button botoncancela;
         Context context;
 
         public Viewholder(@NonNull View itemView) {
@@ -114,6 +118,7 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
             textViewNombre = itemView.findViewById(R.id.nombre);
             boton = itemView.findViewById(R.id.bt_reserva);
             boton2 = itemView.findViewById(R.id.bt_abrir);
+            botoncancela = itemView.findViewById(R.id.buttonCan);
             try {
                 Log.i(Mqtt.TAG, "Conectando al broker " + Mqtt.broker);
                 client = new MqttClient(Mqtt.broker, Mqtt.clientId,
@@ -130,6 +135,7 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
             MenuDialogActivity m = new MenuDialogActivity();
             boton.setOnClickListener(this);
             boton2.setOnClickListener(this);
+            botoncancela.setOnClickListener(this);
         }
 
         @Override
@@ -169,6 +175,32 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
                 case R.id.bt_abrir:
                     abreTaquilla();
                     break;
+                case R.id.buttonCan:
+                    DocumentReference taki = db.collection("estaciones").document(estant).collection("taquillas").document(id);
+                    taki.update("idUsuario", "").addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Log.d("ocupada", "DocumentSnapshot successfully updated!");
+                        }
+                    })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.w("ocupada", "Error updating document", e);
+                                }
+                            });
+                    taki.update("ocupada", false).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Log.d("ocupada", "DocumentSnapshot successfully updated!");
+                        }
+                    })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.w("ocupada", "Error updating document", e);
+                                }
+                            });
             }
         }
 
@@ -183,6 +215,8 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
                 Log.e(Mqtt.TAG, "Error al publicar.", e);
             }
         }
+
+
     }
 
 }
