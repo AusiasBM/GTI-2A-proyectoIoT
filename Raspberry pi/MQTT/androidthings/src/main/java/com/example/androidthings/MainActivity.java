@@ -2,6 +2,8 @@ package com.example.androidthings;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -30,6 +32,7 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.example.comun.Mqtt.qos;
@@ -56,6 +59,8 @@ public class MainActivity extends AppCompatActivity implements MqttCallback {
 
     FirebaseFirestore db;
     public static MqttClient client = null;
+    List<Taquilla> taquillas = new ArrayList<>();
+    RecyclerView recycler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +102,44 @@ public class MainActivity extends AppCompatActivity implements MqttCallback {
         } catch (MqttException e) {
             Log.e(Mqtt.TAG, "Error al suscribir.", e);
         }
+
+        recycler = findViewById(R.id.recyclerId);
+        recycler.setLayoutManager(new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)); // Lista de tipo vertical
+
+        getTaquillasEstant(0); // Llenamos el array
+
+    }
+
+    public void getTaquillasEstant(int estant){
+
+        db.collection("estaciones/" + estant + "/taquillas")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Log.d(Mqtt.TAG, document.getId() + " => " + document.getData());
+                                taquillas.add(new Taquilla(
+                                        Integer.parseInt(document.getData().get("id").toString()),
+                                        Boolean.parseBoolean(document.getData().get("cargaPatinete").toString()),
+                                        document.getData().get("idUsuario").toString(),
+                                        Boolean.parseBoolean(document.getData().get("ocupada").toString()),
+                                        Boolean.parseBoolean(document.getData().get("patinNuestro").toString()),
+                                        Boolean.parseBoolean(document.getData().get("puertaAbierta").toString())
+                                ));
+                            }
+                            AdapterDatos adapter = new AdapterDatos(taquillas);
+
+                            recycler.setAdapter(adapter);
+                        } else {
+                            Log.w(Mqtt.TAG, "Error getting documents.", task.getException());
+                        }
+
+
+                    }
+                });
+
     }
 
     // Se ejecuta cuando se pierde la conexión
