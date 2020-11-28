@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.util.Log;
@@ -129,7 +130,18 @@ public class MainActivity extends AppCompatActivity implements MqttCallback {
                                         Boolean.parseBoolean(document.getData().get("puertaAbierta").toString())
                                 ));
                             }
+
                             AdapterDatos adapter = new AdapterDatos(taquillas);
+
+                            adapter.setOnItemClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    int pos = recycler.getChildAdapterPosition(v);
+                                    Intent i = new Intent(v.getContext(), MenuTaquilla.class);
+                                    i.putExtra("pos", pos);
+                                    startActivity(i);
+                                }
+                            });
 
                             recycler.setAdapter(adapter);
                         } else {
