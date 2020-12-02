@@ -22,12 +22,7 @@
     <group
         android:id="@+id/secundario"
         android:checkableBehavior="single">
-        <item
-            android:id="@+id/nav_slideshow"
-            android:fontFamily="@font/poppins_medium"
-            android:textSize="22dp"
-            android:icon="@drawable/salir"
-            android:title="@string/menu_cerrarSesion" />
+
         <item
             android:id="@+id/nav_asistencia"
             android:fontFamily="@font/poppins_medium"
@@ -38,8 +33,14 @@
             android:id="@+id/nav_ayuda"
             android:fontFamily="@font/poppins_medium"
             android:textSize="22dp"
-            android:icon="@drawable/apoyar"
+            android:icon="@drawable/informacion_menu"
             android:title="Ayuda" />
+        <item
+            android:id="@+id/nav_slideshow"
+            android:fontFamily="@font/poppins_medium"
+            android:textSize="22dp"
+            android:icon="@drawable/salir"
+            android:title="@string/menu_cerrarSesion" />
     </group>
 
 </menu>

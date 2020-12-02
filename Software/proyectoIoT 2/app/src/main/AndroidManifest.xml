@@ -80,7 +80,15 @@
         <activity
             android:name=".presentacion.EditarPerfilUsuarioActivity"
             android:screenOrientation="portrait" />
-
+        <activity
+            android:name=".presentacion.faq"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".presentacion.terminos"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".presentacion.politica"
+            android:screenOrientation="portrait" />
         <activity android:name=".casos_uso.Asistente"
             android:label="¡Contacta con nosotros!"
             android:theme="@style/Theme.AppCompat.Light.Dialog"/>

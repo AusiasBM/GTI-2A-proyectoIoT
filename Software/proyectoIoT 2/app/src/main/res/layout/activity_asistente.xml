@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFFFFF"
     android:orientation="vertical">
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:onClick="llamarTel"
         android:orientation="horizontal">
 
@@ -15,49 +17,71 @@
             android:id="@+id/llama"
             android:layout_width="56dp"
             android:layout_height="58dp"
+            android:layout_gravity="center"
             android:layout_marginHorizontal="20dp"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/button_phone"
-            android:src="@drawable/llamada" />
+            android:background="#ffffff"
+            android:src="@drawable/llamadas" />
 
         <TextView
             android:id="@+id/textLlamanos"
-            android:layout_width="wrap_content"
+            android:layout_width="118dp"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_marginHorizontal="40dp"
-            android:layout_marginTop="40dp"
             android:layout_weight="1"
+            android:fontFamily="@font/poppins_medium"
             android:text="¡Llama ahora a nuestro teléfono!"
             android:textColor="#000000"
-            android:textSize="16sp" />
+            android:textSize="12dp" />
+
+        <ImageView
+            android:id="@+id/flecha9"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:paddingEnd="8dp"
+            app:srcCompat="@drawable/mayor" />
+
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:onClick="mandarCorreo"
         android:orientation="horizontal">
 
         <ImageButton
             android:id="@+id/gmail"
-            android:layout_width="56dp"
-            android:layout_height="58dp"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_gravity="center"
             android:layout_marginHorizontal="20dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="40dp"
-            android:background="@drawable/button_phone"
-            android:src="@drawable/gmail" />
+            android:background="#ffffff"
+            android:src="@drawable/sobrecorreo" />
 
         <TextView
             android:id="@+id/textGmail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_marginHorizontal="40dp"
-            android:layout_marginTop="40dp"
             android:layout_weight="1"
+            android:fontFamily="@font/poppins_medium"
             android:text="Contacta vía email"
             android:textColor="#000000"
-            android:textSize="16sp" />
+            android:textSize="12dp" />
+
+        <ImageView
+            android:id="@+id/flecha7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:paddingEnd="8dp"
+            app:srcCompat="@drawable/mayor" />
+
     </LinearLayout>
 
 

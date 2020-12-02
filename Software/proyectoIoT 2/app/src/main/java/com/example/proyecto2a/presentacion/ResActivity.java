@@ -321,14 +321,15 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
             case R.id.nav_home:
                 // Fragmento para la sección Cuenta
                 break;
-            case R.id.nav_slideshow:
-                logOut();
-                break;
+
             case R.id.nav_asistencia:
                 lanzaAsistente();
                 break;
             case R.id.nav_ayuda:
                 lanzarAyuda();
+                break;
+            case R.id.nav_slideshow:
+                logOut();
                 break;
         }
 
