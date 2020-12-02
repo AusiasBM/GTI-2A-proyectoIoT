@@ -327,9 +327,15 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
             case R.id.nav_asistencia:
                 lanzaAsistente();
                 break;
-
+            case R.id.nav_ayuda:
+                lanzarAyuda();
+                break;
         }
 
+    }
+    public void lanzarAyuda() {
+        Intent i = new Intent(this, Ayuda.class);
+        startActivity(i);
     }
 
     @Override

@@ -72,6 +72,10 @@
             android:theme="@style/NoLabel"
             />
 
+        <activity
+            android:name=".presentacion.Ayuda"
+            />
+
 
         <activity
             android:name=".presentacion.EditarPerfilUsuarioActivity"

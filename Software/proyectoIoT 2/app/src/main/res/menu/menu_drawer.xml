@@ -34,6 +34,12 @@
             android:textSize="22dp"
             android:icon="@drawable/apoyar"
             android:title="Asistencia" />
+        <item
+            android:id="@+id/nav_ayuda"
+            android:fontFamily="@font/poppins_medium"
+            android:textSize="22dp"
+            android:icon="@drawable/apoyar"
+            android:title="Ayuda" />
     </group>
 
 </menu>
