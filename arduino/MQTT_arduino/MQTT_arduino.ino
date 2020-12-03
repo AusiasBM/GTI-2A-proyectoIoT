@@ -2,12 +2,16 @@
 #include <ArduinoMqttClient.h>
 #include <WiFi.h>
 #include <Servo.h>
- 
+#include "HX711.h"
 #include <SPI.h>
 #include <MFRC522.h>
+
 #define RST_PIN 22 //Pin 9 para el reset del RC522 no es necesario conctarlo
 #define SS_PIN 21 //Pin 10 para el SS (SDA) del RC522
 #define pinSensorMagnetico 27 //Pin 27 para el sensor magnético
+
+#define DOUT_PIN 5 //Pin 5 para DT del sensor de peso
+#define SCK_PIN 18 //Pin 18 para SCK del sensor de peso
 
 
 #define SIZE_BUFFER 18;
@@ -36,12 +40,13 @@ const char cerraduraTopic[]   = "arduino/cerradura";
 const char RFIDTopic[]  = "arduino/rfid";
 const char magneticoTopic[]  = "arduino/magnetico";
 const char alarmaTopic[]  = "arduino/alarma";
+const char pesoTopic[] = "arduino/peso";
 
 const long interval = 5000;
 unsigned long previousMillis = 0;
 
 int count = 0;
-
+HX711 balanza;
 void setup() {
   //Initialize serial and wait for port to open:
   Serial.begin(9600);
@@ -100,7 +105,8 @@ void setup() {
 
   mqttClient.subscribe(cerraduraTopic, subscribeQos);
   mqttClient.subscribe(alarmaTopic, subscribeQos);
-
+  mqttClient.subscribe(pesoTopic, subscribeQos);
+  
   // topics can be unsubscribed using:
   // mqttClient.unsubscribe(cerraduraTopic);
 
@@ -114,6 +120,16 @@ void setup() {
   //Sensor magnético
   pinMode(pinSensorMagnetico, INPUT_PULLUP); //DEFINE PIN COMO ENTRADA / "_PULLUP" PARA ACTIVAR EL RESISTOR INTERNO
   //DE ARDUINO PARA GARANTIRAE QUE NO EXISTA VARIACIÓN ENTRE 0 (LOW) y 1 (HIGH)
+
+  //Sensor Peso
+  balanza.begin(DOUT_PIN, SCK_PIN);
+  Serial.print("Lectura del valor del ADC:  ");
+  Serial.println(balanza.read());
+  Serial.println("No ponga ningun  objeto sobre la balanza");
+  Serial.println("Destarando...");
+  Serial.println("...");
+  balanza.set_scale(-190480); // Establecemos la escala
+  balanza.tare(20);  //El peso actual es considerado Tara.
 }
 
 byte ActualUID[7]; //almacenará el código del Tag leído
@@ -172,6 +188,26 @@ void loop() {
     
         Serial.println();
     }
+  }
+
+  //Sensor peso
+  double res = balanza.get_units(20);
+  if(res <= 0){
+    res = 0;
+  }
+  
+  Serial.print(res);
+  if (res>=0.2){
+    payload = "Patin guardado";
+    mqttClient.beginMessage(pesoTopic, payload.length(), retained, qos, dup);
+    mqttClient.print(payload);
+    mqttClient.endMessage();
+    delay(500);
+  } else{
+    payload = "Patin no guardado";
+    mqttClient.beginMessage(pesoTopic, payload.length(), retained, qos, dup);
+    mqttClient.print(payload);
+    mqttClient.endMessage();
   }
 }
 
