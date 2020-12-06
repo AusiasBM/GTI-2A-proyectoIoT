@@ -35,7 +35,7 @@
     <string name="menu_home">Home</string>
     <string name="menu_perfil">Perfil</string>
     <string name="menu_cerrarSesion">Cerrar Sesion</string>
-
+    <string name="menu_pago">Configuración de pagos</string>
     <string name="nav_asist">Asistencia_opcion</string>
     <string name="back_to_home">Volver al Mapa</string>
     <string name="username_title">Nombre</string>
@@ -51,4 +51,22 @@
     <string name="et_correoUsuario">Introduce tu correo</string>
     <string name="et_direccionUsuario">Introduce tu dirección</string>
     <string name="et_apellidosUsuario">Introduce tus apellidos</string>
+
+    <!-- Info tarjeta -->
+    <string name="tv_ValidoHasta">Válida hasta:</string>
+    <string name="tv_propietario">Propietario de la tarjeta:</string>
+    <string name="bt_EliminarTarjeta">Eliminar tarjeta</string>
+
+    <!-- Pago usuario-->
+    <string name="btn_AñadirTarjeta">Añadir una tarjeta de crédito</string>
+    <string name="tv_Tarjetas">Opciones de pago</string>
+    <string name="et_NumTarjeta">Número de tarjeta</string>
+    <string name="et_Mes">Mes(XX)</string>
+    <string name="et_Año">Año(XX)</string>
+    <string name="et_CVV">CVV(XXX)</string>
+    <string name="et_Nombre">Nombre</string>
+    <string name="et_Apellido">Apellido/s</string>
+    <string name="tv_aceptoTarjeta">Por la presente, acepto almacenar datos de mi tarjeta para procesar pagos con un solo clic en un futuo</string>
+    <string name="btn_Verificar">Verificar y enviar</string>
+
 </resources>

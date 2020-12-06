@@ -26,7 +26,7 @@
 
 
             <ImageView
-                android:id="@+id/imageView6"
+                android:id="@+id/ivBackAdd"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -40,7 +40,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
-                android:id="@+id/imagenPerfil"
+                android:id="@+id/imagenLogo"
                 android:layout_width="0dp"
                 android:layout_height="120dp"
                 android:layout_marginStart="64dp"
@@ -65,7 +65,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imagenPerfil"
+                app:layout_constraintTop_toBottomOf="@+id/imagenLogo"
                 app:layout_constraintVertical_bias="1.0" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -114,7 +114,7 @@
 
                         <EditText
 
-                            android:id="@+id/etNombre"
+                            android:id="@+id/etNumTarjeta"
 
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -197,7 +197,7 @@
 
                         <EditText
 
-                            android:id="@+id/etDireccion"
+                            android:id="@+id/etNombre"
 
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"

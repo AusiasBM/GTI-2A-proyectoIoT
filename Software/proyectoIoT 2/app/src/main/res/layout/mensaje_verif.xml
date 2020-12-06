@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF">
+    android:background="#FFFFFF"
+    android:onClick="cerrar">
 
     <TextView
         android:id="@+id/textView3"
@@ -46,4 +47,17 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/button"
         app:layout_constraintTop_toTopOf="@+id/button" />
+
+    <ImageView
+        android:id="@+id/iconClose"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="cerrar"
+        app:layout_constraintBottom_toTopOf="@+id/textView3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.878"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.893"
+        app:srcCompat="@drawable/cerrar" />
 </androidx.constraintlayout.widget.ConstraintLayout>

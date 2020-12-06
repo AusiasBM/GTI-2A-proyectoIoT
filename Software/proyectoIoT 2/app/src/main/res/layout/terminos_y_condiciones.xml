@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
+
+    <ImageView
+        android:id="@+id/imageView9"
+        android:layout_width="43dp"
+        android:layout_height="36dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/bg_circle"
+        android:onClick="returnAyuda"
+        android:padding="6dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_back"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView7"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:gravity="center"
+        android:text="El administrador de los datos recopilados es Green Electricity Sp. z o.o. con domicilio social en c. Matuszewska 14, 01-402 Warszawa, inscrita en el Registro Nacional Judicial con el número de registro (número KRS): 0000643112, número de identificación fiscal (NIP): 5272783384 y número de estadística (REGON): 365684398. Datos de contacto: teléfono: +48 (22) 290 25 25, e-mail: tricoopark@gmail.com
+            "
+        android:textColor="#090909"
+        android:textSize="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView12" />
+
+    <TextView
+        android:id="@+id/textView9"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="
+             Tricoopark CITY, SL con domicilio  Carretera de Artés 17, 46013 Valencia, provista de CIF: B-98992076,Datos de contacto: teléfono: +34 658 311 988, e-mail: triccoopark@gmail.com  Green Electricity Sp. z o.o. y TRICOOPARK CITY, SL conceden especial importancia al respeto de la privacidad de los Usuarios que visitan sitios del dominio *tricoopark.city. Los datos recopilados en los registros se usan sólo con el fin de administrar el servicio TricooPark.city."
+        android:textColor="#090909"
+        android:textSize="16dp"
+        app:layout_constraintEnd_toEndOf="@+id/textView7"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/textView7"
+        app:layout_constraintTop_toBottomOf="@+id/textView7" />
+
+    <TextView
+        android:id="@+id/textView12"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/poppins_bold"
+        android:text="TRICOOPARK"
+        android:textColor="@color/colorPrimary"
+        android:textSize="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>
