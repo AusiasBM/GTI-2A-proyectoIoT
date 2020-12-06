@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.proyecto2a">
-
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
          Google Maps Android API v2, but you must specify either coarse or fine
          location permissions for the "MyLocation" functionality.
     -->
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -19,7 +18,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.NoActionBar">
-
+        <activity android:name=".presentacion.InfoTarjeta"></activity>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -34,14 +33,15 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
+
         <activity
             android:name=".presentacion.ResActivity"
             android:screenOrientation="portrait" />
-
-        <activity android:name=".presentacion.MainActivity"
-            android:screenOrientation="portrait"/>
-
-        <activity android:name=".casos_uso.SignIn"
+        <activity
+            android:name=".presentacion.MainActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".casos_uso.SignIn"
             android:screenOrientation="portrait" />
         <activity
             android:name=".presentacion.SplashScreen"
@@ -55,28 +55,21 @@
         <activity
             android:name=".casos_uso.SignUp"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".presentacion.InfoActivity"
             android:label="Información"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.Dialog" />
-
         <activity
             android:name=".presentacion.MenuDialogActivity"
-            android:theme="@style/NoLabel"
-            />
-
+            android:theme="@style/NoLabel" />
         <activity
             android:name=".presentacion.MensajeActivity"
-            android:theme="@style/NoLabel"
-            />
-
-        <activity
-            android:name=".presentacion.Ayuda"
-            />
-
-
+            android:theme="@style/NoLabel" />
+        <activity android:name=".presentacion.Ayuda" />
+        <activity android:name=".presentacion.InfoPago"
+            android:theme="@style/Theme.AppCompat.Light"/>
+        <activity android:name=".presentacion.RecyclerTarjetas" />
         <activity
             android:name=".presentacion.EditarPerfilUsuarioActivity"
             android:screenOrientation="portrait" />
@@ -89,9 +82,10 @@
         <activity
             android:name=".presentacion.politica"
             android:screenOrientation="portrait" />
-        <activity android:name=".casos_uso.Asistente"
+        <activity
+            android:name=".casos_uso.Asistente"
             android:label="¡Contacta con nosotros!"
-            android:theme="@style/Theme.AppCompat.Light.Dialog"/>
+            android:theme="@style/Theme.AppCompat.Light.Dialog" />
 
         <meta-data
             android:name="preloaded_fonts"

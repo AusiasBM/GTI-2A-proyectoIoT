@@ -49,4 +49,22 @@
     <string name="et_correoUsuario">Add your mail</string>
     <string name="et_direccionUsuario">Add your address</string>
     <string name="et_apellidosUsuario">Add your second name</string>
+    <string name="menu_pago">Payment settings</string>
+
+    <!-- Info tarjeta -->
+    <string name="tv_ValidoHasta">Valid through:</string>
+    <string name="tv_propietario">Card holder:</string>
+    <string name="bt_EliminarTarjeta">Delete card</string>
+
+    <!-- Pago usuario-->
+    <string name="btn_AñadirTarjeta">Add a Credit Card</string>
+    <string name="tv_Tarjetas">Payment settings</string>
+    <string name="et_NumTarjeta">Card Number</string>
+    <string name="et_Mes">Month(XX)</string>
+    <string name="et_Año">Year(XX)</string>
+    <string name="et_CVV">CVV(XXX)</string>
+    <string name="et_Nombre">First name</string>
+    <string name="et_Apellido">Last name</string>
+    <string name="tv_aceptoTarjeta">I hereby agree for my credit card data to be stored for further "one-click" payment processing</string>
+    <string name="btn_Verificar">Check &amp; Send Card</string>
 </resources>

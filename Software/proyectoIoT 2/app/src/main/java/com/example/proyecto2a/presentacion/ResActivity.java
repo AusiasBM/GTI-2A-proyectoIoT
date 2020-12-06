@@ -321,7 +321,9 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
             case R.id.nav_home:
                 // Fragmento para la sección Cuenta
                 break;
-
+            case R.id.nav_pays:
+                lanzarPago();
+                break;
             case R.id.nav_asistencia:
                 lanzaAsistente();
                 break;
@@ -334,6 +336,12 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
         }
 
     }
+
+    private void lanzarPago() {
+        Intent i = new Intent(this, RecyclerTarjetas.class);
+        startActivity(i);
+    }
+
     public void lanzarAyuda() {
         Intent i = new Intent(this, Ayuda.class);
         startActivity(i);
