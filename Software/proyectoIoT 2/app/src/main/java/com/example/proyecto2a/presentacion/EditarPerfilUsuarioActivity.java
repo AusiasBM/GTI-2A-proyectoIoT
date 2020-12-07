@@ -1,26 +1,39 @@
 package com.example.proyecto2a.presentacion;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
+import android.net.Uri;
 import android.os.Bundle;
 
 import com.example.proyecto2a.R;
 import com.example.proyecto2a.datos.Usuarios;
 import com.example.proyecto2a.modelo.Tarjeta;
 import com.example.proyecto2a.modelo.Usuario;
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import android.content.Intent;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
+import java.util.UUID;
 
 public class EditarPerfilUsuarioActivity extends AppCompatActivity {
     private String idUsuario;
@@ -34,8 +47,10 @@ public class EditarPerfilUsuarioActivity extends AppCompatActivity {
     private FirebaseFirestore db;
     private static ProgressDialog progressDialog;
     private Usuarios usuarios;
+    private FirebaseAuth firebaseAuth;
+    private StorageReference storageReference;
 
-
+    private ImageView fotoPerfil;
 
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,13 +73,19 @@ public class EditarPerfilUsuarioActivity extends AppCompatActivity {
         direccion = findViewById(R.id.etNombre);
         poblacion = findViewById(R.id.etPoblacion);
         correo = findViewById(R.id.tvCorreo);
+        fotoPerfil = findViewById(R.id.imagenLogo);
 
         usuarios = new Usuarios();
 
         //Cargar el usuario y poner los datos en su perfil
         cargarUsuarioPerfil(idUsuario);
 
-        /*//extraemos el drawable en un bitmap
+        storageReference = FirebaseStorage.getInstance().getReference();
+        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseAuth.getUid();
+
+        /*
+        //extraemos el drawable en un bitmap
         Drawable originalDrawable = getResources().getDrawable(R.drawable.example_img);
         Bitmap originalBitmap = ((BitmapDrawable) originalDrawable).getBitmap();
 
@@ -81,11 +102,18 @@ public class EditarPerfilUsuarioActivity extends AppCompatActivity {
 
         // Inicialización Volley (Hacer solo una vez en Singleton o Applicaction)
 
-//Foto de usuario
+        //Foto de usuario
 
        //*/
 
 
+    }
+
+    public void subirFoto(View view){
+        Intent i = new Intent();
+        i.setType("image/*");
+        i.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(i, "Hola"), 1234);
     }
 
     public void mostrarDatosUsuario(Usuario user){
@@ -99,6 +127,40 @@ public class EditarPerfilUsuarioActivity extends AppCompatActivity {
         correo.setText(user.getCorreo());
         progressDialog.dismiss();
     }
+
+   @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == 1234) {
+                String nombreFichero = idUsuario.toString();
+                subirFichero(data.getData(), "imagenes/"+nombreFichero);
+            }
+        }
+    }
+
+    private void subirFichero(Uri fichero, String referencia) {
+        final StorageReference ref = storageReference.child(referencia);
+        UploadTask uploadTask = ref.putFile(fichero);
+        Task<Uri> urlTask = uploadTask.continueWithTask(new
+        Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+            @Override public Task<Uri> then(@NonNull
+                                                    Task<UploadTask.TaskSnapshot> task) throws Exception {
+                if (!task.isSuccessful()) throw task.getException();
+                return ref.getDownloadUrl();
+            }
+        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+            @Override public void onComplete(@NonNull Task<Uri> task) {
+                if (task.isSuccessful()) {
+                    Uri downloadUri = task.getResult();
+                    Log.e("Almacenamiento", "URL: " + downloadUri.toString());
+                } else {
+                    Log.e("Almacenamiento", "ERROR: subiendo fichero");
+                }
+            }
+        });
+    }
+
 
     public void actualizarPerfilUsuario(){
         try{

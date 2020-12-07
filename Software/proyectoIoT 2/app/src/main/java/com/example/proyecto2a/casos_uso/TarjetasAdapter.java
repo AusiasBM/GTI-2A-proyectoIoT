@@ -40,8 +40,9 @@ public class TarjetasAdapter extends FirestoreRecyclerAdapter<Tarjeta, TarjetasA
         //id del elemento a usar
         DocumentSnapshot documentSnapshot = getSnapshots().getSnapshot(holder.getAdapterPosition());
         final String id = documentSnapshot.getId();
-
-        holder.tvNumTarj.setText(String.valueOf(model.getNumTarjeta()));
+        String strings = String.valueOf(model.getNumTarjeta());
+        strings = "****" + strings.substring(4);
+        holder.tvNumTarj.setText(strings);
 
         holder.vInfo.setOnClickListener(new View.OnClickListener() {
             @Override
