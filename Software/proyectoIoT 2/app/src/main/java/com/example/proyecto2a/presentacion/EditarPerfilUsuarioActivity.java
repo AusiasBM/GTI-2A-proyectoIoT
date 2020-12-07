@@ -1,57 +1,30 @@
 package com.example.proyecto2a.presentacion;
 
-import android.Manifest;
-import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
-import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.NetworkImageView;
-import com.android.volley.toolbox.Volley;
 import com.example.proyecto2a.R;
 import com.example.proyecto2a.datos.Usuarios;
+import com.example.proyecto2a.modelo.Tarjeta;
 import com.example.proyecto2a.modelo.Usuario;
-import com.example.proyecto2a.presentacion.ResActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import android.content.Intent;
-import android.net.Uri;
-import android.os.Bundle;
 import android.util.Log;
-import android.util.LruCache;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.graphics.drawable.RoundedBitmapDrawable;
-import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
-import androidx.core.view.MenuCompat;
-
-import java.net.URI;
-import java.util.concurrent.Callable;
 
 public class EditarPerfilUsuarioActivity extends AppCompatActivity {
     private String idUsuario;
+    private Tarjeta tarjeta;
     private Usuario usuario;
     private EditText nombre;
     private EditText telefono;
@@ -80,9 +53,9 @@ public class EditarPerfilUsuarioActivity extends AppCompatActivity {
 
 
 
-        nombre = findViewById(R.id.etNombre);
+        nombre = findViewById(R.id.etNumTarjeta);
         telefono = findViewById(R.id.etTelefono);
-        direccion = findViewById(R.id.etDireccion);
+        direccion = findViewById(R.id.etNombre);
         poblacion = findViewById(R.id.etPoblacion);
         correo = findViewById(R.id.tvCorreo);
 
