@@ -21,8 +21,8 @@
         <item
             android:id="@+id/nav_pays"
             android:fontFamily="@font/poppins_medium"
+            android:icon="@drawable/creditcardpayment"
             android:textSize="22dp"
-            android:icon="@drawable/creditcard"
             android:title="@string/menu_pago" />
     </group>
     <group

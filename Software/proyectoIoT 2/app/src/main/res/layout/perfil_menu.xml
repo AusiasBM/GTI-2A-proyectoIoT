@@ -46,6 +46,8 @@
                 android:layout_marginStart="64dp"
                 android:layout_marginTop="32dp"
                 android:layout_marginEnd="64dp"
+                android:clickable="true"
+                android:onClick="subirFoto"
                 android:paddingTop="0dp"
                 android:src="@drawable/ic_profile"
                 app:layout_constraintEnd_toEndOf="parent"
