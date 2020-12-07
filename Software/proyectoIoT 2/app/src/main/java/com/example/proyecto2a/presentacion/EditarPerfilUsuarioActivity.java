@@ -110,10 +110,9 @@ public class EditarPerfilUsuarioActivity extends AppCompatActivity {
     }
 
     public void subirFoto(View view){
-        Intent i = new Intent();
+        Intent i = new Intent(Intent.ACTION_PICK);
         i.setType("image/*");
-        i.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(i, "Hola"), 1234);
+        startActivityForResult(i, 1234);
     }
 
     public void mostrarDatosUsuario(Usuario user){
@@ -128,37 +127,33 @@ public class EditarPerfilUsuarioActivity extends AppCompatActivity {
         progressDialog.dismiss();
     }
 
-   @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    @Override
+    protected void onActivityResult(final int requestCode,
+                                    final int resultCode, final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == 1234) {
-                String nombreFichero = idUsuario.toString();
-                subirFichero(data.getData(), "imagenes/"+nombreFichero);
+                subirFichero(data.getData(), "imagenes/imagen");
             }
         }
+
     }
 
     private void subirFichero(Uri fichero, String referencia) {
-        final StorageReference ref = storageReference.child(referencia);
-        UploadTask uploadTask = ref.putFile(fichero);
-        Task<Uri> urlTask = uploadTask.continueWithTask(new
-        Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-            @Override public Task<Uri> then(@NonNull
-                                                    Task<UploadTask.TaskSnapshot> task) throws Exception {
-                if (!task.isSuccessful()) throw task.getException();
-                return ref.getDownloadUrl();
-            }
-        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-            @Override public void onComplete(@NonNull Task<Uri> task) {
-                if (task.isSuccessful()) {
-                    Uri downloadUri = task.getResult();
-                    Log.e("Almacenamiento", "URL: " + downloadUri.toString());
-                } else {
-                    Log.e("Almacenamiento", "ERROR: subiendo fichero");
-                }
-            }
-        });
+        StorageReference ficheroRef = storageReference.child(referencia);
+        ficheroRef.putFile(fichero)
+                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>(){
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        Log.d("Almacenamiento", "Fichero subido");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        Log.e("Almacenamiento", "ERROR: subiendo fichero");
+                    }
+                });
     }
 
 
