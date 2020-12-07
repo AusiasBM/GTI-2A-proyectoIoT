@@ -33,10 +33,9 @@ MFRC522::StatusCode status; //variable to get card status
  
 int pos = 0;    // posicion del servo
 
-//char ssid[] = "Team_2-1";        // your network SSID (name)
-//char pass[] = "Team_2-1";    // your network password (use for WPA, or use as key for WEP)
-char ssid[] = "FERCATEL_ACA6";        // your network SSID (name)
-char pass[] = "74649518"; 
+char ssid[] = "Team_2-1";        // your network SSID (name)
+char pass[] = "Team_2-1";    // your network password (use for WPA, or use as key for WEP)
+
 
 WiFiClient wifiClient;
 MqttClient mqttClient(wifiClient);
