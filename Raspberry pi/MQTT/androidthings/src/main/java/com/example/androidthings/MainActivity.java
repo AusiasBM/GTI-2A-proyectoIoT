@@ -73,7 +73,7 @@ import static com.example.comun.Mqtt.topicRoot;
  */
 public class MainActivity extends AppCompatActivity implements MqttCallback {
 
-    FirebaseFirestore db;
+    public static FirebaseFirestore db = FirebaseFirestore.getInstance();
     public static MqttClient client = null;
     List<Taquilla> taquillas = new ArrayList<>();
     RecyclerView recycler;
@@ -91,9 +91,6 @@ public class MainActivity extends AppCompatActivity implements MqttCallback {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-
-        db = FirebaseFirestore.getInstance();
 
         try {
             client = new MqttClient(Mqtt.broker, Mqtt.clientId, new
@@ -296,7 +293,7 @@ public class MainActivity extends AppCompatActivity implements MqttCallback {
 
 
     // Abre la cerradura ( publica en el topic cerradura )
-    public void enviarMensaje(View view){
+    public static void enviarMensaje(View view){
         try {
             Log.i(Mqtt.TAG, "Publicando mensaje: " + "cerradura ON");
             MqttMessage message = new MqttMessage("cerradura ON".getBytes());
