@@ -5,7 +5,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.example.proyecto2a.modelo.Usuario;
-import com.example.proyecto2a.presentacion.EditarPerfilUsuarioActivity;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
@@ -15,7 +15,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import static com.example.proyecto2a.presentacion.EditarPerfilUsuarioActivity.*;
 
 public class Usuarios {
     private static CollectionReference usuarios;

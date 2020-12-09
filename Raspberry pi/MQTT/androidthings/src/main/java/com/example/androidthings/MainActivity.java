@@ -140,6 +140,14 @@ public class MainActivity extends AppCompatActivity implements MqttCallback {
 
 
 
+        //Subscipción topic sonoff
+        try {
+            Log.i(Mqtt.TAG, "Suscrito a " + topicRoot+"cmnd");
+            client.subscribe(topicRoot+"cerradura/POWER", qos);
+            client.setCallback(this);
+        } catch (MqttException e) {
+            Log.e(Mqtt.TAG, "Error al suscribir.", e);
+        }
 
         recycler = findViewById(R.id.recyclerId);
         recycler.setLayoutManager(new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)); // Lista de tipo vertical
@@ -226,6 +234,38 @@ public class MainActivity extends AppCompatActivity implements MqttCallback {
             mCamera.initializeCamera(this, mCameraHandler, mOnImageAvailableListener);
             temporizadorHandler.postDelayed(tomaFoto, 3 * 1000); //llamamos en 3 seg.
         }
+
+        if(topic.equals(topicRoot+"POWER")){
+            sonoff(payload);
+        }
+
+    }
+
+    private void sonoff(final String payload) {
+        db.collection("usuarios")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            Log.d("keloke", payload);
+                            // Actualiza el estado de la puerta en fireStore
+                            if (payload.equals("ON")){
+                                db.collection("estaciones/0/taquillas/")
+                                        .document("0")
+                                        .update("cargaPatinete", true);
+                            }else if (payload.equals("OFF")){
+                                db.collection("estaciones/0/taquillas/")
+                                        .document("0")
+                                        .update("cargaPatinete", false);
+                            }
+
+                        } else {
+                            Log.w(Mqtt.TAG, "Error getting documents.", task.getException());
+                        }
+
+                    }
+                });
 
     }
 

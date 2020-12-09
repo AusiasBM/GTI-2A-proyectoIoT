@@ -46,6 +46,7 @@
         android:fontFamily="@font/poppins_light"
         android:maxLines="1"
         android:text="Reserva"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/bateria" />
@@ -67,12 +68,22 @@
         android:id="@+id/buttonCan"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
+        android:layout_marginStart="48dp"
         android:background="@drawable/boton_registro"
         android:fontFamily="@font/poppins_light"
         android:text="Cancelar"
         android:visibility="gone"
         app:layout_constraintStart_toEndOf="@+id/foto"
         app:layout_constraintTop_toBottomOf="@+id/nombre" />
+
+    <ImageView
+        android:id="@+id/imagenchufe"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/foto"
+        app:layout_constraintTop_toBottomOf="@+id/nombre"
+        android:visibility="gone"
+        app:srcCompat="@drawable/enchufe_no" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

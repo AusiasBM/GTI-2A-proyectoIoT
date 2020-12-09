@@ -7,7 +7,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -15,18 +17,22 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.proyecto2a.R;
 import com.example.proyecto2a.datos.Mqtt;
 import com.example.proyecto2a.presentacion.MainActivity;
-import com.example.proyecto2a.presentacion.MensajeActivity;
+
 import com.example.proyecto2a.presentacion.MenuDialogActivity;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
@@ -48,7 +54,7 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
     @Override
     protected void onBindViewHolder(@NonNull Viewholder holder, int position, @NonNull Taquilla taquilla) {
 
-        holder.setOnclickListeners(taquilla.getEstant(), taquilla.getId());
+        holder.setOnclickListeners(taquilla.getEstant(), taquilla.getId(), taquilla.isCargaPatinete());
         if (taquilla.isPatinNuestro()) {
             holder.textViewNombre.setText("Patinete " + taquilla.getId());
 
@@ -57,10 +63,17 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
 
         }
 
+
         if (taquilla.isOcupada()) {
             holder.boton.setVisibility(View.GONE);
             holder.boton2.setVisibility(View.VISIBLE);
             holder.botoncancela.setVisibility(View.VISIBLE);
+            holder.enchufe.setVisibility(View.VISIBLE);
+            if(taquilla.isCargaPatinete()){
+                holder.enchufe.setImageResource(R.drawable.enchufe);
+            }else{
+                holder.enchufe.setImageResource(R.drawable.enchufe_no);
+            }
 
         } else {
             holder.boton2.setVisibility(View.GONE);
@@ -88,6 +101,7 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
         private FirebaseUser user;
         public String estant;
         public String id;
+        public boolean carga;
         public String ide;
 
         public FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -96,6 +110,7 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
         Button boton;
         Button boton2;
         Button botoncancela;
+        ImageView enchufe;
         Context context;
 
         public Viewholder(@NonNull View itemView) {
@@ -119,6 +134,7 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
             boton = itemView.findViewById(R.id.bt_reserva);
             boton2 = itemView.findViewById(R.id.bt_abrir);
             botoncancela = itemView.findViewById(R.id.buttonCan);
+            enchufe = itemView.findViewById(R.id.imagenchufe);
             try {
                 Log.i(Mqtt.TAG, "Conectando al broker " + Mqtt.broker);
                 client = new MqttClient(Mqtt.broker, Mqtt.clientId,
@@ -127,15 +143,19 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
             } catch (MqttException e) {
                 Log.e(Mqtt.TAG, "Error al conectar.", e);
             }
+
+
         }
 
-        public void setOnclickListeners(String estant, String id) {
+        public void setOnclickListeners(String estant, String id, boolean carga) {
             this.estant = estant;
+            this.carga = carga;
             this.id = id;
             MenuDialogActivity m = new MenuDialogActivity();
             boton.setOnClickListener(this);
             boton2.setOnClickListener(this);
             botoncancela.setOnClickListener(this);
+            enchufe.setOnClickListener(this);
         }
 
         @Override
@@ -175,6 +195,9 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
                 case R.id.bt_abrir:
                     abreTaquilla();
                     break;
+                case R.id.imagenchufe:
+                    enchufa(v);
+                    break;
                 case R.id.buttonCan:
                     DocumentReference taki = db.collection("estaciones").document(estant).collection("taquillas").document(id);
                     taki.update("idUsuario", "").addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -213,7 +236,70 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
                 client.publish(Mqtt.topicRoot + "cerradura", message);
             } catch (MqttException e) {
                 Log.e(Mqtt.TAG, "Error al publicar.", e);
+
             }
+        }
+
+        public void enchufa(View v) {
+
+            try {
+                Log.i(Mqtt.TAG, "Publicando mensaje: " + "power OFF");
+                MqttMessage message = new MqttMessage("toggle".getBytes());
+                message.setQos(Mqtt.qos);
+                message.setRetained(false);
+                client.publish(Mqtt.topicRoot + "cerradura/cmnd/power", message);
+            } catch (MqttException e) {
+                e.printStackTrace();
+            }
+
+/*
+            if (carga){
+
+                try {
+
+
+                    DocumentReference taq = db.collection("estaciones").document(estant).collection("taquillas").document(id);
+                    taq.update("cargaPatinete", false).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Log.d("ocupada", "DocumentSnapshot successfully updated!");
+                        }
+                    });
+                    Toast.makeText(v.getContext(), "Carga apagada", Toast.LENGTH_SHORT);
+
+
+
+
+                } catch (Exception e) {
+                    Log.e(Mqtt.TAG, "Error al publicar.", e);
+                    Toast.makeText(v.getContext(), "Problema al cargar", Toast.LENGTH_SHORT);
+                }
+            }else {
+
+                try {
+
+
+
+
+
+                    DocumentReference taq = db.collection("estaciones").document(estant).collection("taquillas").document(id);
+                    taq.update("cargaPatinete", true).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Log.d("ocupada", "DocumentSnapshot successfully updated!");
+                        }
+                    });
+                    Toast.makeText(v.getContext(), "Patinete cargando", Toast.LENGTH_SHORT);
+
+
+
+
+                } catch (Exception e) {
+                    Log.e(Mqtt.TAG, "Error al publicar.", e);
+                    Toast.makeText(v.getContext(), "Problema al cargar", Toast.LENGTH_SHORT);
+                }
+            }*/
+
         }
 
 
