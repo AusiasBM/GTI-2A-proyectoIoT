@@ -137,7 +137,7 @@ void setup() {
   Serial.println("No ponga ningun  objeto sobre la balanza");
   Serial.println("Destarando...");
   Serial.println("...");
-  balanza.set_scale(-190480); // Establecemos la escala
+  balanza.set_scale(-381384.62); // Establecemos la escala
   balanza.tare(20);  //El peso actual es considerado Tara.
 
   //Configuración del pin y objeto Tilt
@@ -208,20 +208,20 @@ void loop() {
   patin.peso = balanza.get_units(20);
   
   Serial.print(patin.peso);
-  if (patin.peso>=0.2 && patin.guardado == false){
+  if (patin.peso>=0.3 && patin.guardado == false){
     payload = "Patin guardado";
     mqttClient.beginMessage(pesoTopic, payload.length(), retained, qos, dup);
     mqttClient.print(payload);
     mqttClient.endMessage();
     patin.guardado = true;
-  } else if(patin.peso<0.2 && patin.guardado == true){
+  } else if(patin.peso<0.3 && patin.guardado == true){
     payload = "Patin no guardado";
     mqttClient.beginMessage(pesoTopic, payload.length(), retained, qos, dup);
     mqttClient.print(payload);
     mqttClient.endMessage();
-    patin.guardado == false;
+    patin.guardado = false;
   }
-
+  
   //Sensor Tilt
   double resTilt = tilt.media();
   Serial.print("Prova de resultat de mitjana"); 
