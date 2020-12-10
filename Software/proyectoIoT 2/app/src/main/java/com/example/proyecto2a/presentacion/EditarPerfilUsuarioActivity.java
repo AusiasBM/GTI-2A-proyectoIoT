@@ -2,6 +2,7 @@ package com.example.proyecto2a.presentacion;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -17,6 +18,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -33,6 +35,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.UUID;
 
 public class EditarPerfilUsuarioActivity extends AppCompatActivity {
@@ -84,6 +88,7 @@ public class EditarPerfilUsuarioActivity extends AppCompatActivity {
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseAuth.getUid();
 
+        bajarFichero();
         /*
         //extraemos el drawable en un bitmap
         Drawable originalDrawable = getResources().getDrawable(R.drawable.example_img);
@@ -110,10 +115,9 @@ public class EditarPerfilUsuarioActivity extends AppCompatActivity {
     }
 
     public void subirFoto(View view){
-        Intent i = new Intent();
+        Intent i = new Intent(Intent.ACTION_PICK);
         i.setType("image/*");
-        i.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(i, "Hola"), 1234);
+        startActivityForResult(i, 1234);
     }
 
     public void mostrarDatosUsuario(Usuario user){
@@ -128,39 +132,61 @@ public class EditarPerfilUsuarioActivity extends AppCompatActivity {
         progressDialog.dismiss();
     }
 
-   @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    @Override
+    protected void onActivityResult(final int requestCode,
+                                    final int resultCode, final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == 1234) {
-                String nombreFichero = idUsuario.toString();
-                subirFichero(data.getData(), "imagenes/"+nombreFichero);
+                subirFichero(data.getData(), "imagenes/"+idUsuario);
             }
         }
+
     }
 
     private void subirFichero(Uri fichero, String referencia) {
-        final StorageReference ref = storageReference.child(referencia);
-        UploadTask uploadTask = ref.putFile(fichero);
-        Task<Uri> urlTask = uploadTask.continueWithTask(new
-        Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-            @Override public Task<Uri> then(@NonNull
-                                                    Task<UploadTask.TaskSnapshot> task) throws Exception {
-                if (!task.isSuccessful()) throw task.getException();
-                return ref.getDownloadUrl();
-            }
-        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-            @Override public void onComplete(@NonNull Task<Uri> task) {
-                if (task.isSuccessful()) {
-                    Uri downloadUri = task.getResult();
-                    Log.e("Almacenamiento", "URL: " + downloadUri.toString());
-                } else {
-                    Log.e("Almacenamiento", "ERROR: subiendo fichero");
-                }
+        StorageReference ficheroRef = storageReference.child(referencia);
+        ficheroRef.putFile(fichero)
+                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>(){
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        Log.d("Almacenamiento", "Fichero subido");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        Log.e("Almacenamiento", "ERROR: subiendo fichero");
+                    }
+                });
+    }
+
+    private void bajarFichero() {
+        File localFile = null;
+        try {
+            localFile = File.createTempFile("image", "jpg");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        final String path = localFile.getAbsolutePath();
+        Log.d("Almacenamiento", "creando fichero: " + path);
+        StorageReference ficheroRef = storageReference.child("imagenes/"+idUsuario);
+        ficheroRef.getFile(localFile)
+                .addOnSuccessListener(new
+                  OnSuccessListener<FileDownloadTask.TaskSnapshot>(){
+                      @Override
+                      public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot){
+                          Log.d("Almacenamiento", "Fichero bajado");
+                          fotoPerfil.setImageBitmap(BitmapFactory.decodeFile(path));
+                          bajarFichero();
+                      }
+                 }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                Log.e("Almacenamiento", "ERROR: bajando fichero");
             }
         });
     }
-
 
     public void actualizarPerfilUsuario(){
         try{
@@ -213,7 +239,6 @@ public class EditarPerfilUsuarioActivity extends AppCompatActivity {
     @Override
     public void onStop() {
         actualizarPerfilUsuario();
-        finish();
         super.onStop();
     }
 
@@ -239,7 +264,6 @@ public class EditarPerfilUsuarioActivity extends AppCompatActivity {
         actualizarPerfilUsuario();
         Intent intent = new Intent(this, ResActivity.class);
         startActivity(intent);
-        finish();
     }
 
 }

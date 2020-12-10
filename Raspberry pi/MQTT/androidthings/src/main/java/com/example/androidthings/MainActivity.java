@@ -63,7 +63,11 @@ import static com.example.androidthings.Mqtt.qos;
  */
 public class MainActivity extends AppCompatActivity implements MqttCallback {
 
+<<<<<<< HEAD
     static FirebaseFirestore db;
+=======
+    public static FirebaseFirestore db = FirebaseFirestore.getInstance();
+>>>>>>> develop
     public static MqttClient client = null;
     public static List<Taquilla> taquillas = new ArrayList<>();
     RecyclerView recycler;
@@ -81,9 +85,6 @@ public class MainActivity extends AppCompatActivity implements MqttCallback {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-
-        db = FirebaseFirestore.getInstance();
 
         try {
             client = new MqttClient(Mqtt.broker, Mqtt.clientId, new
