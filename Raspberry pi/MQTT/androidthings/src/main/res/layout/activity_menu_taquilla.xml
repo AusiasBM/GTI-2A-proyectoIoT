@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".MenuTaquilla">
 
-<<<<<<< HEAD
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
         android:layout_width="wrap_content"
@@ -51,49 +50,36 @@
         android:text="ABRIR PUERTA"
         android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/btPuerta2"
+        app:layout_constraintEnd_toStartOf="@+id/swCarga"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-=======
->>>>>>> develop
-    <Button
-        android:id="@+id/btPuerta2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="#4572BC"
-<<<<<<< HEAD
-        android:onClick="cargar"
-        android:paddingStart="7dp"
-        android:paddingEnd="7dp"
-        android:text="CARGAR PATINETE"
-        android:textColor="#FFFFFF"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/btPuerta"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tvTituloTaquilla"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:fontFamily="@font/poppins_bold"
         android:text="TextView"
         android:textAlignment="center"
         android:textColor="#4572BC"
         android:textSize="20sp"
         android:textStyle="bold"
-=======
-        android:onClick="abrirTaquilla"
-        android:text="Button"
-        android:textColor="#FFFFFF"
-        app:layout_constraintBottom_toBottomOf="parent"
->>>>>>> develop
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Switch
+        android:id="@+id/swCarga"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="cargar"
+        android:text="Cargando Patiente  "
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/btPuerta"
         app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
