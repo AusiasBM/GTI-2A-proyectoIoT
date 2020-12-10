@@ -135,15 +135,6 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
             boton2 = itemView.findViewById(R.id.bt_abrir);
             botoncancela = itemView.findViewById(R.id.buttonCan);
             enchufe = itemView.findViewById(R.id.imagenchufe);
-            try {
-                Log.i(Mqtt.TAG, "Conectando al broker " + Mqtt.broker);
-                client = new MqttClient(Mqtt.broker, Mqtt.clientId,
-                        new MemoryPersistence());
-                client.connect();
-            } catch (MqttException e) {
-                Log.e(Mqtt.TAG, "Error al conectar.", e);
-            }
-
 
         }
 
@@ -224,10 +215,21 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
                                     Log.w("ocupada", "Error updating document", e);
                                 }
                             });
+                    break;
             }
         }
 
         public void abreTaquilla() {
+
+            try {
+                Log.i(Mqtt.TAG, "Conectando al broker " + Mqtt.broker);
+                client = new MqttClient(Mqtt.broker, Mqtt.clientId,
+                        new MemoryPersistence());
+                client.connect();
+            } catch (MqttException e) {
+                Log.e(Mqtt.TAG, "Error al conectar.", e);
+            }
+
             try {
                 Log.i(Mqtt.TAG, "Publicando mensaje: " + "cerradura ON");
                 MqttMessage message = new MqttMessage("cerradura ON".getBytes());
@@ -243,8 +245,17 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
         public void enchufa(View v) {
 
             try {
-                Log.i(Mqtt.TAG, "Publicando mensaje: " + "power OFF");
-                MqttMessage message = new MqttMessage("toggle".getBytes());
+                Log.i(Mqtt.TAG, "Conectando al broker " + Mqtt.broker);
+                client = new MqttClient(Mqtt.broker, Mqtt.clientId,
+                        new MemoryPersistence());
+                client.connect();
+            } catch (MqttException e) {
+                Log.e(Mqtt.TAG, "Error al conectar.", e);
+            }
+
+            try {
+                Log.i(Mqtt.TAG, "Publicando mensaje: " + "power Toggle");
+                MqttMessage message = new MqttMessage("TOGGLE".getBytes());
                 message.setQos(Mqtt.qos);
                 message.setRetained(false);
                 client.publish(Mqtt.topicRoot + "cerradura/cmnd/power", message);
@@ -298,11 +309,11 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
                     Log.e(Mqtt.TAG, "Error al publicar.", e);
                     Toast.makeText(v.getContext(), "Problema al cargar", Toast.LENGTH_SHORT);
                 }
-            }*/
+            }
+
+        }*/
 
         }
-
-
     }
 
 }
