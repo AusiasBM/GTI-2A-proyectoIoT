@@ -1,3 +1,4 @@
+#include <HX711.h>
 
 #include <ArduinoMqttClient.h>
 #include <WiFi.h>
@@ -10,7 +11,7 @@
 #define RST_PIN 22 //Pin 9 para el reset del RC522 no es necesario conctarlo
 #define SS_PIN 21 //Pin 10 para el SS (SDA) del RC522
 #define pinSensorMagnetico 27 //Pin 27 para el sensor magnético
-#define TILT_PIN 4 //pin 4 para el sensor tilt
+#define TILT_PIN 4 //pn 4 para el sensor tilt
 #define DOUT_PIN 5 //Pin 5 para DT del sensor de peso
 #define SCK_PIN 18 //Pin 18 para SCK del sensor de peso
 
@@ -18,10 +19,9 @@
 #define SIZE_BUFFER 18;
 #define MAX_SIZE_BLOCK 16;
 
-
 Tilt tilt; //Definición de la clase Tilt
 struct PatinGuardado{
-  bool guardado = false;
+  bool guardado = true;
   double peso = 0;
 };
 PatinGuardado patin;
@@ -72,7 +72,7 @@ void setup() {
   Serial.println(ssid);
   while (WiFi.begin(ssid, pass) != WL_CONNECTED) {
     // failed, retry
-    Serial.print(".");
+    Serial.print("NO CONECTADO");
     delay(5000);
   }
 
@@ -114,7 +114,6 @@ void setup() {
 
   mqttClient.subscribe(cerraduraTopic, subscribeQos);
   mqttClient.subscribe(alarmaTopic, subscribeQos);
-  mqttClient.subscribe(pesoTopic, subscribeQos);
   
   // topics can be unsubscribed using:
   // mqttClient.unsubscribe(cerraduraTopic);
@@ -177,36 +176,12 @@ void loop() {
      }
   }
   
-   
-  if ( mfrc522.PICC_IsNewCardPresent())
-  {
 
-    payload = "";
-    //Seleccionamos una tarjeta
-    if ( mfrc522.PICC_ReadCardSerial())
-    {
-      for (byte i = 0; i < mfrc522.uid.size; i++) {
-        ActualUID[i]=mfrc522.uid.uidByte[i];
-        payload += String(ActualUID[i], HEX);
-      }
-
-        Serial.print("Sending message to topic: ");
-        Serial.println(RFIDTopic);
-        Serial.println(payload);
-
-        delay(2000); // Este delay es para cuando el usuario esté poniendo la tarjeta en el lector solo se envie una vez.
-    
-        mqttClient.beginMessage(RFIDTopic, payload.length(), retained, qos, dup);
-        mqttClient.print(payload);
-        mqttClient.endMessage();
-    
-        Serial.println();
-    }
-  }
 
   //Sensor peso
   patin.peso = balanza.get_units(20);
-  
+
+  Serial.print("Peso: ");
   Serial.print(patin.peso);
   if (patin.peso>=0.3 && patin.guardado == false){
     payload = "Patin guardado";
