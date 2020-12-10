@@ -1,7 +1,11 @@
 package com.example.proyecto2a.casos_uso;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.NotificationCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.proyecto2a.R;
@@ -19,6 +24,7 @@ import com.example.proyecto2a.datos.Mqtt;
 import com.example.proyecto2a.presentacion.MainActivity;
 
 import com.example.proyecto2a.presentacion.MenuDialogActivity;
+import com.example.proyecto2a.presentacion.ResActivity;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -38,6 +44,8 @@ import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
+
+import static android.content.Context.NOTIFICATION_SERVICE;
 
 public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, TaquillasAdapter.Viewholder> implements View.OnClickListener {
 
@@ -104,6 +112,10 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
         public boolean carga;
         public String ide;
 
+        private NotificationManager notificationManager;
+        static final String CANAL_ID = "mi_canal";
+        static final int NOTIFICACION_ID = 1;
+
         public FirebaseFirestore db = FirebaseFirestore.getInstance();
         public MqttClient client = null;
         TextView textViewNombre;
@@ -135,15 +147,6 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
             boton2 = itemView.findViewById(R.id.bt_abrir);
             botoncancela = itemView.findViewById(R.id.buttonCan);
             enchufe = itemView.findViewById(R.id.imagenchufe);
-            try {
-                Log.i(Mqtt.TAG, "Conectando al broker " + Mqtt.broker);
-                client = new MqttClient(Mqtt.broker, Mqtt.clientId,
-                        new MemoryPersistence());
-                client.connect();
-            } catch (MqttException e) {
-                Log.e(Mqtt.TAG, "Error al conectar.", e);
-            }
-
 
         }
 
@@ -190,7 +193,27 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
                                     Log.w("ocupada", "Error updating document", e);
                                 }
                             });
-
+//Crear la notificació
+                    notificationManager = (NotificationManager)
+                            context.getSystemService(NOTIFICATION_SERVICE);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        NotificationChannel notificationChannel = new NotificationChannel(
+                                CANAL_ID, "Mis Notificaciones",
+                                NotificationManager.IMPORTANCE_DEFAULT);
+                        notificationChannel.setDescription("Descripcion del canal");
+                        notificationManager.createNotificationChannel(notificationChannel);
+                    }
+                    NotificationCompat.Builder notificacion =
+                            new NotificationCompat.Builder(context, CANAL_ID)
+                                    .setSmallIcon(R.mipmap.ic_launcher)
+                                    .setContentTitle("Taquilla reservada")
+                                    .setContentText("Tu taquilla está reservada.");
+                    //Llançar l'aplicació des de la notificació
+                    PendingIntent intencionPendiente = PendingIntent.getActivity(
+                            context, 0, new Intent(context, ResActivity.class), 0);
+                    notificacion.setContentIntent(intencionPendiente);
+                    //Para lanzar la notificación
+                    notificationManager.notify(NOTIFICACION_ID, notificacion.build());
                     break;
                 case R.id.bt_abrir:
                     abreTaquilla();
@@ -229,11 +252,21 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
 
         public void abreTaquilla() {
             try {
+                Log.i(Mqtt.TAG, "Conectando al broker " + Mqtt.broker);
+                client = new MqttClient(Mqtt.broker, Mqtt.clientId,
+                        new MemoryPersistence());
+                client.connect();
+            } catch (MqttException e) {
+                Log.e(Mqtt.TAG, "Error al conectar.", e);
+            }
+
+            try {
                 Log.i(Mqtt.TAG, "Publicando mensaje: " + "cerradura ON");
                 MqttMessage message = new MqttMessage("cerradura ON".getBytes());
                 message.setQos(Mqtt.qos);
                 message.setRetained(false);
                 client.publish(Mqtt.topicRoot + "cerradura", message);
+
             } catch (MqttException e) {
                 Log.e(Mqtt.TAG, "Error al publicar.", e);
 
@@ -241,6 +274,15 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
         }
 
         public void enchufa(View v) {
+
+            try {
+                Log.i(Mqtt.TAG, "Conectando al broker " + Mqtt.broker);
+                client = new MqttClient(Mqtt.broker, Mqtt.clientId,
+                        new MemoryPersistence());
+                client.connect();
+            } catch (MqttException e) {
+                Log.e(Mqtt.TAG, "Error al conectar.", e);
+            }
 
             try {
                 Log.i(Mqtt.TAG, "Publicando mensaje: " + "power OFF");
