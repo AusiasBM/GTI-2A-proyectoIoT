@@ -1,7 +1,10 @@
 package com.example.proyecto2a.presentacion;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
@@ -33,7 +36,9 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import java.io.File;
 import java.io.IOException;
@@ -55,11 +60,13 @@ public class EditarPerfilUsuarioActivity extends AppCompatActivity {
     private StorageReference storageReference;
 
     private ImageView fotoPerfil;
+    private static final int SOLICITUD_PERMISO_READ_EXTERNAL_STORAGE = 0;
 
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.perfil_menu);
+
 
         //Diálogo de carga mientras se ponen los dats en los editText
         progressDialog = new ProgressDialog(this);
@@ -115,9 +122,18 @@ public class EditarPerfilUsuarioActivity extends AppCompatActivity {
     }
 
     public void subirFoto(View view){
-        Intent i = new Intent(Intent.ACTION_PICK);
-        i.setType("image/*");
-        startActivityForResult(i, 1234);
+        if (ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.READ_EXTERNAL_STORAGE)
+                == PackageManager.PERMISSION_GRANTED){
+            Intent i = new Intent(Intent.ACTION_PICK);
+            i.setType("image/*");
+            startActivityForResult(i, 1234);
+        }else{
+            solicitarPermiso(Manifest.permission.READ_EXTERNAL_STORAGE, "Sin el permiso" +
+                            " acceso a la galería.",
+                    SOLICITUD_PERMISO_READ_EXTERNAL_STORAGE, this);
+        }
+
     }
 
     public void mostrarDatosUsuario(Usuario user){
@@ -264,6 +280,24 @@ public class EditarPerfilUsuarioActivity extends AppCompatActivity {
         actualizarPerfilUsuario();
         Intent intent = new Intent(this, ResActivity.class);
         startActivity(intent);
+    }
+
+    public static void solicitarPermiso(final String permiso, String
+            justificacion, final int requestCode, final Activity actividad) {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(actividad,
+                permiso)){
+            new AlertDialog.Builder(actividad)
+                    .setTitle("Solicitud de permiso")
+                    .setMessage(justificacion)
+                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            ActivityCompat.requestPermissions(actividad,
+                                    new String[]{permiso}, requestCode);
+                        }}).show();
+        } else {
+            ActivityCompat.requestPermissions(actividad,
+                    new String[]{permiso}, requestCode);
+        }
     }
 
 }
