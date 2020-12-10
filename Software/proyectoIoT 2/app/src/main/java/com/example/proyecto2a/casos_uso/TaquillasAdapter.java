@@ -296,13 +296,10 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
             }
 
             try {
-<<<<<<< HEAD
                 Log.i(Mqtt.TAG, "Publicando mensaje: " + "power OFF");
-                MqttMessage message = new MqttMessage("toggle".getBytes());
-=======
+                //MqttMessage message = new MqttMessage("toggle".getBytes());
                 Log.i(Mqtt.TAG, "Publicando mensaje: " + "power Toggle");
                 MqttMessage message = new MqttMessage("TOGGLE".getBytes());
->>>>>>> develop
                 message.setQos(Mqtt.qos);
                 message.setRetained(false);
                 client.publish(Mqtt.topicRoot + "cerradura/cmnd/power", message);
