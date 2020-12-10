@@ -9,7 +9,7 @@
 #define DOUT_PIN 5 //Pin 5 para DT del sensor de peso
 #define SCK_PIN 18 //Pin 18 para SCK del sensor de peso
 
-#define VALOR_MEDIO_ALERTA 0.5 //Valor del Tilt para enviar una alerta
+#define VALOR_MEDIO_ALERTA 0.10 //Valor del Tilt para enviar una alerta
 #define MAX_SIZE_BLOCK 16;
 
 Tilt tilt; //Definición de la clase Tilt
