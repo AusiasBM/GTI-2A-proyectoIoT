@@ -1,22 +1,15 @@
-#include <HX711.h>
-
 #include <ArduinoMqttClient.h>
 #include <WiFi.h>
 
 #include "HX711.h"
-#include <SPI.h>
-#include <MFRC522.h>
 #include "Tilt.h";
 
-#define RST_PIN 22 //Pin 9 para el reset del RC522 no es necesario conctarlo
-#define SS_PIN 21 //Pin 10 para el SS (SDA) del RC522
 #define pinSensorMagnetico 27 //Pin 27 para el sensor magnético
 #define TILT_PIN 4 //pn 4 para el sensor tilt
 #define DOUT_PIN 5 //Pin 5 para DT del sensor de peso
 #define SCK_PIN 18 //Pin 18 para SCK del sensor de peso
 
 #define VALOR_MEDIO_ALERTA 0.5 //Valor del Tilt para enviar una alerta
-#define SIZE_BUFFER 18;
 #define MAX_SIZE_BLOCK 16;
 
 Tilt tilt; //Definición de la clase Tilt
@@ -25,9 +18,6 @@ struct PatinGuardado{
   double peso = 0;
 };
 PatinGuardado patin;
-
-MFRC522 mfrc522(SS_PIN, RST_PIN); ///Creamos el objeto para el RC522
-MFRC522::StatusCode status; //variable to get card status
 
 //Servo myservo;  // crea el objeto servo
  
@@ -59,8 +49,6 @@ HX711 balanza;
 void setup() {
   //Initialize serial and wait for port to open:
   Serial.begin(9600);
-  SPI.begin(); //Iniciamos el Bus SPI
-  mfrc522.PCD_Init(); // Iniciamos el MFRC522 - Cuando pone PCD se refiere al modulo lector
   while (!Serial) {
     ; // wait for serial port to connect. Needed for native USB port only
   }
@@ -136,7 +124,7 @@ void setup() {
   Serial.println("No ponga ningun  objeto sobre la balanza");
   Serial.println("Destarando...");
   Serial.println("...");
-  balanza.set_scale(-381384.62); // Establecemos la escala
+  balanza.set_scale(608695.652); // Establecemos la escala
   balanza.tare(20);  //El peso actual es considerado Tara.
 
   //Configuración del pin y objeto Tilt
@@ -144,8 +132,6 @@ void setup() {
   digitalWrite(TILT_PIN , HIGH);  //activamos la resistencia interna PULL UP 
   tilt = Tilt(TILT_PIN);  //Declaración de un objeto de la clase Tilt 
 }
-
-byte ActualUID[7]; //almacenará el código del Tag leído
 
 bool estadoAnteriorCerradura = false;//Variable para evitar envios constantes cuando la cerradura está cerrada
 
@@ -179,7 +165,7 @@ void loop() {
 
 
   //Sensor peso
-  patin.peso = balanza.get_units(20);
+  patin.peso = balanza.get_units(20),3;
 
   Serial.print("Peso: ");
   Serial.print(patin.peso);
