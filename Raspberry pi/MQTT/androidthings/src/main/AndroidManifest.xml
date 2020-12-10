@@ -18,7 +18,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".MenuTaquilla"
-            android:theme="@style/Theme.AppCompat.Light.Dialog"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

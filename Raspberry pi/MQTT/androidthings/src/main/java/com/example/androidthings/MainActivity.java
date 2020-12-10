@@ -1,33 +1,26 @@
 package com.example.androidthings;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.media.Image;
 import android.media.ImageReader;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.comun.Imagen;
-import com.example.comun.Mqtt;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -45,14 +38,11 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
-import static com.example.comun.Mqtt.qos;
-import static com.example.comun.Mqtt.topicRoot;
+import static com.example.androidthings.Mqtt.topicRoot;
+import static com.example.androidthings.Mqtt.qos;
 
 /**
  * Skeleton of an Android Things activity.
@@ -73,9 +63,9 @@ import static com.example.comun.Mqtt.topicRoot;
  */
 public class MainActivity extends AppCompatActivity implements MqttCallback {
 
-    FirebaseFirestore db;
+    static FirebaseFirestore db;
     public static MqttClient client = null;
-    List<Taquilla> taquillas = new ArrayList<>();
+    public static List<Taquilla> taquillas = new ArrayList<>();
     RecyclerView recycler;
 
     //Càmara
@@ -111,15 +101,6 @@ public class MainActivity extends AppCompatActivity implements MqttCallback {
             e.printStackTrace();
         }
 
-        // Nos suscribimos al topic rfid
-        try {
-            Log.i(Mqtt.TAG, "Suscrito a " + topicRoot+"rfid");
-            client.subscribe(topicRoot+"rfid", qos);
-            client.setCallback(this);
-        } catch (MqttException e) {
-            Log.e(Mqtt.TAG, "Error al suscribir.", e);
-        }
-
         // Nos suscribimos al topic magnetico
         try {
             Log.i(Mqtt.TAG, "Suscrito a " + topicRoot+"magnetico");
@@ -137,8 +118,6 @@ public class MainActivity extends AppCompatActivity implements MqttCallback {
         } catch (MqttException e) {
             Log.e(Mqtt.TAG, "Error al suscribir.", e);
         }
-
-
 
         //Subscipción topic sonoff
         try {
@@ -219,10 +198,6 @@ public class MainActivity extends AppCompatActivity implements MqttCallback {
         String payload = new String(message.getPayload());
         Log.d(Mqtt.TAG, "Recibiendo: " + topic + "->" + payload);
 
-        if(topic.equals(topicRoot+"rfid")){
-            topicRfid(payload);
-        }
-
         if(topic.equals(topicRoot+"magnetico")){
             topicMagnetico(payload);
         }
@@ -235,96 +210,42 @@ public class MainActivity extends AppCompatActivity implements MqttCallback {
             temporizadorHandler.postDelayed(tomaFoto, 3 * 1000); //llamamos en 3 seg.
         }
 
-        if(topic.equals(topicRoot+"POWER")){
+        if(topic.equals(topicRoot+"cerradura/POWER")){
             sonoff(payload);
         }
 
     }
 
-    private void sonoff(final String payload) {
-        db.collection("usuarios")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            Log.d("keloke", payload);
-                            // Actualiza el estado de la puerta en fireStore
-                            if (payload.equals("ON")){
-                                db.collection("estaciones/0/taquillas/")
-                                        .document("0")
-                                        .update("cargaPatinete", true);
-                            }else if (payload.equals("OFF")){
-                                db.collection("estaciones/0/taquillas/")
-                                        .document("0")
-                                        .update("cargaPatinete", false);
-                            }
+    public static void sonoff(final String payload) {
 
-                        } else {
-                            Log.w(Mqtt.TAG, "Error getting documents.", task.getException());
-                        }
+        // Actualiza el estado de la puerta en fireStore
+        if (payload.equals("ON")){
+            db.collection("estaciones/0/taquillas/")
+                    .document("0")
+                    .update("cargaPatinete", true);
+        }else{
 
-                    }
-                });
+            if (payload.equals("OFF")){
+            db.collection("estaciones/0/taquillas/")
+                    .document("0")
+                    .update("cargaPatinete", false);
+            }
+        }
 
     }
 
     private void topicMagnetico(final String payload) {
 
-        db.collection("usuarios")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            // Actualiza el estado de la puerta en fireStore
-                            if (payload.equals("cerraduraAbierta")){
-                                db.collection("estaciones/0/taquillas/")
-                                        .document("0")
-                                        .update("puertaAbierta", true);
-                            }else if (payload.equals("cerraduraCerrada")){
-                                db.collection("estaciones/0/taquillas/")
-                                        .document("0")
-                                        .update("puertaAbierta", false);
-                            }
-
-                        } else {
-                            Log.w(Mqtt.TAG, "Error getting documents.", task.getException());
-                        }
-
-                    }
-                });
-    }
-
-    public void topicRfid(final String payload){
-
-        final boolean[] puertaAbierta = {false};
-
-        final ArrayList<Map<String, Object>> usuarios = new ArrayList<>();
-
-        db.collection("usuarios")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Log.d(Mqtt.TAG, document.getId() + " => " + document.getData());
-                                Log.d("llave pasada", document.getData().get("llave").toString());
-                                usuarios.add(document.getData());
-                                if (document.getData().get("llave").toString().equals(payload)){
-                                    puertaAbierta[0] = true;
-                                    break;
-                                }
-                            }
-                        } else {
-                            Log.w(Mqtt.TAG, "Error getting documents.", task.getException());
-                        }
-                        if (puertaAbierta[0]){
-                            enviarMensaje(null);
-                        }
-                    }
-                });
+        // Actualiza el estado de la puerta en fireStore
+        if (payload.equals("cerraduraAbierta")){
+            db.collection("estaciones/0/taquillas/")
+                    .document("0")
+                    .update("puertaAbierta", true);
+        }else if (payload.equals("cerraduraCerrada")){
+            db.collection("estaciones/0/taquillas/")
+                    .document("0")
+                    .update("puertaAbierta", false);
+        }
 
     }
 
@@ -336,20 +257,20 @@ public class MainActivity extends AppCompatActivity implements MqttCallback {
 
 
     // Abre la cerradura ( publica en el topic cerradura )
-    public void enviarMensaje(View view){
+    public static void enviarMensaje(View view){
         try {
             Log.i(Mqtt.TAG, "Publicando mensaje: " + "cerradura ON");
             MqttMessage message = new MqttMessage("cerradura ON".getBytes());
             message.setQos(Mqtt.qos);
             message.setRetained(false);
-            client.publish(Mqtt.topicRoot+"cerradura", message);
+            client.publish(topicRoot+"cerradura", message);
         } catch (MqttException e) {
             Log.e(Mqtt.TAG, "Error al publicar.", e);
         }
     }
 
 
-    //CODI CAMARA
+    //CODI CAMARA *********************************************************************************
 
 
     //Mètodes per a la càmara

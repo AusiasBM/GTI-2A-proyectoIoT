@@ -1,4 +1,4 @@
-package com.example.comun;
+package com.example.androidthings;
 
 public class Mqtt {
     public static final String TAG = "MQTT";
