@@ -51,6 +51,8 @@ import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 public class ResActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, OnMapReadyCallback, GoogleMap.OnMapClickListener {
@@ -150,6 +152,25 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
         manejador = (LocationManager) getSystemService(LOCATION_SERVICE);
         solicitarPermisos();
 
+
+        //Crear taquillas
+
+       /* Map<String, Object> datos = new HashMap<>();
+        datos.put("cargaPatinete", false);
+        datos.put("ocupada", false);
+        datos.put("patinNuestro", true);
+        datos.put("puertaAbierta", false);
+        datos.put("estant", "4");
+        datos.put("id", "1");
+        datos.put("idUsuario", "");
+
+
+        db.collection("estaciones").document("4").collection("taquillas").document("1").set(datos);
+        db.collection("estaciones").document("5").collection("taquillas").document("1").set(datos);
+        db.collection("estaciones").document("2").collection("taquillas").document("1").set(datos);
+        db.collection("estaciones").document("3").collection("taquillas").document("1").set(datos);
+
+*/
     }
 
     private void agregarToolbar() {
