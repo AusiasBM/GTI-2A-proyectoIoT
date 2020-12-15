@@ -62,7 +62,7 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
     @Override
     protected void onBindViewHolder(@NonNull Viewholder holder, int position, @NonNull Taquilla taquilla) {
 
-        holder.setOnclickListeners(taquilla.getEstant(), taquilla.getId(), taquilla.isCargaPatinete());
+        holder.setOnclickListeners(taquilla.getEstant(), taquilla.getId(), taquilla.isCargaPatinete(), taquilla.isAlquilada());
         if (taquilla.isPatinNuestro()) {
             holder.textViewNombre.setText("Patinete " + taquilla.getId());
 
@@ -71,22 +71,30 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
 
         }
 
+        if (taquilla.isAlquilada()) {
+            holder.boton.setVisibility(View.GONE);
+            holder.botonAlquila.setVisibility(View.VISIBLE);
+            holder.botoncancelares.setVisibility(View.VISIBLE);
+
+        }
 
         if (taquilla.isOcupada()) {
             holder.boton.setVisibility(View.GONE);
+            holder.botonAlquila.setVisibility(View.GONE);
+            holder.botoncancelares.setVisibility(View.GONE);
             holder.boton2.setVisibility(View.VISIBLE);
             holder.botoncancela.setVisibility(View.VISIBLE);
             holder.enchufe.setVisibility(View.VISIBLE);
-            if(taquilla.isCargaPatinete()){
+            if (taquilla.isCargaPatinete()) {
                 holder.enchufe.setImageResource(R.drawable.enchufe);
-            }else{
+            } else {
                 holder.enchufe.setImageResource(R.drawable.enchufe_no);
             }
 
         } else {
             holder.boton2.setVisibility(View.GONE);
             holder.botoncancela.setVisibility(View.GONE);
-
+            holder.enchufe.setVisibility(View.GONE);
         }
     }
 
@@ -110,6 +118,7 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
         public String estant;
         public String id;
         public boolean carga;
+        public boolean alquilada;
         public String ide;
 
         private NotificationManager notificationManager;
@@ -121,7 +130,9 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
         TextView textViewNombre;
         Button boton;
         Button boton2;
+        Button botonAlquila;
         Button botoncancela;
+        Button botoncancelares;
         ImageView enchufe;
         Context context;
 
@@ -145,20 +156,25 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
             textViewNombre = itemView.findViewById(R.id.nombre);
             boton = itemView.findViewById(R.id.bt_reserva);
             boton2 = itemView.findViewById(R.id.bt_abrir);
+            botonAlquila = itemView.findViewById(R.id.bt_alquila);
             botoncancela = itemView.findViewById(R.id.buttonCan);
+            botoncancelares = itemView.findViewById(R.id.buttonCanReserva);
             enchufe = itemView.findViewById(R.id.imagenchufe);
 
         }
 
-        public void setOnclickListeners(String estant, String id, boolean carga) {
+        public void setOnclickListeners(String estant, String id, boolean carga, boolean alquilada) {
             this.estant = estant;
             this.carga = carga;
             this.id = id;
+            this.alquilada = alquilada;
             MenuDialogActivity m = new MenuDialogActivity();
             boton.setOnClickListener(this);
             boton2.setOnClickListener(this);
             botoncancela.setOnClickListener(this);
+            botoncancelares.setOnClickListener(this);
             enchufe.setOnClickListener(this);
+            botonAlquila.setOnClickListener(this);
         }
 
         @Override
@@ -181,7 +197,7 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
                                     Log.w("ocupada", "Error updating document", e);
                                 }
                             });
-                    taq.update("ocupada", true).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    taq.update("alquilada", true).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
                             Log.d("ocupada", "DocumentSnapshot successfully updated!");
@@ -193,7 +209,7 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
                                     Log.w("ocupada", "Error updating document", e);
                                 }
                             });
-//Crear la notificació
+                    //Crear la notificació
                     notificationManager = (NotificationManager)
                             context.getSystemService(NOTIFICATION_SERVICE);
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -207,7 +223,7 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
                             new NotificationCompat.Builder(context, CANAL_ID)
                                     .setSmallIcon(R.mipmap.ic_launcher)
                                     .setContentTitle("Taquilla reservada")
-                                    .setContentText("Tu taquilla está reservada.");
+                                    .setContentText("Has reservado una taquilla");
                     //Llançar l'aplicació des de la notificació
                     PendingIntent intencionPendiente = PendingIntent.getActivity(
                             context, 0, new Intent(context, ResActivity.class), 0);
@@ -236,6 +252,73 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
                                 }
                             });
                     taki.update("ocupada", false).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Log.d("ocupada", "DocumentSnapshot successfully updated!");
+                        }
+                    })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.w("ocupada", "Error updating document", e);
+                                }
+                            });
+                    taki.update("alquilada", false).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Log.d("ocupada", "DocumentSnapshot successfully updated!");
+                        }
+                    })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.w("ocupada", "Error updating document", e);
+                                }
+                            });
+                    break;
+                case R.id.bt_alquila:
+
+                    DocumentReference taquilla = db.collection("estaciones").document(estant).collection("taquillas").document(id);
+                    taquilla.update("idUsuario", ide).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Log.d("ocupada", "DocumentSnapshot successfully updated!");
+                        }
+                    })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.w("ocupada", "Error updating document", e);
+                                }
+                            });
+                    taquilla.update("ocupada", true).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Log.d("ocupada", "DocumentSnapshot successfully updated!");
+                        }
+                    })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.w("ocupada", "Error updating document", e);
+                                }
+                            });
+                    break;
+                case R.id.buttonCanReserva:
+                    DocumentReference document = db.collection("estaciones").document(estant).collection("taquillas").document(id);
+                    document.update("idUsuario", "").addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Log.d("ocupada", "DocumentSnapshot successfully updated!");
+                        }
+                    })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.w("ocupada", "Error updating document", e);
+                                }
+                            });
+                    document.update("alquilada", false).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
                             Log.d("ocupada", "DocumentSnapshot successfully updated!");
