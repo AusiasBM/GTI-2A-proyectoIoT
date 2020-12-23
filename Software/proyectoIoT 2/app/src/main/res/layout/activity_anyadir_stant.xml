@@ -79,31 +79,54 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
 
-                        <EditText
-
-                            android:id="@+id/etUbicacion"
-
+                        <TextView
+                            android:id="@+id/txtNombreStant"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="@string/et_ubicacion"
-                            android:fontFamily="@font/poppins_medium"
-                            android:textColor="#020000"
-                            android:textColorHint="#4E4646"
-                            android:textSize="14dp"
-                            android:verticalScrollbarPosition="defaultPosition"
-                            tools:layout_editor_absoluteX="16dp"
-                            tools:layout_editor_absoluteY="254dp" />
+                            android:text="Nombre de la ubicación"
+                            android:textColor="@color/colorPrimaryDark" />
 
                         <EditText
-                            android:id="@+id/etLatLong"
+                            android:id="@+id/etUbicacion"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:ems="10"
+                            android:fontFamily="@font/poppins_medium"
+                            android:hint="@string/et_ubicacion"
+                            android:inputType="textMultiLine|textPersonName"
+                            android:textColor="#020000"
+                            android:textColorHint="#4E4646"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:id="@+id/txtUbicacionStant"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:text="Nombre de la ubicación"
+                            android:textColor="@color/colorPrimaryDark" />
+
+                        <EditText
+                            android:id="@+id/etLat"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/poppins_medium"
                             android:hint="@string/etLat"
+                            android:inputType="numberSigned|numberDecimal"
                             android:textColor="#020000"
                             android:textColorHint="#4E4646"
-                            android:textSize="14dp"
-                            android:inputType="textMultiLine" />
+                            android:textSize="14dp" />
+
+                        <EditText
+                            android:id="@+id/etLon"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/poppins_medium"
+                            android:hint="@string/etLon"
+                            android:inputType="numberSigned|numberDecimal"
+                            android:textColor="#020000"
+                            android:textColorHint="#4E4646"
+                            android:textSize="14dp" />
 
                     </LinearLayout>
 

@@ -3,7 +3,7 @@ package com.example.proyecto2a.modelo;
 import com.google.firebase.firestore.GeoPoint;
 
 public class Stant {
-    private String ubicacion, uId;
+    private String ubicacion;
     private GeoPoint pos;
 
     public Stant() {
@@ -30,11 +30,4 @@ public class Stant {
         this.pos = pos;
     }
 
-    public String getuId() {
-        return uId;
-    }
-
-    public void setuId(String uId) {
-        this.uId = uId;
-    }
 }
