@@ -36,7 +36,7 @@ public class StantsActivity extends AppCompatActivity {
         FirestoreRecyclerOptions<Stant> firestoreRecyclerOptions =
                 new FirestoreRecyclerOptions.Builder<Stant>().setQuery(query, Stant.class).build();
 
-        adapter = new StantsAdapter(firestoreRecyclerOptions);
+        adapter = new StantsAdapter(firestoreRecyclerOptions, this);
         adapter.notifyDataSetChanged();
         recyclerView.setAdapter(adapter);
     }

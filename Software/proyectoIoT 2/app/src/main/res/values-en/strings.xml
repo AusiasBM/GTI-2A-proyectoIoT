@@ -64,6 +64,8 @@
     <string name="tv_telefonoUsuario">Contact phone</string>
 
     <string name="btn_AñadirStant">Add stant</string>
+    <string name="tv_PosicionStant">Map position</string>
+    <string name="bt_EliminarStant">Delete stant</string>
 
     <!-- Info tarjeta -->
     <string name="tv_ValidoHasta">Valid through:</string>

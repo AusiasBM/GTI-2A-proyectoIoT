@@ -20,7 +20,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.NoActionBar">
-        <activity android:name=".presentacion.InfoUsuario"></activity>
+        <activity android:name=".presentacion.InfoStant"></activity>
+        <activity android:name=".presentacion.AnyadirStantActivity" />
+        <activity android:name=".presentacion.InfoUsuario" />
         <activity android:name=".presentacion.StantsActivity" />
         <activity android:name=".presentacion.UsuariosActivity" />
         <activity android:name=".presentacion.IncidenciasActivity" />

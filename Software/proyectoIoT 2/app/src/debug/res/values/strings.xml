@@ -63,6 +63,8 @@
 
 
     <string name="btn_AñadirStant">Añadir estación</string>
+    <string name="tv_PosicionStant">Posición en mapa</string>
+    <string name="bt_EliminarStant">Eliminar estación</string>
 
 
     <string name="tv_direccionUsuario">Dirección:</string>

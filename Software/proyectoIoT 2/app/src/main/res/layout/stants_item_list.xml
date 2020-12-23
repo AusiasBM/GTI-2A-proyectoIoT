@@ -7,7 +7,7 @@
     android:background="#FFFFFF">
 
     <View
-        android:id="@+id/vInfo"
+        android:id="@+id/vInfoStant"
         android:layout_width="wrap_content"
         android:layout_height="90dp"
         android:background="@drawable/bg_button_rounded"
@@ -22,9 +22,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        app:layout_constraintBottom_toBottomOf="@+id/vInfo"
+        app:layout_constraintBottom_toBottomOf="@+id/vInfoStant"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/vInfo"
+        app:layout_constraintTop_toTopOf="@+id/vInfoStant"
         app:layout_constraintVertical_bias="0.516"
         app:srcCompat="@drawable/icono_patinete_maps_primary" />
 
@@ -50,6 +50,6 @@
         android:background="#FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/vInfo" />
+        app:layout_constraintTop_toBottomOf="@+id/vInfoStant" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
