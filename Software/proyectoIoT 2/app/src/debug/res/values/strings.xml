@@ -63,13 +63,16 @@
 
 
     <string name="btn_AñadirStant">Añadir estación</string>
-    <string name="tv_PosicionStant">Posición en mapa</string>
+    <string name="tv_PosicionStant">Posición en mapa:</string>
     <string name="bt_EliminarStant">Eliminar estación</string>
 
 
     <string name="et_ubicacion">Nombre de la estación</string>
-    <string name="etLat">Latitud</string>
-    <string name="etLong">Longitud</string>
+    <string name="etLat">Posición en el mapa(XX.XXX, XX.XXX)</string>
+    <string name="rb_posicion_manual">Introducir posición manualmente</string>
+    <string name="rb_posicion_automatica">Obtener posición actual</string>
+    <string name="tvPosicion">Posición actual:</string>
+    <string name="etPosicion"></string>
 
     <string name="tv_direccionUsuario">Dirección:</string>
     <string name="tv_telefonoUsuario">Teléfono de contacto:</string>

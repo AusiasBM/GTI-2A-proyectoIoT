@@ -68,9 +68,11 @@
     <string name="bt_EliminarStant">Delete stant</string>
 
     <string name="et_ubicacion">Stant name</string>
-    <string name="etLat">Latitude</string>
-    <string name="etLong">Length</string>
-
+    <string name="etLat">Map position(XX.XXX, XX.XXX)</string>
+    <string name="rb_posicion_manual">Entering position manually</string>
+    <string name="rb_posicion_automatica">Get current position</string>
+    <string name="tvPosicion">Current position:</string>
+    <string name="etPosicion"></string>
     <!-- Info tarjeta -->
     <string name="tv_ValidoHasta">Valid through:</string>
     <string name="tv_propietario">Card holder:</string>
