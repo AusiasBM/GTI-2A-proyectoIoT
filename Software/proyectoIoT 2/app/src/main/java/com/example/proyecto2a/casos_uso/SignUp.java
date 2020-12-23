@@ -282,14 +282,6 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener, G
                             usuarios.guardarUsuario(usuario.getEmail(), usuario.getUid());
                         }else{
                             Usuario usr = task.getResult().toObject(Usuario.class);
-                            if (usr.isAdmin()){
-                                MainActivity.tipoUsuario = "admin";
-                            }
-                            if (!usr.isAdmin()){
-                                MainActivity.tipoUsuario = "client";
-                                Log.d("usr", "client");
-                            }
-
                             Log.d("PROVA DE REGISTRE FALSE", "" + usuario.getUid());
                         }
                     }

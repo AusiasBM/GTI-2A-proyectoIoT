@@ -67,6 +67,10 @@
     <string name="tv_PosicionStant">Map position</string>
     <string name="bt_EliminarStant">Delete stant</string>
 
+    <string name="et_ubicacion">Stant name</string>
+    <string name="etLat">Latitude</string>
+    <string name="etLong">Length</string>
+
     <!-- Info tarjeta -->
     <string name="tv_ValidoHasta">Valid through:</string>
     <string name="tv_propietario">Card holder:</string>

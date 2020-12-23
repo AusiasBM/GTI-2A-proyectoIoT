@@ -59,6 +59,8 @@ public class StantsActivity extends AppCompatActivity {
     }
 
     public void añadirStant(View view){
-        Toast.makeText(this, "·", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(this, AnyadirStantActivity.class);
+        startActivity(intent);
+        finish();
     }
 }

@@ -295,14 +295,6 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener, G
                         }else{
                             Usuario usr = task.getResult().toObject(Usuario.class);
                             Log.d("usr", usuario.toString());
-                            if (usr.isAdmin()){
-                                MainActivity.tipoUsuario = "admin";
-                                Log.d("usr", "admin");
-                            }
-                            if (!usr.isAdmin()){
-                                MainActivity.tipoUsuario = "client";
-                                Log.d("usr", "client");
-                            }
 
                             Log.d("PROVA DE REGISTRE FALSE", "" + usuario.getUid());
                         }

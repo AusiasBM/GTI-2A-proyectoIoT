@@ -67,6 +67,10 @@
     <string name="bt_EliminarStant">Eliminar estación</string>
 
 
+    <string name="et_ubicacion">Nombre de la estación</string>
+    <string name="etLat">Latitud</string>
+    <string name="etLong">Longitud</string>
+
     <string name="tv_direccionUsuario">Dirección:</string>
     <string name="tv_telefonoUsuario">Teléfono de contacto:</string>
 

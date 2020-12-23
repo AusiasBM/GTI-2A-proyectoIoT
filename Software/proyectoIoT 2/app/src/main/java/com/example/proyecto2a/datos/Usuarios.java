@@ -30,11 +30,19 @@ public class Usuarios {
 
     //Crear un usuario nuevo
     public void guardarUsuario(String email, String id) {
-        Usuario usuario = new Usuario();
-        usuario.setCorreo(email);
-        usuario.setuId(id);
-        usuario.setFoto("gs://proyecto-iot-2020-b3a6f.appspot.com/imagenes/"+usuario.getuId());
-        usuarios.document(id).set(usuario);
+        try {
+            Usuario usuario = new Usuario();
+            usuario.setCorreo(email);
+            usuario.setuId(id);
+            usuario.setFoto("gs://proyecto-iot-2020-b3a6f.appspot.com/imagenes/"+usuario.getuId());
+            usuarios.document(id).set(usuario);
+        } catch (Exception err){
+            Usuario usuario = new Usuario();
+            usuario.setCorreo(email);
+            usuario.setuId(id);
+            usuarios.document(id).set(usuario);
+        }
+
     }
 
     public void actualizarUsuario(String id, Usuario usuario){
