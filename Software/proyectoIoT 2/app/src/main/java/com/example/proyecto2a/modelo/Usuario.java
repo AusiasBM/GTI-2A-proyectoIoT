@@ -4,6 +4,7 @@ package com.example.proyecto2a.modelo;
 public class Usuario {
     private String uId, nombre, correo, dirección, población, llave, foto;
     private int telefono;
+    private boolean admin = false;
 
 
     //Constructores
@@ -73,5 +74,28 @@ public class Usuario {
 
     public void setLlave(String llave) {
         this.llave = llave;
+    }
+
+    public boolean isAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(boolean admin) {
+        this.admin = admin;
+    }
+
+    @Override
+    public String toString() {
+        return "Usuario{" +
+                "uId='" + uId + '\'' +
+                ", nombre='" + nombre + '\'' +
+                ", correo='" + correo + '\'' +
+                ", dirección='" + dirección + '\'' +
+                ", población='" + población + '\'' +
+                ", llave='" + llave + '\'' +
+                ", foto='" + foto + '\'' +
+                ", telefono=" + telefono +
+                ", admin=" + admin +
+                '}';
     }
 }

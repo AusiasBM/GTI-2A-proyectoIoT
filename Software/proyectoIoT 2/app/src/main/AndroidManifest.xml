@@ -6,16 +6,12 @@
          Google Maps Android API v2, but you must specify either coarse or fine
          location permissions for the "MyLocation" functionality.
     -->
-
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission
-        android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-    <uses-permission
-        android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"></uses-permission>
-
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
         android:allowBackup="true"
@@ -24,7 +20,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.NoActionBar">
-        <activity android:name=".presentacion.InfoTarjeta"></activity>
+        <activity android:name=".presentacion.InfoUsuario"></activity>
+        <activity android:name=".presentacion.StantsActivity" />
+        <activity android:name=".presentacion.UsuariosActivity" />
+        <activity android:name=".presentacion.IncidenciasActivity" />
+        <activity android:name=".presentacion.InfoTarjeta" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -73,8 +73,9 @@
             android:name=".presentacion.MensajeActivity"
             android:theme="@style/NoLabel" />
         <activity android:name=".presentacion.Ayuda" />
-        <activity android:name=".presentacion.InfoPago"
-            android:theme="@style/Theme.AppCompat.Light"/>
+        <activity
+            android:name=".presentacion.InfoPago"
+            android:theme="@style/Theme.AppCompat.Light" />
         <activity android:name=".presentacion.RecyclerTarjetas" />
         <activity
             android:name=".presentacion.EditarPerfilUsuarioActivity"
@@ -97,7 +98,7 @@
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
 
-        <service android:name=".presentacion.ServicioLocalizacion"></service>
+        <service android:name=".presentacion.ServicioLocalizacion" />
     </application>
 
 </manifest>

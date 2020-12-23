@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.example.proyecto2a.R;
 import com.example.proyecto2a.datos.Usuarios;
+import com.example.proyecto2a.modelo.Usuario;
 import com.example.proyecto2a.presentacion.MainActivity;
 import com.example.proyecto2a.presentacion.ResActivity;
 import com.google.android.gms.auth.api.Auth;
@@ -292,6 +293,17 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener, G
                             Log.d("PROVA DE REGISTRE TRUE", "" + task.getResult().exists());
                             usuarios.guardarUsuario(usuario.getEmail(), usuario.getUid());
                         }else{
+                            Usuario usr = task.getResult().toObject(Usuario.class);
+                            Log.d("usr", usuario.toString());
+                            if (usr.isAdmin()){
+                                MainActivity.tipoUsuario = "admin";
+                                Log.d("usr", "admin");
+                            }
+                            if (!usr.isAdmin()){
+                                MainActivity.tipoUsuario = "client";
+                                Log.d("usr", "client");
+                            }
+
                             Log.d("PROVA DE REGISTRE FALSE", "" + usuario.getUid());
                         }
                     }

@@ -155,6 +155,7 @@ public class EditarPerfilUsuarioActivity extends AppCompatActivity {
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == 1234) {
                 subirFichero(data.getData(), "imagenes/"+idUsuario);
+
             }
         }
 
@@ -167,6 +168,7 @@ public class EditarPerfilUsuarioActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                         Log.d("Almacenamiento", "Fichero subido");
+                        bajarFichero();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -194,7 +196,6 @@ public class EditarPerfilUsuarioActivity extends AppCompatActivity {
                       public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot){
                           Log.d("Almacenamiento", "Fichero bajado");
                           fotoPerfil.setImageBitmap(BitmapFactory.decodeFile(path));
-                          bajarFichero();
                       }
                  }).addOnFailureListener(new OnFailureListener() {
             @Override

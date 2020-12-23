@@ -7,7 +7,7 @@
     android:background="#FFFFFF">
 
     <View
-        android:id="@+id/vInfoTarjetas"
+        android:id="@+id/vInfo"
         android:layout_width="wrap_content"
         android:layout_height="90dp"
         android:background="@drawable/bg_button_rounded"
@@ -19,25 +19,28 @@
 
     <ImageView
         android:id="@+id/ivUsuario_info"
-        android:layout_width="100dp"
-        android:layout_height="59dp"
-        android:layout_marginStart="12dp"
-        app:layout_constraintBottom_toBottomOf="@+id/vInfoTarjetas"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/vInfoTarjetas"
-        app:srcCompat="@drawable/visa" />
-
-    <TextView
-        android:id="@+id/tvNumeroTarjetaInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        app:layout_constraintBottom_toBottomOf="@+id/vInfo"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/vInfo"
+        app:layout_constraintVertical_bias="0.516"
+        app:srcCompat="@drawable/icono_patinete_maps_primary" />
+
+    <TextView
+        android:id="@+id/tvUbicacionStant"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:text="TextView"
         android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="@+id/ivUsuario_info"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.936"
+        app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toEndOf="@+id/ivUsuario_info"
-        app:layout_constraintTop_toTopOf="@+id/ivUsuario_info" />
+        app:layout_constraintTop_toTopOf="@+id/ivUsuario_info"
+        app:layout_constraintVertical_bias="0.5" />
 
     <View
         android:id="@+id/view7"
@@ -47,6 +50,6 @@
         android:background="#FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/vInfoTarjetas" />
+        app:layout_constraintTop_toBottomOf="@+id/vInfo" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

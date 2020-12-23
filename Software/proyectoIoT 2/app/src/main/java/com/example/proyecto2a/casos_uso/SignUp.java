@@ -8,6 +8,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -17,6 +18,7 @@ import android.widget.Toast;
 
 import com.example.proyecto2a.R;
 import com.example.proyecto2a.datos.Usuarios;
+import com.example.proyecto2a.modelo.Usuario;
 import com.example.proyecto2a.presentacion.InfoActivity;
 import com.example.proyecto2a.presentacion.MainActivity;
 import com.example.proyecto2a.presentacion.ResActivity;
@@ -34,6 +36,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.firestore.DocumentSnapshot;
 
 public class SignUp extends AppCompatActivity implements View.OnClickListener, GoogleApiClient.OnConnectionFailedListener {
 
@@ -64,14 +67,7 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener, G
     @Override
     protected void onStart() {
         super.onStart();
-        /*if (firebaseAuth.getCurrentUser().isEmailVerified()) {
-            final String email = TextEmail.getText().toString();
-            Toast.makeText(SignUp.this, "Usuario registrado, revise su email para la verificación", Toast.LENGTH_LONG).show();
-            Intent intent = new Intent(SignUp.this, ResActivity.class);
-            intent.putExtra(ResActivity.user, email);
-            intent.putExtra(ResActivity.metodo, "email");
-            startActivity(intent);
-        }*/
+
     }
 
     @Override
@@ -271,9 +267,36 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener, G
     }
 
     private void goRes() {
+        //Creación de un objeto FirebaseUser
+        final FirebaseUser usuario = firebaseAuth.getInstance().getCurrentUser();
+
+        Log.d("PROVA DE UID", "" + usuario.getUid());
+        //Creación de un nuevo documento (id = uId de firebaseAuth)en la bbdd de Firestore con el correo
+        final Usuarios usuarios = new Usuarios();
+        usuarios.getUsuarios().document(usuario.getUid()).get().addOnCompleteListener(
+                new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful() && task.getResult().exists() == false){
+                            Log.d("PROVA DE REGISTRE TRUE", "" + task.getResult().exists());
+                            usuarios.guardarUsuario(usuario.getEmail(), usuario.getUid());
+                        }else{
+                            Usuario usr = task.getResult().toObject(Usuario.class);
+                            if (usr.isAdmin()){
+                                MainActivity.tipoUsuario = "admin";
+                            }
+                            if (!usr.isAdmin()){
+                                MainActivity.tipoUsuario = "client";
+                                Log.d("usr", "client");
+                            }
+
+                            Log.d("PROVA DE REGISTRE FALSE", "" + usuario.getUid());
+                        }
+                    }
+                });
+        //Abrir la actividad ResActivity
         Intent intent = new Intent(this, ResActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtra(ResActivity.metodo, "email");
         startActivity(intent);
     }
 
