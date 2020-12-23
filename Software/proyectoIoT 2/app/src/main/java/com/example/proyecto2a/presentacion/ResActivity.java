@@ -45,6 +45,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -88,40 +90,6 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
         setContentView(R.layout.result);
         txtUser = (TextView) findViewById(R.id.textser);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-
-
-        if (navigationView != null) {
-
-            //Comprobación tipo usuario
-            Log.d("usr", usuario.toString());
-            if (MainActivity.tipoUsuario.equals("admin")){
-                navigationView.getMenu().findItem(R.id.nav_users).setVisible(true);
-                navigationView.getMenu().findItem(R.id.nav_incidencias).setVisible(true);
-                navigationView.getMenu().findItem(R.id.nav_settings).setVisible(true);
-            }
-            if (MainActivity.tipoUsuario.equals("client")){
-                navigationView.getMenu().findItem(R.id.nav_gallery).setVisible(true);
-                navigationView.getMenu().findItem(R.id.nav_pays).setVisible(true);
-                navigationView.getMenu().findItem(R.id.nav_asistencia).setVisible(true);
-                navigationView.getMenu().findItem(R.id.nav_ayuda).setVisible(true);
-            }
-
-            prepararDrawer(navigationView);
-            // Seleccionar item por defecto
-            seleccionarItem(navigationView.getMenu().getItem(0));
-        }
-        agregarToolbar();
-        GoogleSignInOptions gso =
-                new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                        .requestEmail()
-                        .build();
-
-        googleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this, this)
-                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-                .build();
-
 
         //inicializamos el objeto firebaseAuth
         firebaseAuth = FirebaseAuth.getInstance();
@@ -138,13 +106,41 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
             }
         };
 
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("usuarios").document(firebaseAuth.getUid()).get()
+                .addOnCompleteListener(
+                        new OnCompleteListener<DocumentSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    usuario = task.getResult().toObject(Usuario.class);
+                                    menuTipoUsuario(usuario);
+                                }else {
+                                    Log.d("Error usuario", "");
+                                }
+                            }
+                        }
+        );
+
+        GoogleSignInOptions gso =
+                new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                        .requestEmail()
+                        .build();
+
+        googleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this, this)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .build();
+
+
+
+
         //Carga del fragment del mapa
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        //Consulta a bbdd para cargar las estaciones
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
         //Obtención de la colección "estaciones" en la base datos
         db.collection("estaciones")
                 .get()
@@ -171,6 +167,30 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
 
         manejador = (LocationManager) getSystemService(LOCATION_SERVICE);
         solicitarPermisos();
+    }
+
+    private void menuTipoUsuario(Usuario user){
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        if (navigationView != null) {
+            //Comprobación tipo usuario
+            Log.d("usr", user.toString());
+            if (user.isAdmin()){
+                navigationView.getMenu().findItem(R.id.nav_users).setVisible(true);
+                navigationView.getMenu().findItem(R.id.nav_incidencias).setVisible(true);
+                navigationView.getMenu().findItem(R.id.nav_settings).setVisible(true);
+            }
+            else {
+                navigationView.getMenu().findItem(R.id.nav_gallery).setVisible(true);
+                navigationView.getMenu().findItem(R.id.nav_pays).setVisible(true);
+                navigationView.getMenu().findItem(R.id.nav_asistencia).setVisible(true);
+                navigationView.getMenu().findItem(R.id.nav_ayuda).setVisible(true);
+            }
+
+            prepararDrawer(navigationView);
+            // Seleccionar item por defecto
+            seleccionarItem(navigationView.getMenu().getItem(0));
+        }
+        agregarToolbar();
     }
 
     private void agregarToolbar() {
