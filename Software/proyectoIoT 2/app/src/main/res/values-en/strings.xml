@@ -68,7 +68,8 @@
     <string name="bt_EliminarStant">Delete stant</string>
 
     <string name="et_ubicacion">Stant name</string>
-    <string name="etLat">Map position(XX.XXX, XX.XXX)</string>
+    <string name="etLat">Latitude</string>
+    <string name="etLon">Longitude</string>
     <string name="rb_posicion_manual">Entering position manually</string>
     <string name="rb_posicion_automatica">Get current position</string>
     <string name="tvPosicion">Current position:</string>

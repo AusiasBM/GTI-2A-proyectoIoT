@@ -68,7 +68,8 @@
 
 
     <string name="et_ubicacion">Nombre de la estación</string>
-    <string name="etLat">Posición en el mapa(XX.XXX, XX.XXX)</string>
+    <string name="etLat">Latitud</string>
+    <string name="etLon">Longitud</string>
     <string name="rb_posicion_manual">Introducir posición manualmente</string>
     <string name="rb_posicion_automatica">Obtener posición actual</string>
     <string name="tvPosicion">Posición actual:</string>
