@@ -64,7 +64,7 @@ public class Tab2 extends Fragment {RecyclerView recyclerView;
                 if (task.isSuccessful()) {
                     for (QueryDocumentSnapshot document : task.getResult()) {
                         id = (String) document.getId();
-                        Query lista = mFirestore.collection("estaciones").document(id).collection("taquillas").whereEqualTo("ocupada", true).whereEqualTo("idUsuario", idUsuario).whereEqualTo("patinNuestro", true);
+                        Query lista = mFirestore.collection("estaciones").document(id).collection("taquillas").whereEqualTo("alquilada", true).whereEqualTo("idUsuario", idUsuario).whereEqualTo("patinNuestro", true);
                         FirestoreRecyclerOptions<Taquilla> options = new FirestoreRecyclerOptions.Builder<Taquilla>()
                                 .setQuery(lista, Taquilla.class)
                                 .build();
@@ -83,7 +83,7 @@ public class Tab2 extends Fragment {RecyclerView recyclerView;
                 if (task.isSuccessful()) {
                     for (QueryDocumentSnapshot document : task.getResult()) {
                         id = (String) document.getId();
-                        Query lista = mFirestore.collection("estaciones").document(id).collection("taquillas").whereEqualTo("ocupada", false).whereEqualTo("patinNuestro", true);
+                        Query lista = mFirestore.collection("estaciones").document(id).collection("taquillas").whereEqualTo("alquilada", false).whereEqualTo("patinNuestro", true);
 
                         FirestoreRecyclerOptions<Taquilla> options = new FirestoreRecyclerOptions.Builder<Taquilla>()
                                 .setQuery(lista, Taquilla.class)

@@ -8,13 +8,14 @@ public class Taquilla {
     private boolean puertaAbierta;
     private boolean patinNuestro;
     private boolean ocupada;
+    private boolean alquilada;
 
 
     public Taquilla(){
 
     }
 
-    public Taquilla(String id, String idUsuario, String estant, boolean cargaPatinete, boolean puertaAbierta, boolean patinNuestro, boolean ocupada) {
+    public Taquilla(String id, String idUsuario, String estant, boolean cargaPatinete, boolean puertaAbierta, boolean patinNuestro, boolean ocupada, boolean alquilada) {
         this.id = id;
         this.idUsuario = idUsuario;
         this.cargaPatinete = cargaPatinete;
@@ -22,6 +23,7 @@ public class Taquilla {
         this.patinNuestro = patinNuestro;
         this.ocupada = ocupada;
         this.estant = estant;
+        this.alquilada = alquilada;
     }
 
     public String getEstant() {
@@ -78,5 +80,13 @@ public class Taquilla {
 
     public void setOcupada(boolean ocupada) {
         this.ocupada = ocupada;
+    }
+
+    public boolean isAlquilada() {
+        return alquilada;
+    }
+
+    public void setAlquilada(boolean alquilada) {
+        this.alquilada = alquilada;
     }
 }
