@@ -33,6 +33,7 @@ public class Usuarios {
         Usuario usuario = new Usuario();
         usuario.setCorreo(email);
         usuario.setuId(id);
+        usuario.setFoto("gs://proyecto-iot-2020-b3a6f.appspot.com/imagenes/"+usuario.getuId());
         usuarios.document(id).set(usuario);
     }
 

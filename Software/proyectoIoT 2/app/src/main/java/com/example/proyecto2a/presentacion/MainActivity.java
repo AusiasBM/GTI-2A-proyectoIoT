@@ -24,12 +24,13 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
 public class MainActivity extends AppCompatActivity {
 
+    static public String tipoUsuario = "client";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
     }
-
 
     public void SignUp(View view){
         Intent intent = new Intent(this, SignUp.class);
