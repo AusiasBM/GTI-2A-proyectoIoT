@@ -4,6 +4,7 @@
     <!--General-->
     <string name="logo">logo</string>
     <string name="nombre_empresa">TRICOOPARK®</string>
+    <string name="version">Versión Administrador</string>
 
 
     <!--Landing Page-->
@@ -43,6 +44,10 @@
     <string name="address_title">Dirección</string>
     <string name="city_title">Población</string>
     <string name="email_title">Correo</string>
+    <string name="menu_perfil_admin">Usuarios</string>
+    <string name="menu_incidencias">Incidencias</string>
+    <string name="menu_opciones">Configurar stants</string>
+
 
 
     <!-- Info usuario-->
@@ -51,6 +56,29 @@
     <string name="et_correoUsuario">Introduce tu correo</string>
     <string name="et_direccionUsuario">Introduce tu dirección</string>
     <string name="et_apellidosUsuario">Introduce tus apellidos</string>
+
+
+    <string name="tv_GestionUsuarios">Usuarios:</string>
+    <string name="tv_GestionStants">Estaciones:</string>
+
+
+    <string name="btn_AñadirStant">Añadir estación</string>
+    <string name="tv_PosicionStant">Posición en mapa:</string>
+    <string name="bt_EliminarStant">Eliminar estación</string>
+
+
+    <string name="et_ubicacion">Nombre de la estación</string>
+    <string name="etLat">Latitud</string>
+    <string name="etLon">Longitud</string>
+    <string name="rb_posicion_manual">Introducir posición manualmente</string>
+    <string name="rb_posicion_automatica">Obtener posición actual</string>
+    <string name="tvPosicion">Posición actual:</string>
+    <string name="etPosicion"></string>
+
+    <string name="tv_direccionUsuario">Dirección:</string>
+    <string name="tv_telefonoUsuario">Teléfono de contacto:</string>
+
+
 
     <!-- Info tarjeta -->
     <string name="tv_ValidoHasta">Válida hasta:</string>

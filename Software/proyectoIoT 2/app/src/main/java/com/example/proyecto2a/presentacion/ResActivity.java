@@ -1,21 +1,19 @@
 package com.example.proyecto2a.presentacion;
 
 import android.Manifest;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 
 import androidx.annotation.NonNull;
@@ -27,6 +25,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.proyecto2a.R;
 import com.example.proyecto2a.casos_uso.Asistente;
+import com.example.proyecto2a.modelo.Usuario;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.ConnectionResult;
@@ -46,13 +45,13 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
 public class ResActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, OnMapReadyCallback, GoogleMap.OnMapClickListener {
@@ -80,28 +79,17 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
     private LocationManager manejador;
     private Location mejorLocaliz;
 
+    Usuario usuario = new Usuario();
+
+    //--------
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.result);
         txtUser = (TextView) findViewById(R.id.textser);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        if (navigationView != null) {
-            prepararDrawer(navigationView);
-            // Seleccionar item por defecto
-            seleccionarItem(navigationView.getMenu().getItem(0));
-        }
-        agregarToolbar();
-        GoogleSignInOptions gso =
-                new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                        .requestEmail()
-                        .build();
-
-        googleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this, this)
-                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-                .build();
 
         //inicializamos el objeto firebaseAuth
         firebaseAuth = FirebaseAuth.getInstance();
@@ -118,13 +106,41 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
             }
         };
 
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("usuarios").document(firebaseAuth.getUid()).get()
+                .addOnCompleteListener(
+                        new OnCompleteListener<DocumentSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    usuario = task.getResult().toObject(Usuario.class);
+                                    menuTipoUsuario(usuario);
+                                }else {
+                                    Log.d("Error usuario", "");
+                                }
+                            }
+                        }
+        );
+
+        GoogleSignInOptions gso =
+                new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                        .requestEmail()
+                        .build();
+
+        googleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this, this)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .build();
+
+
+
+
         //Carga del fragment del mapa
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        //Consulta a bbdd para cargar las estaciones
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
         //Obtención de la colección "estaciones" en la base datos
         db.collection("estaciones")
                 .get()
@@ -151,26 +167,30 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
 
         manejador = (LocationManager) getSystemService(LOCATION_SERVICE);
         solicitarPermisos();
+    }
 
+    private void menuTipoUsuario(Usuario user){
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        if (navigationView != null) {
+            //Comprobación tipo usuario
+            Log.d("usr", user.toString());
+            if (user.isAdmin()){
+                navigationView.getMenu().findItem(R.id.nav_users).setVisible(true);
+                navigationView.getMenu().findItem(R.id.nav_incidencias).setVisible(true);
+                navigationView.getMenu().findItem(R.id.nav_settings).setVisible(true);
+            }
+            else {
+                navigationView.getMenu().findItem(R.id.nav_gallery).setVisible(true);
+                navigationView.getMenu().findItem(R.id.nav_pays).setVisible(true);
+                navigationView.getMenu().findItem(R.id.nav_asistencia).setVisible(true);
+                navigationView.getMenu().findItem(R.id.nav_ayuda).setVisible(true);
+            }
 
-        //Crear taquillas
-
-       /* Map<String, Object> datos = new HashMap<>();
-        datos.put("cargaPatinete", false);
-        datos.put("ocupada", false);
-        datos.put("patinNuestro", true);
-        datos.put("puertaAbierta", false);
-        datos.put("estant", "4");
-        datos.put("id", "1");
-        datos.put("idUsuario", "");
-
-
-        db.collection("estaciones").document("4").collection("taquillas").document("1").set(datos);
-        db.collection("estaciones").document("5").collection("taquillas").document("1").set(datos);
-        db.collection("estaciones").document("2").collection("taquillas").document("1").set(datos);
-        db.collection("estaciones").document("3").collection("taquillas").document("1").set(datos);
-
-*/
+            prepararDrawer(navigationView);
+            // Seleccionar item por defecto
+            seleccionarItem(navigationView.getMenu().getItem(0));
+        }
+        agregarToolbar();
     }
 
     private void agregarToolbar() {
@@ -196,7 +216,6 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
     protected void onStart() {
         super.onStart();
         firebaseAuth.addAuthStateListener(firebaseAuthListener);
-
     }
 
     @Override
@@ -296,7 +315,6 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
 
     }
 
-
     public void lanzaMenuDialog(String nom, LatLng pos) {
         Intent i = new Intent(this, MenuDialogActivity.class);
         i.putExtra("nombre", nom);
@@ -340,7 +358,6 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
                 lanzarPerfil();
                 break;
             case R.id.nav_home:
-                // Fragmento para la sección Cuenta
                 break;
             case R.id.nav_pays:
                 lanzarPago();
@@ -354,8 +371,32 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
             case R.id.nav_slideshow:
                 logOut();
                 break;
+            case R.id.nav_users:
+                lanzarUsuarios();
+                break;
+            case R.id.nav_incidencias:
+                lanzarIncidencias();
+                break;
+            case R.id.nav_settings:
+                lanzarConfiguracion();
+                break;
         }
 
+    }
+
+    private void lanzarConfiguracion() {
+        Intent i = new Intent(this, StantsActivity.class);
+        startActivity(i);
+    }
+
+    private void lanzarUsuarios() {
+        Intent i = new Intent(this, UsuariosActivity.class);
+        startActivity(i);
+    }
+
+    private void lanzarIncidencias() {
+        Intent i = new Intent(this, IncidenciasActivity.class);
+        startActivity(i);
     }
 
     private void lanzarPago() {

@@ -30,7 +30,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
     }
 
-
     public void SignUp(View view){
         Intent intent = new Intent(this, SignUp.class);
         startActivity(intent);
@@ -47,6 +46,5 @@ public class MainActivity extends AppCompatActivity {
     public void onBackPressed(){
 
     }
-
-
+    
 }

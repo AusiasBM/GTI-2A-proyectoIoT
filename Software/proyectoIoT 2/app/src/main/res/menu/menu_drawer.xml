@@ -11,19 +11,35 @@
             android:icon="@drawable/hogar"
             android:fontFamily="@font/poppins_medium"
             android:textSize="22dp"
-            android:title="@string/menu_home" />
+            android:title="@string/menu_home"/>
         <item
             android:id="@+id/nav_gallery"
             android:fontFamily="@font/poppins_medium"
             android:textSize="22dp"
             android:icon="@drawable/usuario"
-            android:title="@string/menu_perfil" />
+            android:title="@string/menu_perfil"
+            android:visible="false"/>
         <item
             android:id="@+id/nav_pays"
             android:fontFamily="@font/poppins_medium"
             android:icon="@drawable/creditcardpayment"
             android:textSize="22dp"
-            android:title="@string/menu_pago" />
+            android:title="@string/menu_pago"
+            android:visible="false"/>
+        <item
+            android:id="@+id/nav_users"
+            android:fontFamily="@font/poppins_medium"
+            android:icon="@drawable/users"
+            android:textSize="22dp"
+            android:title="@string/menu_perfil_admin"
+            android:visible="false" />
+        <item
+            android:id="@+id/nav_incidencias"
+            android:fontFamily="@font/poppins_medium"
+            android:icon="@drawable/alert"
+            android:textSize="22dp"
+            android:title="@string/menu_incidencias"
+            android:visible="false" />
     </group>
     <group
         android:id="@+id/secundario"
@@ -34,13 +50,23 @@
             android:fontFamily="@font/poppins_medium"
             android:textSize="22dp"
             android:icon="@drawable/apoyar"
-            android:title="Asistencia" />
+            android:title="Asistencia"
+            android:visible="false"/>
+
         <item
             android:id="@+id/nav_ayuda"
             android:fontFamily="@font/poppins_medium"
             android:textSize="22dp"
             android:icon="@drawable/informacion_menu"
-            android:title="Ayuda" />
+            android:title="Ayuda"
+            android:visible="false"/>
+        <item
+            android:id="@+id/nav_settings"
+            android:fontFamily="@font/poppins_medium"
+            android:textSize="22dp"
+            android:icon="@drawable/settings"
+            android:title="@string/menu_opciones"
+            android:visible="false" />
         <item
             android:id="@+id/nav_slideshow"
             android:fontFamily="@font/poppins_medium"

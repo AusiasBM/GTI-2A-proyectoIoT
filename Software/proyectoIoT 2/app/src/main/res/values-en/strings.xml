@@ -6,6 +6,8 @@
     <string name="logo">logo</string>
     <string name="nombre_empresa">TRICOOPARK®</string>
 
+    <string name="version">Admin version</string>
+
 
     <!--Landing Page-->
     <string name="txt_reclamo">The best decision for your electric scooter</string>
@@ -35,6 +37,9 @@
     <string name="menu_cerrarSesion">Close sesion</string>
     <string name="title_activity_maps">Map</string>
     <string name="nav_asist">Asistencia_opcion</string>
+    <string name="menu_perfil_admin">Users</string>
+    <string name="menu_incidencias">Incidents</string>
+    <string name="menu_opciones">Configure stants</string>
 
     <string name="back_to_home">Back to\nHome</string>
     <string name="username_title">Username</string>
@@ -51,6 +56,24 @@
     <string name="et_apellidosUsuario">Add your second name</string>
     <string name="menu_pago">Payment settings</string>
 
+    <string name="tv_GestionUsuarios">Users:</string>
+
+    <string name="tv_GestionStants">Stants:</string>
+
+    <string name="tv_direccionUsuario">Address</string>
+    <string name="tv_telefonoUsuario">Contact phone</string>
+
+    <string name="btn_AñadirStant">Add stant</string>
+    <string name="tv_PosicionStant">Map position</string>
+    <string name="bt_EliminarStant">Delete stant</string>
+
+    <string name="et_ubicacion">Stant name</string>
+    <string name="etLat">Latitude</string>
+    <string name="etLon">Longitude</string>
+    <string name="rb_posicion_manual">Entering position manually</string>
+    <string name="rb_posicion_automatica">Get current position</string>
+    <string name="tvPosicion">Current position:</string>
+    <string name="etPosicion"></string>
     <!-- Info tarjeta -->
     <string name="tv_ValidoHasta">Valid through:</string>
     <string name="tv_propietario">Card holder:</string>

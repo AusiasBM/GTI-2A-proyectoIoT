@@ -70,7 +70,7 @@ public class TarjetasAdapter extends FirestoreRecyclerAdapter<Tarjeta, TarjetasA
         public TarjetasViewHolder(@NonNull View itemView) {
             super(itemView);
             tvNumTarj = itemView.findViewById(R.id.tvNumeroTarjetaInfo);
-            vInfo = itemView.findViewById(R.id.vInfo);
+            vInfo = itemView.findViewById(R.id.vInfoTarjetas);
             //firebaseAuth = FirebaseAuth.getInstance();
             //firebaseAuth.getUid();
         }
