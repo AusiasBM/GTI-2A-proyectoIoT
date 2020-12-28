@@ -70,10 +70,13 @@
     <string name="et_ubicacion">Nombre de la estación</string>
     <string name="etLat">Latitud</string>
     <string name="etLon">Longitud</string>
-    <string name="rb_posicion_manual">Introducir posición manualmente</string>
-    <string name="rb_posicion_automatica">Obtener posición actual</string>
     <string name="tvPosicion">Posición actual:</string>
-    <string name="etPosicion"></string>
+    <string name="tvTaquillas">Gestor de taquillas:</string>
+    <string name="tvTaquillaPropia">Taquilla con patín de la empresa:</string>
+    <string name="tvTaquillaNoNuestra">Taquilla con patín propio:</string>
+    <string name="btAñadirTaquilla">Añadir taquilla</string>
+    <string name="btEliminarTaquilla">Eliminar taquilla</string>
+
 
     <string name="tv_direccionUsuario">Dirección:</string>
     <string name="tv_telefonoUsuario">Teléfono de contacto:</string>

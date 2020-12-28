@@ -71,64 +71,56 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="14dp"
-                    android:orientation="horizontal">
+                    android:orientation="vertical">
 
-                    <LinearLayout
+                    <TextView
+                        android:id="@+id/txtNombreStant"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical">
+                        android:text="Nombre de la ubicación"
+                        android:textColor="@color/colorPrimaryDark" />
 
-                        <TextView
-                            android:id="@+id/txtNombreStant"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Nombre de la ubicación"
-                            android:textColor="@color/colorPrimaryDark" />
+                    <EditText
+                        android:id="@+id/etUbicacion"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ems="10"
+                        android:fontFamily="@font/poppins_medium"
+                        android:hint="@string/et_ubicacion"
+                        android:inputType="textMultiLine|textPersonName"
+                        android:textColor="#020000"
+                        android:textColorHint="#4E4646"
+                        android:textSize="14sp" />
 
-                        <EditText
-                            android:id="@+id/etUbicacion"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:ems="10"
-                            android:fontFamily="@font/poppins_medium"
-                            android:hint="@string/et_ubicacion"
-                            android:inputType="textMultiLine|textPersonName"
-                            android:textColor="#020000"
-                            android:textColorHint="#4E4646"
-                            android:textSize="14sp" />
+                    <TextView
+                        android:id="@+id/txtUbicacionStant"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="@string/tv_PosicionStant"
+                        android:textColor="@color/colorPrimaryDark" />
 
-                        <TextView
-                            android:id="@+id/txtUbicacionStant"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            android:text="Nombre de la ubicación"
-                            android:textColor="@color/colorPrimaryDark" />
+                    <EditText
+                        android:id="@+id/etLat"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins_medium"
+                        android:hint="@string/etLat"
+                        android:inputType="numberSigned|numberDecimal"
+                        android:textColor="#020000"
+                        android:textColorHint="#4E4646"
+                        android:textSize="14dp" />
 
-                        <EditText
-                            android:id="@+id/etLat"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/poppins_medium"
-                            android:hint="@string/etLat"
-                            android:inputType="numberSigned|numberDecimal"
-                            android:textColor="#020000"
-                            android:textColorHint="#4E4646"
-                            android:textSize="14dp" />
-
-                        <EditText
-                            android:id="@+id/etLon"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/poppins_medium"
-                            android:hint="@string/etLon"
-                            android:inputType="numberSigned|numberDecimal"
-                            android:textColor="#020000"
-                            android:textColorHint="#4E4646"
-                            android:textSize="14dp" />
-
-                    </LinearLayout>
+                    <EditText
+                        android:id="@+id/etLon"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins_medium"
+                        android:hint="@string/etLon"
+                        android:inputType="numberSigned|numberDecimal"
+                        android:textColor="#020000"
+                        android:textColorHint="#4E4646"
+                        android:textSize="14dp" />
 
                 </LinearLayout>
 

@@ -14,7 +14,7 @@ public class Stants {
         stants = db.collection("estaciones");
     }
 
-    //Crear un usuario nuevo
+    //Crear un stant nuevo
     public void actualizarStant(Stant stant) {
         stants.document(stant.getUbicacion()).set(stant);
     }
