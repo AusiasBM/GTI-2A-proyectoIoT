@@ -1,6 +1,8 @@
 package com.example.proyecto2a.presentacion;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -238,17 +240,34 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
     }
 
     public void logOut() {
-        Auth.GoogleSignInApi.signOut(googleApiClient).setResultCallback(new ResultCallback<Status>() {
+        final AlertDialog.Builder alert =new AlertDialog.Builder(this);
+        alert.setMessage("¿Estas seguro de que quieres cerrar sesión?");
+        alert.setTitle("Cerrar Sesión");
+        alert.setPositiveButton("Si", new DialogInterface.OnClickListener() {
             @Override
-            public void onResult(@NonNull Status status) {
-                if (status.isSuccess()) {
-                    goMain();
-                    finish();
-                } else {
-                    Toast.makeText(getApplicationContext(), "No se pudo cerrar sesion", Toast.LENGTH_SHORT).show();
-                }
+            public void onClick(DialogInterface dialog, int which) {
+                Auth.GoogleSignInApi.signOut(googleApiClient).setResultCallback(new ResultCallback<Status>() {
+                    @Override
+                    public void onResult(@NonNull Status status) {
+                        if (status.isSuccess()) {
+                            goMain();
+                            finish();
+                        } else {
+                            Toast.makeText(getApplicationContext(), "No se pudo cerrar sesion", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+
             }
         });
+        alert.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        AlertDialog dialog=alert.create();
+        dialog.show();
     }
 
     @Override

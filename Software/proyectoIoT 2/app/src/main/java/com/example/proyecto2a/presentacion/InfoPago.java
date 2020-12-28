@@ -1,6 +1,8 @@
 package com.example.proyecto2a.presentacion;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,6 +13,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.proyecto2a.R;
@@ -18,6 +21,9 @@ import com.example.proyecto2a.datos.Tarjetas;
 import com.example.proyecto2a.datos.Usuarios;
 import com.example.proyecto2a.modelo.Tarjeta;
 import com.example.proyecto2a.modelo.Usuario;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -82,15 +88,32 @@ public class InfoPago extends AppCompatActivity {
         startActivity(intent);
     }
     public void guardarTarjeta(View view){
-        Log.d("hi", num.getText().equals("") + "");
-        if (num.getText().toString().isEmpty() || mes.getText().toString().isEmpty()
-                || año.getText().toString().isEmpty()
-                || cvv.getText().toString().isEmpty() || name.getText().toString().isEmpty()
-                || apellido.getText().toString().isEmpty()){
-            Toast.makeText(this, "Rellene todos los campos", Toast.LENGTH_SHORT).show();
-        } else {
-            actualizarPerfilTarjeta();
-        }
+        final AlertDialog.Builder alert =new AlertDialog.Builder(InfoPago.this);
+        alert.setMessage("¿Estas seguro de que quieres añadir esta tarjeta?");
+        alert.setTitle("Añadir tarjeta");
+        alert.setPositiveButton("Si", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Log.d("hi", num.getText().equals("") + "");
+                if (num.getText().toString().isEmpty() || mes.getText().toString().isEmpty()
+                        || año.getText().toString().isEmpty()
+                        || cvv.getText().toString().isEmpty() || name.getText().toString().isEmpty()
+                        || apellido.getText().toString().isEmpty()){
+
+                } else {
+                    actualizarPerfilTarjeta();
+                }
+            }
+        });
+        alert.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        AlertDialog dialog=alert.create();
+        dialog.show();
+
     }
 
     public void actualizarPerfilTarjeta(){
