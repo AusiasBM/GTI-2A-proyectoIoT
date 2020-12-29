@@ -44,6 +44,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
 
+//import static com.example.proyecto2a.modelo.Usuario.registrarImagen;
+
 public class EditarPerfilUsuarioActivity extends AppCompatActivity {
     private String idUsuario;
     private Tarjeta tarjeta;
@@ -161,7 +163,8 @@ public class EditarPerfilUsuarioActivity extends AppCompatActivity {
 
     }
 
-    private void subirFichero(Uri fichero, String referencia) {
+    private void subirFichero(final Uri fichero, final String referencia) {
+        /*
         StorageReference ficheroRef = storageReference.child(referencia);
         ficheroRef.putFile(fichero)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>(){
@@ -177,6 +180,30 @@ public class EditarPerfilUsuarioActivity extends AppCompatActivity {
                         Log.e("Almacenamiento", "ERROR: subiendo fichero");
                     }
                 });
+
+         */
+        final StorageReference ficheroRef = storageReference.child(referencia);
+        UploadTask uploadTask = ficheroRef.putFile(fichero);
+        Task<Uri> urlTask = uploadTask.continueWithTask(new
+            Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                @Override public Task<Uri> then(@NonNull
+                    Task<UploadTask.TaskSnapshot> task) throws Exception {
+                        if (!task.isSuccessful()) throw task.getException();
+                        return ficheroRef.getDownloadUrl();
+                    }
+            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+            @Override public void onComplete(@NonNull Task<Uri> task) {
+                if (task.isSuccessful()) {
+                    Uri downloadUri = task.getResult();
+                    //registrarImagen(downloadUri.toString());
+                    usuario.setFoto(ficheroRef.toString());
+                    bajarFichero();
+
+                } else {
+                    Log.e("Almacenamiento", "ERROR: subiendo fichero");
+                }
+            }
+        });
     }
 
     private void bajarFichero() {
