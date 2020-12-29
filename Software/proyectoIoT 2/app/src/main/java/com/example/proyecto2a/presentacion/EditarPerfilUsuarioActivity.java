@@ -165,24 +165,7 @@ public class EditarPerfilUsuarioActivity extends AppCompatActivity {
     }
 
     private void subirFichero(final Uri fichero, final String referencia) {
-        /*
-        StorageReference ficheroRef = storageReference.child(referencia);
-        ficheroRef.putFile(fichero)
-                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>(){
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        Log.d("Almacenamiento", "Fichero subido");
-                        bajarFichero();
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception exception) {
-                        Log.e("Almacenamiento", "ERROR: subiendo fichero");
-                    }
-                });
 
-         */
         final StorageReference ficheroRef = storageReference.child(referencia);
         UploadTask uploadTask = ficheroRef.putFile(fichero);
         Task<Uri> urlTask = uploadTask.continueWithTask(new
@@ -197,7 +180,6 @@ public class EditarPerfilUsuarioActivity extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     Uri downloadUri = task.getResult();
                     registrarImagen(downloadUri.toString());
-                    usuario.setFoto(ficheroRef.toString());
                     bajarFichero();
 
                 } else {
