@@ -100,4 +100,10 @@
     <string name="tv_aceptoTarjeta">Por la presente, acepto almacenar datos de mi tarjeta para procesar pagos con un solo clic en un futuo</string>
     <string name="btn_Verificar">Verificar y enviar</string>
 
+
+
+    <string name="textNoDireccion">Dirección no especificada</string>
+    <string name="textNoTelefono">Teléfono no especificado</string>
+    <string name="textNoNombre">Nombre no especificado</string>
+
 </resources>

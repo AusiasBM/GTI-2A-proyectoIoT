@@ -57,16 +57,32 @@ public class InfoUsuario extends AppCompatActivity {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         if (documentSnapshot.exists()){
-                            String nombreUsuaio = documentSnapshot.getString("nombre");
+                            String nombreUsuario = documentSnapshot.getString("nombre");
                             String correoUsuario = documentSnapshot.getString("correo");
                             long telefonoUsuario = documentSnapshot.getLong("telefono");
-                            String direccionUsuario = documentSnapshot.getString("direccion");
-                            String poblacion = documentSnapshot.getString("apellidoPropietario");
+                            String direccionUsuario = documentSnapshot.getString("dirección");
+                            String poblacion = documentSnapshot.getString("población");
 
-                            nombre.setText(nombreUsuaio + "");
                             correo.setText(correoUsuario + "");
-                            telefono.setText(telefonoUsuario + "");
-                            direccion.setText(direccionUsuario + ", " + poblacion);
+
+                            if (Integer.parseInt(String.valueOf(telefonoUsuario)) != 0){
+                                telefono.setText(telefonoUsuario + "");
+                            } else {
+                                telefono.setText(R.string.textNoTelefono);
+                            }
+
+                            if (!nombreUsuario.equals("")){
+                                nombre.setText(nombreUsuario + "");
+                            } else {
+                                telefono.setText(R.string.textNoNombre);
+                            }
+
+                            if (!direccionUsuario.equals("")){
+                                direccion.setText(direccionUsuario + ", " + poblacion);
+                            } else {
+                                direccion.setText(R.string.textNoDireccion);
+                            }
+
                         }
 
                     }

@@ -54,7 +54,12 @@ public class UsuariosAdapter extends FirestoreRecyclerAdapter<Usuario, UsuariosA
         DocumentSnapshot documentSnapshot = getSnapshots().getSnapshot(holder.getAdapterPosition());
         final String id = documentSnapshot.getId();
         Glide.with(activity).load(model.getFoto()).into(holder.fotoPerfil);
-        holder.nombre.setText(model.getNombre());
+        if (!model.getNombre().equals("")){
+            holder.nombre.setText(model.getNombre());
+        } else {
+            holder.nombre.setText(R.string.textNoNombre);
+        }
+
         holder.correo.setText(model.getCorreo());
 
         holder.vInfo.setOnClickListener(new View.OnClickListener() {
