@@ -65,7 +65,7 @@ public class InfoUsuario extends AppCompatActivity {
                             String poblacion = documentSnapshot.getString("población");
 
                             Glide.with(InfoUsuario.this)
-                                    .load(usuario.getFoto())
+                                    .load(documentSnapshot.getString("foto"))
                                     .placeholder(R.drawable.ic_launcher_foreground)
                                     .into(fotoPerfil);
 
