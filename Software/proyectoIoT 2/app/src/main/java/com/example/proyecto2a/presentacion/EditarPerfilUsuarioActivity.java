@@ -19,6 +19,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FileDownloadTask;
@@ -195,7 +196,7 @@ public class EditarPerfilUsuarioActivity extends AppCompatActivity {
             @Override public void onComplete(@NonNull Task<Uri> task) {
                 if (task.isSuccessful()) {
                     Uri downloadUri = task.getResult();
-                    //registrarImagen(downloadUri.toString());
+                    registrarImagen(downloadUri.toString());
                     usuario.setFoto(ficheroRef.toString());
                     bajarFichero();
 
@@ -204,6 +205,23 @@ public class EditarPerfilUsuarioActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    void registrarImagen( String url) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference usuario = db.collection("usuarios").document(idUsuario);
+        usuario.update("foto", url).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Log.d("Foto", "DocumentSnapshot successfully updated!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("Foto", "Error updating document", e);
+                    }
+                });
     }
 
     private void bajarFichero() {
