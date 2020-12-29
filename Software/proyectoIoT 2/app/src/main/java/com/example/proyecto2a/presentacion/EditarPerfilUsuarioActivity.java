@@ -143,8 +143,8 @@ public class EditarPerfilUsuarioActivity extends AppCompatActivity {
             @Override public void onComplete(@NonNull Task<Uri> task) {
                 if (task.isSuccessful()) {
                     Uri downloadUri = task.getResult();
-                    bajarFichero();
                     registrarImagen(downloadUri.toString());
+                    bajarFichero();
                 } else {
                     Log.e("Almacenamiento", "ERROR: subiendo fichero");
                 }
