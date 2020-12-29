@@ -180,6 +180,8 @@ public class EditarPerfilUsuarioActivity extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     Uri downloadUri = task.getResult();
                     registrarImagen(downloadUri.toString());
+                    usuario.setFoto(downloadUri.toString());;
+                    usuarios.actualizarUsuario(idUsuario, usuario);
                     bajarFichero();
 
                 } else {
