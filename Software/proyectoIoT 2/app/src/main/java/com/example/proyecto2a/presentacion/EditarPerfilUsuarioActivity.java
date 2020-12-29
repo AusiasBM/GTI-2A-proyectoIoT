@@ -36,16 +36,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.UUID;
-
-//import static com.example.proyecto2a.modelo.Usuario.registrarImagen;
 
 public class EditarPerfilUsuarioActivity extends AppCompatActivity {
     private String idUsuario;
@@ -70,18 +66,12 @@ public class EditarPerfilUsuarioActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.perfil_menu);
 
-
-        //Diálogo de carga mientras se ponen los dats en los editText
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Revisando datos del usuario...");
         progressDialog.show();
 
         Bundle extra = getIntent().getExtras();
         idUsuario = extra.getString("id");
-
-
-
-
         nombre = findViewById(R.id.etNumTarjeta);
         telefono = findViewById(R.id.etTelefono);
         direccion = findViewById(R.id.etNombre);
@@ -91,7 +81,6 @@ public class EditarPerfilUsuarioActivity extends AppCompatActivity {
 
         usuarios = new Usuarios();
 
-        //Cargar el usuario y poner los datos en su perfil
         cargarUsuarioPerfil(idUsuario);
 
         storageReference = FirebaseStorage.getInstance().getReference();
@@ -99,29 +88,6 @@ public class EditarPerfilUsuarioActivity extends AppCompatActivity {
         firebaseAuth.getUid();
 
         bajarFichero();
-        /*
-        //extraemos el drawable en un bitmap
-        Drawable originalDrawable = getResources().getDrawable(R.drawable.example_img);
-        Bitmap originalBitmap = ((BitmapDrawable) originalDrawable).getBitmap();
-
-        //creamos el drawable redondeado
-        RoundedBitmapDrawable roundedDrawable =
-                RoundedBitmapDrawableFactory.create(getResources(), originalBitmap);
-
-        //asignamos el CornerRadius
-        roundedDrawable.setCornerRadius(originalBitmap.getHeight());
-
-        ImageView imageView = (ImageView) findViewById(R.id.imagenPerfil);
-
-        imageView.setImageDrawable(roundedDrawable);*/
-
-        // Inicialización Volley (Hacer solo una vez en Singleton o Applicaction)
-
-        //Foto de usuario
-
-       //*/
-
-
     }
 
     public void subirFoto(View view){
@@ -158,14 +124,12 @@ public class EditarPerfilUsuarioActivity extends AppCompatActivity {
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == 1234) {
                 subirFichero(data.getData(), "imagenes/"+idUsuario);
-
             }
         }
 
     }
 
     private void subirFichero(final Uri fichero, final String referencia) {
-
         final StorageReference ficheroRef = storageReference.child(referencia);
         UploadTask uploadTask = ficheroRef.putFile(fichero);
         Task<Uri> urlTask = uploadTask.continueWithTask(new
@@ -183,15 +147,13 @@ public class EditarPerfilUsuarioActivity extends AppCompatActivity {
                     usuario.setFoto(downloadUri.toString());;
                     usuarios.actualizarUsuario(idUsuario, usuario);
                     bajarFichero();
-
                 } else {
                     Log.e("Almacenamiento", "ERROR: subiendo fichero");
                 }
             }
         });
     }
-
-    void registrarImagen( String url) {
+    void registrarImagen(String url) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference usuario = db.collection("usuarios").document(idUsuario);
         usuario.update("foto", url).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -236,17 +198,12 @@ public class EditarPerfilUsuarioActivity extends AppCompatActivity {
 
     public void actualizarPerfilUsuario(){
         try{
-            //Los if comprueban que los campos estén llenos o sinó se encarga de que los campos
-            // que se actualizan en la bbdd contengan una cadena vacía para que, en caso de no
-            //completar todos los campos (se deje alguno vacío) se puedan guardar el resto en Firestore
             if(nombre.getText().toString().equals(null)){
                 usuario.setNombre("");
             }else {
                 usuario.setNombre(nombre.getText().toString());
             }
 
-            //En caso de que se introduzca un número de teléfono de menos o mas cifras de las que tocan, enviar un toast
-            //avisando del error
             if (telefono.getText().toString().length() != 9 && telefono.getText().toString().length() != 0) {
                 usuario.setTelefono(0);
                 Toast.makeText(this, "Número de teléfono incorrecto", Toast.LENGTH_SHORT).show();
@@ -267,12 +224,8 @@ public class EditarPerfilUsuarioActivity extends AppCompatActivity {
             }else {
                 usuario.setPoblación(poblacion.getText().toString());
             }
-
-            //Llamar al método actualizarUsuarios de la clase Usuarios
             usuarios.actualizarUsuario(idUsuario, usuario);
-            //Toast.makeText(this, "Guardados los cambios", Toast.LENGTH_SHORT).show();
         }catch (Exception e){
-           // Toast.makeText(this, "Error al modificar", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -288,8 +241,6 @@ public class EditarPerfilUsuarioActivity extends AppCompatActivity {
         super.onStop();
     }
 
-
-    //Cargar el usuario del perfil
     public void cargarUsuarioPerfil(String idUsuario){
         usuarios.getUsuarios().document(idUsuario).get().addOnCompleteListener(
                 new OnCompleteListener<DocumentSnapshot>() {

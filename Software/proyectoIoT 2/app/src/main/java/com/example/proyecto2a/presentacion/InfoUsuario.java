@@ -64,6 +64,11 @@ public class InfoUsuario extends AppCompatActivity {
                             String direccionUsuario = documentSnapshot.getString("dirección");
                             String poblacion = documentSnapshot.getString("población");
 
+                            Glide.with(InfoUsuario.this)
+                                    .load(usuario.getFoto())
+                                    .placeholder(R.drawable.ic_launcher_foreground)
+                                    .into(fotoPerfil);
+
                             correo.setText(correoUsuario + "");
                             if (Integer.parseInt(String.valueOf(telefonoUsuario)) != 0){
                                 telefono.setText(telefonoUsuario + "");
