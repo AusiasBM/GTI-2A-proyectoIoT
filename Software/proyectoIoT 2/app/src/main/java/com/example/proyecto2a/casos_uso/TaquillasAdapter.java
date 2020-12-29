@@ -1,5 +1,6 @@
 package com.example.proyecto2a.casos_uso;
 
+import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -23,6 +24,7 @@ import com.example.proyecto2a.R;
 import com.example.proyecto2a.datos.Mqtt;
 import com.example.proyecto2a.presentacion.MainActivity;
 
+import com.example.proyecto2a.presentacion.MensajeActivity;
 import com.example.proyecto2a.presentacion.MenuDialogActivity;
 import com.example.proyecto2a.presentacion.ResActivity;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
@@ -48,15 +50,16 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import static android.content.Context.NOTIFICATION_SERVICE;
 
 public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, TaquillasAdapter.Viewholder> implements View.OnClickListener {
-
+    Activity activity;
     /**
      * Create a new RecyclerView adapter that listens to a Firestore Query.  See {@link
      * FirestoreRecyclerOptions} for configuration options.
      *
      * @param options
      */
-    public TaquillasAdapter(@NonNull FirestoreRecyclerOptions<Taquilla> options) {
+    public TaquillasAdapter(@NonNull FirestoreRecyclerOptions<Taquilla> options, Activity activity) {
         super(options);
+        this.activity = activity;
     }
 
     @Override
@@ -180,56 +183,14 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
         @Override
         public void onClick(View v) {
             switch (v.getId()) {
+
                 case R.id.bt_reserva:
-                    //Intent intent = new Intent(context, MensajeActivity.class);
-                    //context.startActivity(intent);
-                    String nombre = (String) textViewNombre.getText();
-                    DocumentReference taq = db.collection("estaciones").document(estant).collection("taquillas").document(id);
-                    taq.update("idUsuario", ide).addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            Log.d("ocupada", "DocumentSnapshot successfully updated!");
-                        }
-                    })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Log.w("ocupada", "Error updating document", e);
-                                }
-                            });
-                    taq.update("alquilada", true).addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            Log.d("ocupada", "DocumentSnapshot successfully updated!");
-                        }
-                    })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Log.w("ocupada", "Error updating document", e);
-                                }
-                            });
-                    //Crear la notificació
-                    notificationManager = (NotificationManager)
-                            context.getSystemService(NOTIFICATION_SERVICE);
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        NotificationChannel notificationChannel = new NotificationChannel(
-                                CANAL_ID, "Mis Notificaciones",
-                                NotificationManager.IMPORTANCE_DEFAULT);
-                        notificationChannel.setDescription("Descripcion del canal");
-                        notificationManager.createNotificationChannel(notificationChannel);
-                    }
-                    NotificationCompat.Builder notificacion =
-                            new NotificationCompat.Builder(context, CANAL_ID)
-                                    .setSmallIcon(R.mipmap.ic_launcher)
-                                    .setContentTitle("Taquilla reservada")
-                                    .setContentText("Has reservado una taquilla");
-                    //Llançar l'aplicació des de la notificació
-                    PendingIntent intencionPendiente = PendingIntent.getActivity(
-                            context, 0, new Intent(context, ResActivity.class), 0);
-                    notificacion.setContentIntent(intencionPendiente);
-                    //Para lanzar la notificación
-                    notificationManager.notify(NOTIFICACION_ID, notificacion.build());
+
+                    Intent intent = new Intent(activity, MensajeActivity.class);
+                    intent.putExtra("id", id);
+                    intent.putExtra("ide", ide);
+                    intent.putExtra("estant", estant);
+                    activity.startActivity(intent);
                     break;
                 case R.id.bt_abrir:
                     abreTaquilla();

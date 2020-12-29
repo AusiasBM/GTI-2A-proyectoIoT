@@ -68,7 +68,7 @@ public class Tab2 extends Fragment {RecyclerView recyclerView;
                         FirestoreRecyclerOptions<Taquilla> options = new FirestoreRecyclerOptions.Builder<Taquilla>()
                                 .setQuery(lista, Taquilla.class)
                                 .build();
-                        mAdapter = new TaquillasAdapter(options);
+                        mAdapter = new TaquillasAdapter(options,getActivity());
                         mAdapter.notifyDataSetChanged();
                         recyclerViewReservas.setAdapter(mAdapter);
                         listenm();
@@ -89,7 +89,7 @@ public class Tab2 extends Fragment {RecyclerView recyclerView;
                                 .setQuery(lista, Taquilla.class)
                                 .build();
 
-                        nAdapter = new TaquillasAdapter(options);
+                        nAdapter = new TaquillasAdapter(options,getActivity());
 
                         nAdapter.notifyDataSetChanged();
                         recyclerView.setAdapter(nAdapter);
