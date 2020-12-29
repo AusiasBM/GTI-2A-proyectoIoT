@@ -24,6 +24,7 @@ public class InfoUsuario extends AppCompatActivity {
     private TextView direccion, telefono, nombre, correo;
     FirebaseFirestore firebaseFirestore;
     String usuarioID;
+    Usuario usuario=new Usuario();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,7 +65,6 @@ public class InfoUsuario extends AppCompatActivity {
                             String poblacion = documentSnapshot.getString("población");
 
                             correo.setText(correoUsuario + "");
-
                             if (Integer.parseInt(String.valueOf(telefonoUsuario)) != 0){
                                 telefono.setText(telefonoUsuario + "");
                             } else {
@@ -82,9 +82,7 @@ public class InfoUsuario extends AppCompatActivity {
                             } else {
                                 direccion.setText(R.string.textNoDireccion);
                             }
-
                         }
-
                     }
                 });
     }

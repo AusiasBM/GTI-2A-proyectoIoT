@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -35,6 +36,7 @@ public class UsuariosAdapter extends FirestoreRecyclerAdapter<Usuario, UsuariosA
     FirebaseFirestore firebaseFirestore;
     private StorageReference storageReference;
     Activity activity;
+    Usuario usuario= new Usuario();
     //Saco la id de cada usuario
     //String idUsuario = firebaseFirestore.collection("usuarios").getId();
     /**
@@ -53,15 +55,12 @@ public class UsuariosAdapter extends FirestoreRecyclerAdapter<Usuario, UsuariosA
         //holder.fotoPerfil.setImageResource(Integer.parseInt(model.getFoto()));
         DocumentSnapshot documentSnapshot = getSnapshots().getSnapshot(holder.getAdapterPosition());
         final String id = documentSnapshot.getId();
-        Glide.with(activity).load(model.getFoto()).into(holder.fotoPerfil);
-        if (!model.getNombre().equals("")){
-            holder.nombre.setText(model.getNombre());
-        } else {
-            holder.nombre.setText(R.string.textNoNombre);
-        }
-
+        Glide.with(activity)
+                .load(model.getFoto())
+                .placeholder(R.drawable.ic_launcher_foreground)
+                .into(holder.fotoPerfil);
+        holder.nombre.setText(model.getNombre());
         holder.correo.setText(model.getCorreo());
-
         holder.vInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -70,6 +69,7 @@ public class UsuariosAdapter extends FirestoreRecyclerAdapter<Usuario, UsuariosA
                 activity.startActivity(intent);
             }
         });
+
     }
 
     @NonNull

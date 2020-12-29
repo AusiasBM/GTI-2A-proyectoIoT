@@ -1,6 +1,8 @@
 package com.example.proyecto2a.modelo;
 
 
+import com.google.firebase.firestore.FirebaseFirestore;
+
 public class Usuario {
     private String uId, nombre, correo, dirección, población, llave, foto;
     private int telefono;
@@ -98,4 +100,12 @@ public class Usuario {
                 ", admin=" + admin +
                 '}';
     }
+    /*
+    public static void registrarImagen(String url) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        Usuario imagen = new Usuario();
+        db.collection("usuarios").document(imagen.uId).set(imagen.foto);
+    }
+
+     */
 }
