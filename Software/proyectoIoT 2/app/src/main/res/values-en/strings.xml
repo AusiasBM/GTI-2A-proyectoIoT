@@ -93,4 +93,8 @@
     <string name="et_Apellido">Last name</string>
     <string name="tv_aceptoTarjeta">I hereby agree for my credit card data to be stored for further "one-click" payment processing</string>
     <string name="btn_Verificar">Check &amp; Send Card</string>
+
+    <string name="textNoDireccion">Address not specified</string>
+    <string name="textNoTelefono">Phone not specified</string>
+    <string name="textNoNombre">Username not specified</string>
 </resources>
