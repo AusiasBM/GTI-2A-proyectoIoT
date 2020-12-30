@@ -40,7 +40,7 @@ public class ServicioLocalizacion extends Service implements LocationListener {
 
     @Override
     public void onCreate() {
-        Toast.makeText(this, "Servicio creado",
+        Toast.makeText(this, R.string.servicioCreado,
                 Toast.LENGTH_SHORT).show();
 
         //Per a localització
@@ -62,7 +62,7 @@ public class ServicioLocalizacion extends Service implements LocationListener {
             NotificationChannel notificationChannel = new NotificationChannel(
                     CANAL_ID, "Mis Notificaciones",
                     NotificationManager.IMPORTANCE_DEFAULT);
-            notificationChannel.setDescription("Descripcion del canal");
+            notificationChannel.setDescription("");
             notificationManager.createNotificationChannel(notificationChannel);
         }
         NotificationCompat.Builder notificacion =

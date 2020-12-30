@@ -1,6 +1,8 @@
 package com.example.proyecto2a.presentacion;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -132,14 +134,10 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
 
-
-
-
         //Carga del fragment del mapa
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-
 
         //Obtención de la colección "estaciones" en la base datos
         db.collection("estaciones")
@@ -209,7 +207,6 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
             getSupportActionBar().setDisplayShowTitleEnabled(false);
             //ab.setLogo(R.drawable.logo);
         }
-
     }
 
     @Override
@@ -234,21 +231,37 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
     }
 
     public void logOut() {
-        Auth.GoogleSignInApi.signOut(googleApiClient).setResultCallback(new ResultCallback<Status>() {
+        final AlertDialog.Builder alert =new AlertDialog.Builder(this);
+        alert.setMessage(R.string.preguntaCerrarSesion);
+        alert.setTitle(R.string.cerrarSesion);
+        alert.setPositiveButton(R.string.si, new DialogInterface.OnClickListener() {
             @Override
-            public void onResult(@NonNull Status status) {
-                if (status.isSuccess()) {
-                    goMain();
-                    finish();
-                } else {
-                    Toast.makeText(getApplicationContext(), "No se pudo cerrar sesion", Toast.LENGTH_SHORT).show();
-                }
+            public void onClick(DialogInterface dialog, int which) {
+                Auth.GoogleSignInApi.signOut(googleApiClient).setResultCallback(new ResultCallback<Status>() {
+                    @Override
+                    public void onResult(@NonNull Status status) {
+                        if (status.isSuccess()) {
+                            goMain();
+                            finish();
+                        } else {
+                            Toast.makeText(getApplicationContext(), R.string.cerrarSesionError, Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+
             }
         });
+        alert.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        AlertDialog dialog=alert.create();
+        dialog.show();
     }
 
     @Override

@@ -19,6 +19,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FileDownloadTask;
@@ -35,14 +36,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.UUID;
 
 public class EditarPerfilUsuarioActivity extends AppCompatActivity {
     private String idUsuario;
@@ -67,18 +66,12 @@ public class EditarPerfilUsuarioActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.perfil_menu);
 
-
-        //Diálogo de carga mientras se ponen los dats en los editText
         progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage("Revisando datos del usuario...");
+        progressDialog.setMessage(R.string.signInPensando+"");
         progressDialog.show();
 
         Bundle extra = getIntent().getExtras();
         idUsuario = extra.getString("id");
-
-
-
-
         nombre = findViewById(R.id.etNumTarjeta);
         telefono = findViewById(R.id.etTelefono);
         direccion = findViewById(R.id.etNombre);
@@ -88,7 +81,6 @@ public class EditarPerfilUsuarioActivity extends AppCompatActivity {
 
         usuarios = new Usuarios();
 
-        //Cargar el usuario y poner los datos en su perfil
         cargarUsuarioPerfil(idUsuario);
 
         storageReference = FirebaseStorage.getInstance().getReference();
@@ -96,29 +88,6 @@ public class EditarPerfilUsuarioActivity extends AppCompatActivity {
         firebaseAuth.getUid();
 
         bajarFichero();
-        /*
-        //extraemos el drawable en un bitmap
-        Drawable originalDrawable = getResources().getDrawable(R.drawable.example_img);
-        Bitmap originalBitmap = ((BitmapDrawable) originalDrawable).getBitmap();
-
-        //creamos el drawable redondeado
-        RoundedBitmapDrawable roundedDrawable =
-                RoundedBitmapDrawableFactory.create(getResources(), originalBitmap);
-
-        //asignamos el CornerRadius
-        roundedDrawable.setCornerRadius(originalBitmap.getHeight());
-
-        ImageView imageView = (ImageView) findViewById(R.id.imagenPerfil);
-
-        imageView.setImageDrawable(roundedDrawable);*/
-
-        // Inicialización Volley (Hacer solo una vez en Singleton o Applicaction)
-
-        //Foto de usuario
-
-       //*/
-
-
     }
 
     public void subirFoto(View view){
@@ -129,8 +98,7 @@ public class EditarPerfilUsuarioActivity extends AppCompatActivity {
             i.setType("image/*");
             startActivityForResult(i, 1234);
         }else{
-            solicitarPermiso(Manifest.permission.READ_EXTERNAL_STORAGE, "Sin el permiso" +
-                            " acceso a la galería.",
+            solicitarPermiso(Manifest.permission.READ_EXTERNAL_STORAGE, R.string.sinPermisoGaleria+"",
                     SOLICITUD_PERMISO_READ_EXTERNAL_STORAGE, this);
         }
 
@@ -155,26 +123,48 @@ public class EditarPerfilUsuarioActivity extends AppCompatActivity {
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == 1234) {
                 subirFichero(data.getData(), "imagenes/"+idUsuario);
-
             }
         }
 
     }
 
-    private void subirFichero(Uri fichero, String referencia) {
-        StorageReference ficheroRef = storageReference.child(referencia);
-        ficheroRef.putFile(fichero)
-                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>(){
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        Log.d("Almacenamiento", "Fichero subido");
-                        bajarFichero();
+    private void subirFichero(final Uri fichero, final String referencia) {
+        final StorageReference ficheroRef = storageReference.child(referencia);
+        UploadTask uploadTask = ficheroRef.putFile(fichero);
+        Task<Uri> urlTask = uploadTask.continueWithTask(new
+            Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                @Override public Task<Uri> then(@NonNull
+                    Task<UploadTask.TaskSnapshot> task) throws Exception {
+                        if (!task.isSuccessful()) throw task.getException();
+                        return ficheroRef.getDownloadUrl();
+                    }
+            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+            @Override public void onComplete(@NonNull Task<Uri> task) {
+                if (task.isSuccessful()) {
+                    Uri downloadUri = task.getResult();
+                    registrarImagen(downloadUri.toString());
+                    usuario.setFoto(downloadUri.toString());;
+                    usuarios.actualizarUsuario(idUsuario, usuario);
+                    bajarFichero();
+                } else {
+                    Log.e("Almacenamiento", "ERROR: subiendo fichero");
+                }
+            }
+        });
+    }
+    void registrarImagen(String url) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference usuario = db.collection("usuarios").document(idUsuario);
+        usuario.update("foto", url).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Log.d("Foto", "DocumentSnapshot successfully updated!");
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
-                    public void onFailure(@NonNull Exception exception) {
-                        Log.e("Almacenamiento", "ERROR: subiendo fichero");
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("Foto", "Error updating document", e);
                     }
                 });
     }
@@ -207,20 +197,15 @@ public class EditarPerfilUsuarioActivity extends AppCompatActivity {
 
     public void actualizarPerfilUsuario(){
         try{
-            //Los if comprueban que los campos estén llenos o sinó se encarga de que los campos
-            // que se actualizan en la bbdd contengan una cadena vacía para que, en caso de no
-            //completar todos los campos (se deje alguno vacío) se puedan guardar el resto en Firestore
             if(nombre.getText().toString().equals(null)){
                 usuario.setNombre("");
             }else {
                 usuario.setNombre(nombre.getText().toString());
             }
 
-            //En caso de que se introduzca un número de teléfono de menos o mas cifras de las que tocan, enviar un toast
-            //avisando del error
             if (telefono.getText().toString().length() != 9 && telefono.getText().toString().length() != 0) {
                 usuario.setTelefono(0);
-                Toast.makeText(this, "Número de teléfono incorrecto", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.telefonoIncorrecto, Toast.LENGTH_SHORT).show();
             } else if(telefono.getText().toString().length() == 0){
                 usuario.setTelefono(0);
             } else {
@@ -238,12 +223,9 @@ public class EditarPerfilUsuarioActivity extends AppCompatActivity {
             }else {
                 usuario.setPoblación(poblacion.getText().toString());
             }
-
-            //Llamar al método actualizarUsuarios de la clase Usuarios
             usuarios.actualizarUsuario(idUsuario, usuario);
-            //Toast.makeText(this, "Guardados los cambios", Toast.LENGTH_SHORT).show();
         }catch (Exception e){
-           // Toast.makeText(this, "Error al modificar", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.errorModificar, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -259,8 +241,6 @@ public class EditarPerfilUsuarioActivity extends AppCompatActivity {
         super.onStop();
     }
 
-
-    //Cargar el usuario del perfil
     public void cargarUsuarioPerfil(String idUsuario){
         usuarios.getUsuarios().document(idUsuario).get().addOnCompleteListener(
                 new OnCompleteListener<DocumentSnapshot>() {
@@ -288,7 +268,7 @@ public class EditarPerfilUsuarioActivity extends AppCompatActivity {
         if (ActivityCompat.shouldShowRequestPermissionRationale(actividad,
                 permiso)){
             new AlertDialog.Builder(actividad)
-                    .setTitle("Solicitud de permiso")
+                    .setTitle(R.string.solicitudPermiso)
                     .setMessage(justificacion)
                     .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int whichButton) {

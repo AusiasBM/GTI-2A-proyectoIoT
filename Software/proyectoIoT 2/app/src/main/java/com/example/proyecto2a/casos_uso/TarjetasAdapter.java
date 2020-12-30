@@ -41,7 +41,7 @@ public class TarjetasAdapter extends FirestoreRecyclerAdapter<Tarjeta, TarjetasA
         DocumentSnapshot documentSnapshot = getSnapshots().getSnapshot(holder.getAdapterPosition());
         final String id = documentSnapshot.getId();
         String strings = String.valueOf(model.getNumTarjeta());
-        strings = "****" + strings.substring(4);
+        strings = "****" + strings.substring(2);
         holder.tvNumTarj.setText(strings);
 
         holder.vInfo.setOnClickListener(new View.OnClickListener() {
@@ -71,8 +71,6 @@ public class TarjetasAdapter extends FirestoreRecyclerAdapter<Tarjeta, TarjetasA
             super(itemView);
             tvNumTarj = itemView.findViewById(R.id.tvNumeroTarjetaInfo);
             vInfo = itemView.findViewById(R.id.vInfoTarjetas);
-            //firebaseAuth = FirebaseAuth.getInstance();
-            //firebaseAuth.getUid();
         }
     }
 }

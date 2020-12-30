@@ -30,7 +30,7 @@
             android:layout_marginHorizontal="40dp"
             android:layout_weight="1"
             android:fontFamily="@font/poppins_medium"
-            android:text="¡Llama ahora a nuestro teléfono!"
+            android:text="@string/llamaAhora"
             android:textColor="#000000"
             android:textSize="12dp" />
 
@@ -69,7 +69,7 @@
             android:layout_marginHorizontal="40dp"
             android:layout_weight="1"
             android:fontFamily="@font/poppins_medium"
-            android:text="Contacta vía email"
+            android:text="@string/contactaAhora"
             android:textColor="#000000"
             android:textSize="12dp" />
 

@@ -12,6 +12,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.proyecto2a.R;
+import com.example.proyecto2a.datos.Stants;
+import com.example.proyecto2a.datos.Taquillas;
+import com.example.proyecto2a.modelo.Stant;
+import com.example.proyecto2a.modelo.Taquilla;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -21,10 +25,14 @@ import com.google.firebase.firestore.GeoPoint;
 public class InfoStant extends AppCompatActivity {
 
     private String stantID;
+    private String taquillaID;
     private FirebaseFirestore firebaseFirestore;
     private TextView tvUbicacion, tvPosicion;
     private Button btEliminar;
     private ImageView ivVolver;
+    Taquilla taquilla = new Taquilla();
+    Stant stant = new Stant();
+    Stants stants = new Stants();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,6 +44,7 @@ public class InfoStant extends AppCompatActivity {
         ivVolver = (ImageView) findViewById(R.id.ivBackInfoStant);
 
         stantID = getIntent().getStringExtra("stantID");
+        taquillaID = getIntent().getStringExtra("taquillaID");
 
         firebaseFirestore = FirebaseFirestore.getInstance();
 
@@ -55,7 +64,7 @@ public class InfoStant extends AppCompatActivity {
                 firebaseFirestore.collection("estaciones").document(stantID).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        Toast.makeText(InfoStant.this, "Estación eliminada correctamente", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(InfoStant.this, R.string.estacionEliminada, Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(InfoStant.this, StantsActivity.class);
                         startActivity(intent);
                         finish();
@@ -63,7 +72,7 @@ public class InfoStant extends AppCompatActivity {
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(InfoStant.this, "La estación no se pudo eliminar", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(InfoStant.this, R.string.estacionNoEliminada, Toast.LENGTH_SHORT).show();
                     }
                 });
             }
@@ -78,12 +87,49 @@ public class InfoStant extends AppCompatActivity {
                         if (documentSnapshot.exists()){
                             GeoPoint posicionStant = documentSnapshot.getGeoPoint("pos");
                             String ubicacionStant = documentSnapshot.getString("ubicacion");
-
                             tvPosicion.setText(posicionStant + "");
                             tvUbicacion.setText(ubicacionStant);
                         }
-
                     }
                 });
     }
+
+    /*
+    public void anadirTaquillaPatinNuestro(View view){
+        try{
+            taquilla.setPatinNuestro(true);
+            //taquillas.actualizarTaquilla(taquilla);
+            Toast.makeText(this, "Creada taquilla con patín de la empresa", Toast.LENGTH_SHORT).show();
+        }catch (Exception e){
+            Toast.makeText(this, "Error al añadir taquilla", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void anadirTaquillaPatinPropio(View view){
+        try{
+            taquilla.setPatinNuestro(false);
+            //taquillas.actualizarTaquilla(taquilla);
+            Toast.makeText(this, "Creada taquilla con patín propio", Toast.LENGTH_SHORT).show();
+        }catch (Exception e){
+            Toast.makeText(this, "Error al añadir taquilla", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void eliminarTaquilla(View view){
+        firebaseFirestore.collection("estaciones").document(stantID).collection("taquillas").document(taquillaID).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Toast.makeText(InfoStant.this, "Taquilla eliminada correctamente", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(InfoStant.this, StantsActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(InfoStant.this, "La taquilla no se pudo eliminar", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+     */
 }

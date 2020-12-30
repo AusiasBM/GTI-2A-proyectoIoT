@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFFFFF"
-    tools:context=".presentacion.InfoTarjeta"
+    tools:context=".presentacion.InfoUsuario"
     android:fontFamily="@font/poppins_light"
     android:textColor="#000000">
 
@@ -68,6 +68,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:fontFamily="@font/poppins_light"
         android:text="TextView"
         android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="@+id/ivUsuario"
@@ -80,6 +81,7 @@
         android:id="@+id/tvCorreoUsuario_info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/poppins_light"
         android:text="TextView"
         android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="@+id/ivUsuario_info"

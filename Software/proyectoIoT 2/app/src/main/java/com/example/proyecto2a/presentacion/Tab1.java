@@ -47,14 +47,11 @@ public class Tab1 extends Fragment {
         idUsuario = bundle.getString("idUser");
         recyclerView = v.findViewById(R.id.recycler_view_taquillas);
         recyclerView.setLayoutManager(new LinearLayoutManager( this.getContext()));
-        //recyclerView.setHasFixedSize(true);
         recyclerViewReservas = v.findViewById(R.id.recycler_view_taquillas_reservadas);
         recyclerViewReservas.setLayoutManager(new LinearLayoutManager( this.getContext()));
-        //recyclerViewReservas.setHasFixedSize(true);
         setUpRecyclerView();
         return v;
     }
-
 
     public void setUpRecyclerView(){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -69,7 +66,7 @@ public class Tab1 extends Fragment {
                         FirestoreRecyclerOptions<Taquilla> options = new FirestoreRecyclerOptions.Builder<Taquilla>()
                                 .setQuery(lista, Taquilla.class)
                                 .build();
-                        mAdapter = new TaquillasAdapter(options);
+                        mAdapter = new TaquillasAdapter(options,getActivity());
                         mAdapter.notifyDataSetChanged();
                         recyclerViewReservas.setAdapter(mAdapter);
                         listenm();
@@ -90,7 +87,7 @@ public class Tab1 extends Fragment {
                                 .setQuery(lista, Taquilla.class)
                                 .build();
 
-                        nAdapter = new TaquillasAdapter(options);
+                        nAdapter = new TaquillasAdapter(options,getActivity());
 
                         nAdapter.notifyDataSetChanged();
                         recyclerView.setAdapter(nAdapter);
@@ -106,7 +103,6 @@ public class Tab1 extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-
     }
 
     public void listen(){

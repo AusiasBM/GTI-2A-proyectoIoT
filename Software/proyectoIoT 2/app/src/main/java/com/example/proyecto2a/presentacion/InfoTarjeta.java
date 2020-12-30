@@ -3,8 +3,11 @@ package com.example.proyecto2a.presentacion;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -52,20 +55,41 @@ public class InfoTarjeta extends AppCompatActivity {
         btEliminar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                firebaseFirestore.collection("tarjetas").document(tarjetaID).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+
+
+                final AlertDialog.Builder alert =new AlertDialog.Builder(InfoTarjeta.this);
+                alert.setMessage(R.string.preguntaTarjeta);
+                alert.setTitle(R.string.eliminarTarjeta);
+                alert.setPositiveButton(R.string.si, new DialogInterface.OnClickListener() {
                     @Override
-                    public void onSuccess(Void aVoid) {
-                        Toast.makeText(InfoTarjeta.this, "Tarjeta eliminada correctamente", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(InfoTarjeta.this, RecyclerTarjetas.class);
-                        startActivity(intent);
-                        finish();
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(InfoTarjeta.this, "La tarjeta no se pudo eliminar", Toast.LENGTH_SHORT).show();
+                    public void onClick(DialogInterface dialog, int which) {
+                        firebaseFirestore.collection("tarjetas").document(tarjetaID).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Toast.makeText(InfoTarjeta.this, R.string.tarjetaEliminada, Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(InfoTarjeta.this, RecyclerTarjetas.class);
+                                startActivity(intent);
+                                finish();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(InfoTarjeta.this, R.string.tarjetaNoEliminada, Toast.LENGTH_SHORT).show();
+                            }
+                        });
                     }
                 });
+                alert.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+                AlertDialog dialog=alert.create();
+                dialog.show();
+
+
+
             }
         });
     }

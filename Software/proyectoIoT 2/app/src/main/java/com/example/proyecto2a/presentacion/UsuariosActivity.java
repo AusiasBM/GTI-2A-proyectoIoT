@@ -40,8 +40,6 @@ public class UsuariosActivity extends AppCompatActivity {
         firebaseFirestore = FirebaseFirestore.getInstance();
         Query query = firebaseFirestore.collection("usuarios");
 
-
-
         FirestoreRecyclerOptions<Usuario> firestoreRecyclerOptions =
                 new FirestoreRecyclerOptions.Builder<Usuario>().setQuery(query, Usuario.class).build();
 
@@ -49,8 +47,6 @@ public class UsuariosActivity extends AppCompatActivity {
         adapter.notifyDataSetChanged();
         recyclerView.setAdapter(adapter);
     }
-
-
 
     @Override
     protected void onStart() {

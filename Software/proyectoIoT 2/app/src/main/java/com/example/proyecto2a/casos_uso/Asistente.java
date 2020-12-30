@@ -26,8 +26,8 @@ public class Asistente extends AppCompatActivity {
     public void mandarCorreo(View view) {
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/plain");
-        intent.putExtra(Intent.EXTRA_SUBJECT, "Problemas con Tricoopark");
-        intent.putExtra(Intent.EXTRA_TEXT, "Escriba aquí lo sus problemas o sugerencias");
+        intent.putExtra(Intent.EXTRA_SUBJECT, R.string.asistenteProblema);
+        intent.putExtra(Intent.EXTRA_TEXT, R.string.asistenteEscribir);
         intent.putExtra(Intent.EXTRA_EMAIL, new String[] {"asistente@gmail.com"});
         startActivity(intent);
     }

@@ -29,7 +29,6 @@ public class AnyadirStantActivity extends AppCompatActivity {
         etLongitud = findViewById(R.id.etLon);
         etUbicacion = findViewById(R.id.etUbicacion);
 
-
         stant = new Stant();
         stants = new Stants();
     }
@@ -42,7 +41,7 @@ public class AnyadirStantActivity extends AppCompatActivity {
 
     public void guardarStant(View view){
         if (etUbicacion.getText().toString().isEmpty() || etLatitud.getText().toString().isEmpty() || etLongitud.getText().toString().isEmpty()){
-            Toast.makeText(this, "Rellene todos los campos", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.rellenarCampos, Toast.LENGTH_SHORT).show();
         } else {
             actualizarPerfilStant();
         }
@@ -50,7 +49,6 @@ public class AnyadirStantActivity extends AppCompatActivity {
 
     public void actualizarPerfilStant(){
         try{
-
             stant.setUbicacion(etUbicacion.getText().toString());
 
             double latitud = Double.parseDouble(etLatitud.getText().toString());
@@ -60,11 +58,11 @@ public class AnyadirStantActivity extends AppCompatActivity {
             stant.setPos(pos);
 
             stants.actualizarStant(stant);
-            Toast.makeText(this, "Estación introducida correctamente", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.estacionOk, Toast.LENGTH_SHORT).show();
             Intent intent=new Intent(this, StantsActivity.class);
             startActivity(intent);
         }catch (Exception e){
-            Toast.makeText(this, "Error al modificar", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.errorModificar, Toast.LENGTH_SHORT).show();
         }
     }
 
