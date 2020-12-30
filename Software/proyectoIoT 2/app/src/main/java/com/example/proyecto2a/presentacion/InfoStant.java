@@ -64,7 +64,7 @@ public class InfoStant extends AppCompatActivity {
                 firebaseFirestore.collection("estaciones").document(stantID).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        Toast.makeText(InfoStant.this, "Estación eliminada correctamente", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(InfoStant.this, R.string.estacionEliminada, Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(InfoStant.this, StantsActivity.class);
                         startActivity(intent);
                         finish();
@@ -72,7 +72,7 @@ public class InfoStant extends AppCompatActivity {
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(InfoStant.this, "La estación no se pudo eliminar", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(InfoStant.this, R.string.estacionNoEliminada, Toast.LENGTH_SHORT).show();
                     }
                 });
             }
@@ -87,11 +87,9 @@ public class InfoStant extends AppCompatActivity {
                         if (documentSnapshot.exists()){
                             GeoPoint posicionStant = documentSnapshot.getGeoPoint("pos");
                             String ubicacionStant = documentSnapshot.getString("ubicacion");
-
                             tvPosicion.setText(posicionStant + "");
                             tvUbicacion.setText(ubicacionStant);
                         }
-
                     }
                 });
     }

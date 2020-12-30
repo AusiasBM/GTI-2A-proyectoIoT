@@ -134,14 +134,10 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
 
-
-
-
         //Carga del fragment del mapa
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-
 
         //Obtención de la colección "estaciones" en la base datos
         db.collection("estaciones")
@@ -211,7 +207,6 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
             getSupportActionBar().setDisplayShowTitleEnabled(false);
             //ab.setLogo(R.drawable.logo);
         }
-
     }
 
     @Override
@@ -236,14 +231,13 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
     }
 
     public void logOut() {
         final AlertDialog.Builder alert =new AlertDialog.Builder(this);
-        alert.setMessage("¿Estas seguro de que quieres cerrar sesión?");
-        alert.setTitle("Cerrar Sesión");
-        alert.setPositiveButton("Si", new DialogInterface.OnClickListener() {
+        alert.setMessage(R.string.preguntaCerrarSesion);
+        alert.setTitle(R.string.cerrarSesion);
+        alert.setPositiveButton(R.string.si, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Auth.GoogleSignInApi.signOut(googleApiClient).setResultCallback(new ResultCallback<Status>() {
@@ -253,14 +247,14 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
                             goMain();
                             finish();
                         } else {
-                            Toast.makeText(getApplicationContext(), "No se pudo cerrar sesion", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), R.string.cerrarSesionError, Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
 
             }
         });
-        alert.setNegativeButton("No", new DialogInterface.OnClickListener() {
+        alert.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();

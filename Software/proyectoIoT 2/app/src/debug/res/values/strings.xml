@@ -91,7 +91,7 @@
     <!-- Pago usuario-->
     <string name="btn_AñadirTarjeta">Añadir una tarjeta de crédito</string>
     <string name="tv_Tarjetas">Opciones de pago</string>
-    <string name="et_NumTarjeta">Número de tarjeta</string>
+    <string name="et_NumTarjeta">Número de tarjeta(XXXX-XXXX-XXXX-XXXX)</string>
     <string name="et_Mes">Mes(XX)</string>
     <string name="et_Año">Año(XX)</string>
     <string name="et_CVV">CVV(XXX)</string>
@@ -100,10 +100,88 @@
     <string name="tv_aceptoTarjeta">Por la presente, acepto almacenar datos de mi tarjeta para procesar pagos con un solo clic en un futuo</string>
     <string name="btn_Verificar">Verificar y enviar</string>
 
-
-
     <string name="textNoDireccion">Dirección no especificada</string>
     <string name="textNoTelefono">Teléfono no especificado</string>
     <string name="textNoNombre">Nombre no especificado</string>
 
+    <string name="asistenteProblema">Problemas con Tricoopark</string>
+    <string name="asistenteEscribir">Escriba aquí lo sus problemas o sugerencias</string>
+
+    <string name="signInNecesario">Se debe ingresar un email</string>
+    <string name="signInNecesarioContra">Se debe ingresar la contraseña</string>
+    <string name="signInPensando">Realizando consulta en linea...</string>
+    <string name="signInCheck">Por favor verifique su email</string>
+    <string name="signInUsuarioExiste">Usuario ya registrado</string>
+    <string name="signInMal">Correo o contraseña incorrectos</string>
+    <string name="signInNo">No se pudo iniciar sesión</string>
+    <string name="signInNoFirebase">No se pudo Autenticar con Firebase</string>
+
+    <string name="signInNoCoinciden">Las contraseñas con coinciden</string>
+    <string name="signUpNo">No se pudo registrar usuario</string>
+
+    <string name="rellenarCampos">Rellene todos los campos</string>
+    <string name="estacionOk">Stant inserted succesfuly</string>
+    <string name="errorModificar">Error al modificar</string>
+
+    <string name="sinPermisoGaleria">Sin el permiso de acceso a la galería.</string>
+    <string name="telefonoIncorrecto">Número de teléfono no válido</string>
+    <string name="solicitudPermiso">Solicitud de permiso</string>
+
+    <string name="preguntaTarjeta">¿Estas seguro de que quieres añadir esta tarjeta?</string>
+    <string name="añadirTarjeta">Añadir tarjeta</string>
+    <string name="eliminarTarjeta">Eliminar tarjeta</string>
+    <string name="si">Si</string>
+    <string name="no">No</string>
+
+    <string name="mesIncorrecto">Mes incorrecto</string>
+    <string name="cvvIncorrecto">CVV incorrecto</string>
+    <string name="tarjetaIntroducida">Tarjeta introducida correctamente</string>
+
+    <string name="estacionEliminada">Estación eliminada correctamente</string>
+    <string name="estacionNoEliminada">La estación no se pudo eliminar</string>
+
+    <string name="tarjetaEliminada">Tarjeta eliminada correctamente</string>
+    <string name="tarjetaNoEliminada">La tarjeta no se pudo eliminar</string>
+
+    <string name="taquillaReservada">Taquilla reservada</string>
+    <string name="notificacionTaquillaReservada">Has reservada una taquilla</string>
+
+    <string name="preguntaCerrarSesion">¿Estás seguro de que quieres cerrar sesión?</string>
+    <string name="cerrarSesion">Cerrar sesión</string>
+
+    <string name="cerrarSesionError">No se pudo cerrar sesion</string>
+    <string name="servicioCreado">Servicio creado</string>
+
+    <string name="llamaAhora">¡Llama ahora a nuestro teléfono!</string>
+    <string name="contactaAhora">Contacta vía email</string>
+
+    <string name="nombreUbicacion">Nombre de la ubicación</string>
+
+    <string name="ayuda">AYUDA</string>
+    <string name="terminosYCondiciones">Terminos y condiciones</string>
+    <string name="politicaPrivacidad">Politica de privacidad</string>
+    <string name="preguntasFrecuentes">Preguntas frecuentes</string>
+    <string name="contacto">Contacto</string>
+
+    <string name="taquillaOPatin">Taquilla o patín</string>
+    <string name="reserva">Reserva</string>
+
+    <string name="faq1">¿Como puedo reservar un patín?</string>
+    <string name="faq2">Puedes reservar un patín clicando en la ubicación del stan de patines desde el propio mapa.</string>
+    <string name="faq3">¿Como puedo editar mi perfil?</string>
+    <string name="faq4">Desde el menu lateral puedes acceder a tu perfil y desde ahí modificar todos los campos.</string>
+    <string name="faq5">¿Como cambiar de ciudad?</string>
+    <string name="faq6">Para poder ir a otra ciudad a ver los stants puedes ir desde el propio mapa navegando y vuscado la ciudad deseada. En el caso de que quieras volver a tu posicion existe un boton arriba a la derecha  </string>
+
+    <string name="preguntaReservar">¿Desea reservar esta taquilla?</string>
+
+    <string name="politica1">El aviso legal y las condiciones generales de uso, o términos y condiciones de uso, está pensado para todos aquellos que van a crear una página o sitio web. Este documento está adaptado al Reglamento Europeo de Protección de Datos (RGPD) y a la reciente Ley Orgánica 3/2018, de 5 de diciembre, de Protección de Datos Personales y garantía de los derechos digitales.</string>
+    <string name="politica2">Este documento contiene, de forma general, un conjunto de menciones o referencias legales que servirán para regular las condiciones en las que los usuarios de Internet acceden, navegan y utilizan el sitio o página web. También comprende los derechos, obligaciones y responsabilidades a los que las partes quedan sometidas recíprocamente durante el acceso, navegación y uso del sitio web.  La inclusión de un aviso legal y condiciones generales de uso aporta un gran nivel de confianza y seguridad jurídica a todos y cada uno de los sitios web presentes en Internet.</string>
+
+    <string name="taquillasDisponibles">Taquillas disponibles</string>
+    <string name="patinReservado">Patinetes reservados</string>
+    <string name="patinetesDisponibles">Patinetes disponibles</string>
+
+    <string name="terminos1">El administrador de los datos recopilados es Green Electricity Sp. z o.o. con domicilio social en c. Matuszewska 14, 01-402 Warszawa, inscrita en el Registro Nacional Judicial con el número de registro (número KRS): 0000643112, número de identificación fiscal (NIP): 5272783384 y número de estadística (REGON): 365684398. Datos de contacto: teléfono: +48 (22) 290 25 25, e-mail: tricoopark@gmail.com</string>
+    <string name="terminos2">Tricoopark CITY, SL con domicilio  Carretera de Artés 17, 46013 Valencia, provista de CIF: B-98992076,Datos de contacto: teléfono: +34 658 311 988, e-mail: triccoopark@gmail.com  Green Electricity Sp. z o.o. y TRICOOPARK CITY, SL conceden especial importancia al respeto de la privacidad de los Usuarios que visitan sitios del dominio *tricoopark.city. Los datos recopilados en los registros se usan sólo con el fin de administrar el servicio TricooPark.city.</string>
 </resources>

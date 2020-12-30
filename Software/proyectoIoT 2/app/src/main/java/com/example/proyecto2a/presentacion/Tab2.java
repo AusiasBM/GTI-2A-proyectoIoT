@@ -105,7 +105,6 @@ public class Tab2 extends Fragment {RecyclerView recyclerView;
     @Override
     public void onStart() {
         super.onStart();
-
     }
 
     public void listen(){

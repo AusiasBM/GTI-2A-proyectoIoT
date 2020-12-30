@@ -16,7 +16,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
         android:fontFamily="@font/poppins_medium"
-        android:text="Patinetes reservados"
+        android:text="@string/patinReservado"
         android:textSize="18sp" />
 
     <androidx.recyclerview.widget.RecyclerView
@@ -33,7 +33,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
         android:fontFamily="@font/poppins_medium"
-        android:text="Patinetes para reservar"
+        android:text="@string/patinetesDisponibles"
         android:textSize="18sp" />
 
     <androidx.recyclerview.widget.RecyclerView

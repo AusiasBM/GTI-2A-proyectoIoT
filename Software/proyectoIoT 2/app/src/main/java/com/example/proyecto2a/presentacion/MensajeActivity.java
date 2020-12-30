@@ -87,19 +87,17 @@ public class MensajeActivity extends AppCompatActivity {
             NotificationChannel notificationChannel = new NotificationChannel(
                     CANAL_ID, "Mis Notificaciones",
                     NotificationManager.IMPORTANCE_DEFAULT);
-            notificationChannel.setDescription("Descripcion del canal");
+            notificationChannel.setDescription("Hi");
             notificationManager.createNotificationChannel(notificationChannel);
         }
         NotificationCompat.Builder notificacion =
                 new NotificationCompat.Builder(this, CANAL_ID)
                         .setSmallIcon(R.mipmap.ic_launcher)
-                        .setContentTitle("Taquilla reservada")
-                        .setContentText("Has reservado una taquilla");
-        //Llançar l'aplicació des de la notificació
+                        .setContentTitle("Reservas")
+                        .setContentText("Taquilla reservada");
         PendingIntent intencionPendiente = PendingIntent.getActivity(
                 this, 0, new Intent(this, ResActivity.class), 0);
         notificacion.setContentIntent(intencionPendiente);
-        //Para lanzar la notificación
         notificationManager.notify(NOTIFICACION_ID, notificacion.build());
         finish();
     }

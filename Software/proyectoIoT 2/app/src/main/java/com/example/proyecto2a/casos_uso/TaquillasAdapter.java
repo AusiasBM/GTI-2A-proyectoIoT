@@ -71,14 +71,12 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
 
         } else {
             holder.textViewNombre.setText("Taquilla " + taquilla.getId());
-
         }
 
         if (taquilla.isAlquilada()) {
             holder.boton.setVisibility(View.GONE);
             holder.botonAlquila.setVisibility(View.VISIBLE);
             holder.botoncancelares.setVisibility(View.VISIBLE);
-
         }
 
         if (taquilla.isOcupada()) {
@@ -93,7 +91,6 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
             } else {
                 holder.enchufe.setImageResource(R.drawable.enchufe_no);
             }
-
         } else {
             holder.boton2.setVisibility(View.GONE);
             holder.botoncancela.setVisibility(View.GONE);
@@ -110,9 +107,7 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
 
     @Override
     public void onClick(View v) {
-
     }
-
 
     public class Viewholder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private FirebaseAuth firebaseAuth;
@@ -163,7 +158,6 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
             botoncancela = itemView.findViewById(R.id.buttonCan);
             botoncancelares = itemView.findViewById(R.id.buttonCanReserva);
             enchufe = itemView.findViewById(R.id.imagenchufe);
-
         }
 
         public void setOnclickListeners(String estant, String id, boolean carga, boolean alquilada) {
@@ -183,9 +177,7 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
         @Override
         public void onClick(View v) {
             switch (v.getId()) {
-
                 case R.id.bt_reserva:
-
                     Intent intent = new Intent(activity, MensajeActivity.class);
                     intent.putExtra("id", id);
                     intent.putExtra("ide", ide);
@@ -321,10 +313,8 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
                 message.setQos(Mqtt.qos);
                 message.setRetained(false);
                 client.publish(Mqtt.topicRoot + "cerradura", message);
-
             } catch (MqttException e) {
                 Log.e(Mqtt.TAG, "Error al publicar.", e);
-
             }
         }
 
@@ -350,57 +340,6 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
             } catch (MqttException e) {
                 e.printStackTrace();
             }
-
-/*
-            if (carga){
-
-                try {
-
-
-                    DocumentReference taq = db.collection("estaciones").document(estant).collection("taquillas").document(id);
-                    taq.update("cargaPatinete", false).addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            Log.d("ocupada", "DocumentSnapshot successfully updated!");
-                        }
-                    });
-                    Toast.makeText(v.getContext(), "Carga apagada", Toast.LENGTH_SHORT);
-
-
-
-
-                } catch (Exception e) {
-                    Log.e(Mqtt.TAG, "Error al publicar.", e);
-                    Toast.makeText(v.getContext(), "Problema al cargar", Toast.LENGTH_SHORT);
-                }
-            }else {
-
-                try {
-
-
-
-
-
-                    DocumentReference taq = db.collection("estaciones").document(estant).collection("taquillas").document(id);
-                    taq.update("cargaPatinete", true).addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            Log.d("ocupada", "DocumentSnapshot successfully updated!");
-                        }
-                    });
-                    Toast.makeText(v.getContext(), "Patinete cargando", Toast.LENGTH_SHORT);
-
-
-
-
-                } catch (Exception e) {
-                    Log.e(Mqtt.TAG, "Error al publicar.", e);
-                    Toast.makeText(v.getContext(), "Problema al cargar", Toast.LENGTH_SHORT);
-                }
-            }
-
-        }*/
-
         }
     }
 

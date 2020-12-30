@@ -50,11 +50,9 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener, G
 
     public ProgressDialog progressDialog;
 
-
     //Declaramos un objeto firebaseAuth
     private FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener firebaseAuthListener;
-
 
     @Override
     protected void onStop() {
@@ -67,14 +65,12 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener, G
     @Override
     protected void onStart() {
         super.onStart();
-
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
-
 
         //Referenciamos los views
         TextEmail = (EditText) findViewById(R.id.et_em_up);
@@ -83,7 +79,6 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener, G
         btnRegistrar = (Button) findViewById(R.id.bt_sign_up);
         tv_registro = (TextView) findViewById(R.id.tv_Registrarse);
         progressDialog = new ProgressDialog(this);
-
         //----------------------------------------------------
         //Código para ir a la página Inicio Sesion mediante TextView
         tv_registro.setOnClickListener(new View.OnClickListener() {
@@ -97,10 +92,6 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener, G
                 finish();
             }
         });
-
-
-        //----------------------------------------------------
-
         //----------------------------------------------------
         //Inicio sesion con Google
         GoogleSignInOptions gso =
@@ -124,8 +115,6 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener, G
             }
         });
 
-
-        //inicializamos el objeto firebaseAuth
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -157,7 +146,7 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener, G
 
         //Verificamos que las cajas de texto no esten vacías
         if (TextUtils.isEmpty(email)) {
-            Toast.makeText(this, "Se debe ingresar un email", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.signInNecesario, Toast.LENGTH_LONG).show();
             //Abrir teclado
             TextEmail.requestFocus();
             InputMethodManager imm = (InputMethodManager) getSystemService(this.INPUT_METHOD_SERVICE);
@@ -166,7 +155,7 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener, G
         }
 
         if (TextUtils.isEmpty(password)) {
-            Toast.makeText(this, "Falta ingresar la contraseña", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.signInNecesarioContra, Toast.LENGTH_LONG).show();
             //Abrir teclado
             TextPassword.requestFocus();
             InputMethodManager imm = (InputMethodManager) getSystemService(this.INPUT_METHOD_SERVICE);
@@ -175,7 +164,7 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener, G
         }
 
         if (!confirm.equals(password)) {
-            Toast.makeText(this, "Las contraseñas no coinciden", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.signInNoCoinciden, Toast.LENGTH_LONG).show();
             //Abrir teclado
             TextPassword.requestFocus();
             InputMethodManager imm = (InputMethodManager) getSystemService(this.INPUT_METHOD_SERVICE);
@@ -183,8 +172,7 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener, G
             return;
         }
 
-
-        this.progressDialog.setMessage("Realizando registro en linea...");
+        this.progressDialog.setMessage(R.string.signInPensando+"");
         progressDialog.show();
 
         //creating a new user
@@ -198,7 +186,7 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener, G
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if (task.isSuccessful()) {
-                                        Toast.makeText(SignUp.this, "Usuario registrado, revise su email para la verificación", Toast.LENGTH_LONG).show();
+                                        Toast.makeText(SignUp.this, R.string.signInCheck, Toast.LENGTH_LONG).show();
                                         Intent intent = new Intent(SignUp.this, SignIn.class);
                                         intent.putExtra(SignIn.metodo, "verif");
                                         intent.putExtra(SignIn.email, email);
@@ -210,17 +198,13 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener, G
                                     }
                                 }
                             });
-
                         } else {
-
-                            Toast.makeText(SignUp.this, "No se pudo registrar el usuario ", Toast.LENGTH_LONG).show();
+                            Toast.makeText(SignUp.this, R.string.signUpNo, Toast.LENGTH_LONG).show();
                         }
                         progressDialog.dismiss();
                     }
                 });
-
     }
-
 
     @Override
     public void onBackPressed() {
@@ -231,7 +215,6 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener, G
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
     }
 
     @Override
@@ -240,7 +223,6 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener, G
         if (requestCode == SIGN_IN_CODE) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             handleSignInResult(result);
-
         }
     }
 
@@ -258,7 +240,7 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener, G
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (!task.isSuccessful()) {
-                    Toast.makeText(getApplicationContext(), "No se pudo Autenticar con Firebase", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), R.string.signInNoFirebase, Toast.LENGTH_SHORT).show();
                 } else {
                     goRes();
                 }

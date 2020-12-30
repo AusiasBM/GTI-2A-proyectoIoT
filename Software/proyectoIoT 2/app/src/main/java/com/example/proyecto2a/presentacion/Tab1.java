@@ -47,14 +47,11 @@ public class Tab1 extends Fragment {
         idUsuario = bundle.getString("idUser");
         recyclerView = v.findViewById(R.id.recycler_view_taquillas);
         recyclerView.setLayoutManager(new LinearLayoutManager( this.getContext()));
-        //recyclerView.setHasFixedSize(true);
         recyclerViewReservas = v.findViewById(R.id.recycler_view_taquillas_reservadas);
         recyclerViewReservas.setLayoutManager(new LinearLayoutManager( this.getContext()));
-        //recyclerViewReservas.setHasFixedSize(true);
         setUpRecyclerView();
         return v;
     }
-
 
     public void setUpRecyclerView(){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -106,7 +103,6 @@ public class Tab1 extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-
     }
 
     public void listen(){

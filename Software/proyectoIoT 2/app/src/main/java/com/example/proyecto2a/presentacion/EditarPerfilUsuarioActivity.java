@@ -67,7 +67,7 @@ public class EditarPerfilUsuarioActivity extends AppCompatActivity {
         setContentView(R.layout.perfil_menu);
 
         progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage("Revisando datos del usuario...");
+        progressDialog.setMessage(R.string.signInPensando+"");
         progressDialog.show();
 
         Bundle extra = getIntent().getExtras();
@@ -98,8 +98,7 @@ public class EditarPerfilUsuarioActivity extends AppCompatActivity {
             i.setType("image/*");
             startActivityForResult(i, 1234);
         }else{
-            solicitarPermiso(Manifest.permission.READ_EXTERNAL_STORAGE, "Sin el permiso" +
-                            " acceso a la galería.",
+            solicitarPermiso(Manifest.permission.READ_EXTERNAL_STORAGE, R.string.sinPermisoGaleria+"",
                     SOLICITUD_PERMISO_READ_EXTERNAL_STORAGE, this);
         }
 
@@ -206,7 +205,7 @@ public class EditarPerfilUsuarioActivity extends AppCompatActivity {
 
             if (telefono.getText().toString().length() != 9 && telefono.getText().toString().length() != 0) {
                 usuario.setTelefono(0);
-                Toast.makeText(this, "Número de teléfono incorrecto", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.telefonoIncorrecto, Toast.LENGTH_SHORT).show();
             } else if(telefono.getText().toString().length() == 0){
                 usuario.setTelefono(0);
             } else {
@@ -226,6 +225,7 @@ public class EditarPerfilUsuarioActivity extends AppCompatActivity {
             }
             usuarios.actualizarUsuario(idUsuario, usuario);
         }catch (Exception e){
+            Toast.makeText(this, R.string.errorModificar, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -268,7 +268,7 @@ public class EditarPerfilUsuarioActivity extends AppCompatActivity {
         if (ActivityCompat.shouldShowRequestPermissionRationale(actividad,
                 permiso)){
             new AlertDialog.Builder(actividad)
-                    .setTitle("Solicitud de permiso")
+                    .setTitle(R.string.solicitudPermiso)
                     .setMessage(justificacion)
                     .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int whichButton) {

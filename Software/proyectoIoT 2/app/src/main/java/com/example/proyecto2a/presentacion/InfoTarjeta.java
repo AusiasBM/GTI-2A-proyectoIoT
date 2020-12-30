@@ -58,15 +58,15 @@ public class InfoTarjeta extends AppCompatActivity {
 
 
                 final AlertDialog.Builder alert =new AlertDialog.Builder(InfoTarjeta.this);
-                alert.setMessage("¿Estas seguro de que quieres eliminar esta tarjeta?");
-                alert.setTitle("Eliminar tarjeta");
-                alert.setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                alert.setMessage(R.string.preguntaTarjeta);
+                alert.setTitle(R.string.eliminarTarjeta);
+                alert.setPositiveButton(R.string.si, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         firebaseFirestore.collection("tarjetas").document(tarjetaID).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
-                                Toast.makeText(InfoTarjeta.this, "Tarjeta eliminada correctamente", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(InfoTarjeta.this, R.string.tarjetaEliminada, Toast.LENGTH_SHORT).show();
                                 Intent intent = new Intent(InfoTarjeta.this, RecyclerTarjetas.class);
                                 startActivity(intent);
                                 finish();
@@ -74,12 +74,12 @@ public class InfoTarjeta extends AppCompatActivity {
                         }).addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(InfoTarjeta.this, "La tarjeta no se pudo eliminar", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(InfoTarjeta.this, R.string.tarjetaNoEliminada, Toast.LENGTH_SHORT).show();
                             }
                         });
                     }
                 });
-                alert.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                alert.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();
