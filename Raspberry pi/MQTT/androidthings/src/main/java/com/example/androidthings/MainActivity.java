@@ -1,5 +1,7 @@
 package com.example.androidthings;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.media.Image;
@@ -13,6 +15,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,7 +24,11 @@ import com.example.comun.Imagen;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
@@ -41,6 +48,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static com.example.androidthings.LoginActivity.user;
 import static com.example.androidthings.Mqtt.topicRoot;
 import static com.example.androidthings.Mqtt.qos;
 
@@ -63,7 +71,7 @@ import static com.example.androidthings.Mqtt.qos;
  */
 public class MainActivity extends AppCompatActivity implements MqttCallback {
 
-    static FirebaseFirestore db;
+    public static FirebaseFirestore db = FirebaseFirestore.getInstance();
     public static MqttClient client = null;
     public static List<Taquilla> taquillas = new ArrayList<>();
     RecyclerView recycler;
@@ -74,16 +82,12 @@ public class MainActivity extends AppCompatActivity implements MqttCallback {
     private HandlerThread mCameraThread;
     private Handler temporizadorHandler = new Handler();
 
-
     private Bitmap bitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-
-        db = FirebaseFirestore.getInstance();
 
         try {
             client = new MqttClient(Mqtt.broker, Mqtt.clientId, new
@@ -134,12 +138,18 @@ public class MainActivity extends AppCompatActivity implements MqttCallback {
         getTaquillasEstant(0); // Llenamos el array
 
 
+
         //Camara
         //Creamos handlers y les asociamos un hilo para la cámara
         mCameraThread = new HandlerThread("CameraBackground");
         mCameraThread.start();
         mCameraHandler = new Handler(mCameraThread.getLooper());
 
+    }
+
+    public void escuchaCambiosFirestore(DocumentSnapshot snapshot){
+
+        Log.d("alquilada", snapshot.getData().get("alquilada").toString());
     }
 
     public void getTaquillasEstant(int estant){
@@ -154,6 +164,7 @@ public class MainActivity extends AppCompatActivity implements MqttCallback {
                                 Log.d(Mqtt.TAG, document.getId() + " => " + document.getData());
                                 taquillas.add(new Taquilla(
                                         Integer.parseInt(document.getData().get("id").toString()),
+                                        Boolean.parseBoolean(document.getData().get("alquilada").toString()),
                                         Boolean.parseBoolean(document.getData().get("cargaPatinete").toString()),
                                         document.getData().get("idUsuario").toString(),
                                         Boolean.parseBoolean(document.getData().get("ocupada").toString()),
@@ -162,15 +173,40 @@ public class MainActivity extends AppCompatActivity implements MqttCallback {
                                 ));
                             }
 
-                            AdapterDatos adapter = new AdapterDatos(taquillas);
+                            AdapterDatos adapter = new AdapterDatos(taquillas, db);
 
                             adapter.setOnItemClickListener(new View.OnClickListener() {
                                 @Override
-                                public void onClick(View v) {
-                                    int pos = recycler.getChildAdapterPosition(v);
-                                    Intent i = new Intent(v.getContext(), MenuTaquilla.class);
-                                    i.putExtra("pos", pos);
-                                    startActivity(i);
+                                public void onClick(final View v) {
+                                    if (!taquillas.get(recycler.getChildAdapterPosition(v)).alquilada){
+                                        AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+                                        // Add the buttons
+                                        builder.setPositiveButton("Alquilar", new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int id) {
+                                                int pos = recycler.getChildAdapterPosition(v);
+                                                Intent i = new Intent(v.getContext(), MenuTaquilla.class);
+                                                i.putExtra("pos", pos);
+                                                startActivity(i);
+                                            }
+                                        });
+                                        builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int id) {
+                                                // User cancelled the dialog
+                                            }
+                                        });
+                                        builder.setMessage("¿Está seguro de que quieres alquilar esta taquilla?")
+                                                .setTitle("Alquilar taquilla " + recycler.getChildAdapterPosition(v));
+                                        AlertDialog dialog = builder.create();
+                                        dialog.show();
+                                    }else{
+                                        if (taquillas.get(recycler.getChildAdapterPosition(v)).getIdUsuario().equals(user.getuId())){
+                                            int pos = recycler.getChildAdapterPosition(v);
+                                            Intent i = new Intent(v.getContext(), MenuTaquilla.class);
+                                            i.putExtra("pos", pos);
+                                            startActivity(i);
+                                        }
+                                    }
+
                                 }
                             });
 
@@ -271,7 +307,7 @@ public class MainActivity extends AppCompatActivity implements MqttCallback {
 
     public static void apagarEncenderCarga(){
         try {
-            Log.i(Mqtt.TAG, "Publicando mensaje: " + "cerradura ON");
+            Log.i(Mqtt.TAG, "Publicando mensaje: " + "TOGGLE");
             MqttMessage message = new MqttMessage("TOGGLE".getBytes());
             message.setQos(Mqtt.qos);
             message.setRetained(false);
@@ -281,6 +317,12 @@ public class MainActivity extends AppCompatActivity implements MqttCallback {
         }
     }
 
+    public void cerrarSesion(View v){
+
+        user = null;
+        this.finish();
+
+    }
 
     //CODI CAMARA *********************************************************************************
 

@@ -3,19 +3,29 @@ package com.example.androidthings;
 public class Taquilla {
 
     int id;
+    boolean alquilada;
     boolean cargarPatinete;
     String idUsuario;
     boolean ocupada;
     boolean patineteNuestro;
     boolean puertaAbierta;
 
-    public Taquilla(int id, boolean cargarPatinete, String idUsuario, boolean ocupada, boolean patinNuestro, boolean puertaAbierta) {
+    public Taquilla(int id,boolean alquilada, boolean cargarPatinete, String idUsuario, boolean ocupada, boolean patinNuestro, boolean puertaAbierta) {
         this.id = id;
+        this.alquilada = alquilada;
         this.cargarPatinete = cargarPatinete;
         this.idUsuario = idUsuario;
         this.ocupada = ocupada;
         this.patineteNuestro = patinNuestro;
         this.puertaAbierta = puertaAbierta;
+    }
+
+    public boolean isAlquilada() {
+        return alquilada;
+    }
+
+    public void setAlquilada(boolean alquilada) {
+        this.alquilada = alquilada;
     }
 
     public int getId() {
