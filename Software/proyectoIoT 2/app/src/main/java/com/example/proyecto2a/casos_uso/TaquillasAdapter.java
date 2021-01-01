@@ -22,6 +22,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.proyecto2a.R;
 import com.example.proyecto2a.datos.Mqtt;
+import com.example.proyecto2a.modelo.Alquiler;
+import com.example.proyecto2a.modelo.Stant;
 import com.example.proyecto2a.presentacion.MainActivity;
 
 import com.example.proyecto2a.presentacion.MensajeActivity;
@@ -37,6 +39,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -118,6 +121,7 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
         public boolean carga;
         public boolean alquilada;
         public String ide;
+        private String correo;
 
         private NotificationManager notificationManager;
         static final String CANAL_ID = "mi_canal";
@@ -134,6 +138,7 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
         ImageView enchufe;
         Context context;
 
+
         public Viewholder(@NonNull View itemView) {
 
             super(itemView);
@@ -146,9 +151,11 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
                         ide = "kk";
                     } else {
                         ide = user.getUid();
+                        correo = user.getEmail();
                     }
                 }
             };
+
             firebaseAuth.addAuthStateListener(firebaseAuthListener);
             context = itemView.getContext();
             textViewNombre = itemView.findViewById(R.id.nombre);
@@ -165,6 +172,7 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
             this.carga = carga;
             this.id = id;
             this.alquilada = alquilada;
+
             MenuDialogActivity m = new MenuDialogActivity();
             boton.setOnClickListener(this);
             boton2.setOnClickListener(this);
@@ -228,9 +236,32 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
                                     Log.w("ocupada", "Error updating document", e);
                                 }
                             });
+
+
+                    //Fin de la lógica de alquiler
+                    Query query = db.collection("registrosAlquiler").whereEqualTo("uId", ide)
+                            .orderBy("fechaInicioAlquiler", Query.Direction.DESCENDING ). limit(1);
+
+                    query.get()
+                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        Log.d("Prova10", "");
+                                        //Obtenció de cada estació de su ubicación y su geoposición
+                                        for (QueryDocumentSnapshot document : task.getResult()) {
+                                            Log.d("Prova20", "");
+                                            Alquiler a = document.toObject(Alquiler.class);
+                                            a.calcularImporteTotal();
+                                            db.collection("registrosAlquiler").document(a.getFechaInicioAlquiler().toString()).set(a);
+                                        }
+                                    } else {
+
+                                    }
+                                }
+                            });
                     break;
                 case R.id.bt_alquila:
-
                     DocumentReference taquilla = db.collection("estaciones").document(estant).collection("taquillas").document(id);
                     taquilla.update("idUsuario", ide).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
@@ -256,6 +287,20 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
                                     Log.w("ocupada", "Error updating document", e);
                                 }
                             });
+
+                    //Inicio lógica de alquiler
+                    db.collection("estaciones").document(estant).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task){
+                            if (task.isSuccessful()) {
+                                String ubicacion = task.getResult().getString("ubicacion");
+                                Alquiler a = new Alquiler(ide, correo, ubicacion, estant, id);
+                                db.collection("registrosAlquiler").document(a.getFechaInicioAlquiler().toString()).set(a);
+                            } else {
+                                Log.e("Firestore", "Error al leer", task.getException());
+                            }
+                        }
+                    });
                     break;
                 case R.id.buttonCanReserva:
                     DocumentReference document = db.collection("estaciones").document(estant).collection("taquillas").document(id);
@@ -325,6 +370,7 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
                 client = new MqttClient(Mqtt.broker, Mqtt.clientId,
                         new MemoryPersistence());
                 client.connect();
+                
             } catch (MqttException e) {
                 Log.e(Mqtt.TAG, "Error al conectar.", e);
             }
