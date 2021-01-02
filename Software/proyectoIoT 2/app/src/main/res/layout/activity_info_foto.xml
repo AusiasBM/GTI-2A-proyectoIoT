@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    tools:context=".presentacion.InfoFoto">
+
+    <ImageView
+        android:id="@+id/ivBackFoto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:padding="6dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_back"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.032"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/ivFotoInfo"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="16dp"
+        android:contentDescription="TODO"
+        android:src="@android:mipmap/sym_def_app_icon"
+        app:layout_constraintBottom_toTopOf="@+id/ivAlertaInfoFoto"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ivBackFoto" />
+
+    <Button
+        android:id="@+id/ivAlertaInfoFoto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="572dp"
+        android:background="@drawable/bt_alert"
+        android:fontFamily="@font/poppins_medium"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:text="@string/alertaFoto"
+        android:textColor="@color/colorPrimaryAdmin"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/ivEliminarInfoFoto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/boton_eliminar"
+        android:fontFamily="@font/poppins_medium"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:text="@string/borarFoto"
+        android:textColor="#FDFF0000"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="@+id/ivAlertaInfoFoto"
+        app:layout_constraintStart_toStartOf="@+id/ivAlertaInfoFoto"
+        app:layout_constraintTop_toBottomOf="@+id/ivAlertaInfoFoto" />
+</androidx.constraintlayout.widget.ConstraintLayout>
