@@ -5,8 +5,10 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.NotificationCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -28,6 +31,7 @@ import com.example.proyecto2a.presentacion.MainActivity;
 import com.example.proyecto2a.presentacion.MensajeActivity;
 import com.example.proyecto2a.presentacion.MenuDialogActivity;
 import com.example.proyecto2a.presentacion.ResActivity;
+import com.example.proyecto2a.presentacion.ServicioReservaAlquilerTaquilla;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -50,31 +54,35 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
+import static java.lang.System.currentTimeMillis;
 
 public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, TaquillasAdapter.Viewholder> implements View.OnClickListener {
+    private String ubicacion;
     Activity activity;
+
     /**
      * Create a new RecyclerView adapter that listens to a Firestore Query.  See {@link
      * FirestoreRecyclerOptions} for configuration options.
      *
      * @param options
      */
-    public TaquillasAdapter(@NonNull FirestoreRecyclerOptions<Taquilla> options, Activity activity) {
+    public TaquillasAdapter(@NonNull FirestoreRecyclerOptions<Taquilla> options, Activity activity, String ubicacion) {
         super(options);
         this.activity = activity;
+        this.ubicacion = ubicacion;
     }
 
     @Override
     protected void onBindViewHolder(@NonNull Viewholder holder, int position, @NonNull Taquilla taquilla) {
 
-        holder.setOnclickListeners(taquilla.getEstant(), taquilla.getId(), taquilla.isCargaPatinete(), taquilla.isAlquilada());
+        holder.setOnclickListeners(taquilla.getEstant(), taquilla.getId(), taquilla.isCargaPatinete(), taquilla.isAlquilada(), ubicacion);
         if (taquilla.isPatinNuestro()) {
             holder.textViewNombre.setText("Patinete " + taquilla.getId());
 
         } else {
             holder.textViewNombre.setText("Taquilla " + taquilla.getId());
         }
-
+        
         if (taquilla.isAlquilada()) {
             holder.boton.setVisibility(View.GONE);
             holder.botonAlquila.setVisibility(View.VISIBLE);
@@ -117,13 +125,9 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
         private FirebaseUser user;
         public String estant;
         public String id;
+        public String ide;
         public boolean carga;
         public boolean alquilada;
-        public String ide;
-
-        private NotificationManager notificationManager;
-        static final String CANAL_ID = "mi_canal";
-        static final int NOTIFICACION_ID = 1;
 
         public FirebaseFirestore db = FirebaseFirestore.getInstance();
         public MqttClient client = null;
@@ -136,6 +140,7 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
         ImageView enchufe;
         Context context;
         String correo;
+        private Intent i;
 
         public Viewholder(@NonNull View itemView) {
 
@@ -153,6 +158,7 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
                     }
                 }
             };
+
             firebaseAuth.addAuthStateListener(firebaseAuthListener);
             context = itemView.getContext();
             textViewNombre = itemView.findViewById(R.id.nombre);
@@ -162,9 +168,21 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
             botoncancela = itemView.findViewById(R.id.buttonCan);
             botoncancelares = itemView.findViewById(R.id.buttonCanReserva);
             enchufe = itemView.findViewById(R.id.imagenchufe);
+            i = new Intent(context, ServicioReservaAlquilerTaquilla.class);
+
+
+            try {
+                Log.i(Mqtt.TAG, "Conectando al broker " + Mqtt.broker);
+                client = new MqttClient(Mqtt.broker, Mqtt.clientId,
+                        new MemoryPersistence());
+                client.connect();
+            } catch (MqttException e) {
+                Log.e(Mqtt.TAG, "Error al conectar.", e);
+            }
+
         }
 
-        public void setOnclickListeners(String estant, String id, boolean carga, boolean alquilada) {
+        public void setOnclickListeners(String estant, String id, boolean carga, boolean alquilada, String ubicacion) {
             this.estant = estant;
             this.carga = carga;
             this.id = id;
@@ -176,176 +194,272 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
             botoncancelares.setOnClickListener(this);
             enchufe.setOnClickListener(this);
             botonAlquila.setOnClickListener(this);
+
+            i.putExtra("estant", estant);
+            i.putExtra("id", id);
+            i.putExtra("ubicacion", ubicacion);
+
+
         }
 
         @Override
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.bt_reserva:
-                    Intent intent = new Intent(activity, MensajeActivity.class);
-                    intent.putExtra("id", id);
-                    intent.putExtra("ide", ide);
-                    intent.putExtra("estant", estant);
-                    activity.startActivity(intent);
+                    reservar();
+                    i.putExtra("ide", ide);
+                    context.startService(i);
+
                     break;
+
                 case R.id.bt_abrir:
                     abreTaquilla();
                     break;
+
                 case R.id.imagenchufe:
                     enchufa(v);
                     break;
+
                 case R.id.buttonCan:
-                    DocumentReference taki = db.collection("estaciones").document(estant).collection("taquillas").document(id);
-                    taki.update("idUsuario", "").addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            Log.d("ocupada", "DocumentSnapshot successfully updated!");
-                        }
-                    })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Log.w("ocupada", "Error updating document", e);
-                                }
-                            });
-                    taki.update("ocupada", false).addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            Log.d("ocupada", "DocumentSnapshot successfully updated!");
-                        }
-                    })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Log.w("ocupada", "Error updating document", e);
-                                }
-                            });
-                    taki.update("alquilada", false).addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            Log.d("ocupada", "DocumentSnapshot successfully updated!");
-                        }
-                    })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Log.w("ocupada", "Error updating document", e);
-                                }
-                            });
+                    AlertDialog.Builder builderFin = new AlertDialog.Builder(context);
+                    builderFin.setTitle("Fin alquiler de taquilla");
+                    builderFin.setMessage("¿Desea finalizar el alquiler de la taquilla? Si acepta, ya no podrá volver a abrirla. ");
 
-                    //Fin de la lógica de alquiler
-                    Query query = db.collection("registrosAlquiler").whereEqualTo("uId", ide)
-                            .orderBy("fechaInicioAlquiler", Query.Direction.DESCENDING ). limit(1);
-
-                    query.get()
-                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                @Override
-                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                    if (task.isSuccessful()) {
-                                        Log.d("Prova10", "");
-                                        //Obtenció de cada estació de su ubicación y su geoposición
-                                        for (QueryDocumentSnapshot document : task.getResult()) {
-                                            Log.d("Prova20", "");
-                                            Alquiler a = document.toObject(Alquiler.class);
-                                            a.calcularImporteTotal();
-                                            db.collection("registrosAlquiler").document(a.getFechaInicioAlquiler().toString()).set(a);
-                                        }
-                                    } else {
-
-                                    }
-                                }
-                            });
-                    break;
-                case R.id.bt_alquila:
-
-                    DocumentReference taquilla = db.collection("estaciones").document(estant).collection("taquillas").document(id);
-                    taquilla.update("idUsuario", ide).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    builderFin.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
                         @Override
-                        public void onSuccess(Void aVoid) {
-                            Log.d("ocupada", "DocumentSnapshot successfully updated!");
-                        }
-                    })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Log.w("ocupada", "Error updating document", e);
-                                }
-                            });
-                    taquilla.update("ocupada", true).addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            Log.d("ocupada", "DocumentSnapshot successfully updated!");
-                        }
-                    })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Log.w("ocupada", "Error updating document", e);
-                                }
-                            });
-                    //Inicio lógica de alquiler
-                    db.collection("estaciones").document(estant).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<DocumentSnapshot> task){
-                            if (task.isSuccessful()) {
-                                String ubicacion = task.getResult().getString("ubicacion");
-                                Alquiler a = new Alquiler(ide, correo, ubicacion, estant, id);
-                                db.collection("registrosAlquiler").document(a.getFechaInicioAlquiler().toString()).set(a);
-                            } else {
-                                Log.e("Firestore", "Error al leer", task.getException());
-                            }
+                        public void onClick(DialogInterface dialog, int which) {
+                            //Metodo que comprueba que la taquilla está cerrada (y sin nada dentro)
+                            //Si la puerta está cerrada pasará al método finAlquiler() y al finContadorAlquiler()
+                            //Sino, mostrará un AlertDialog diciendo que cierre la puerta
+                            taquillaVaciaCerrada();
+                            context.stopService(i);
                         }
                     });
+                    builderFin.setNegativeButton("No", null);
+
+                    AlertDialog dialogFin = builderFin.create();
+                    dialogFin.show();
                     break;
+
+                case R.id.bt_alquila:
+                    AlertDialog.Builder builderInicio = new AlertDialog.Builder(context);
+                    builderInicio.setTitle("Inicio alquiler de taquilla");
+                    builderInicio.setMessage("¿Desea alquilar la taquilla? Si acepta, dará comienzo al contador para " +
+                            "después aplicar los cargos correspondientes");
+
+                    builderInicio.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            alquilar();
+                            inicioContadorAlquilerTaquilla();
+                        }
+                    });
+                    builderInicio.setNegativeButton("No", null);
+
+                    AlertDialog dialogInicio = builderInicio.create();
+                    dialogInicio.show();
+                    break;
+
                 case R.id.buttonCanReserva:
-                    DocumentReference document = db.collection("estaciones").document(estant).collection("taquillas").document(id);
-                    document.update("idUsuario", "").addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            Log.d("ocupada", "DocumentSnapshot successfully updated!");
-                        }
-                    })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Log.w("ocupada", "Error updating document", e);
-                                }
-                            });
-                    document.update("alquilada", false).addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            Log.d("ocupada", "DocumentSnapshot successfully updated!");
-                        }
-                    })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Log.w("ocupada", "Error updating document", e);
-                                }
-                            });
+                    cancelarReserva();
+                    context.stopService(i);
                     break;
             }
         }
 
+        private void reservar(){
+            DocumentReference taq = db.collection("estaciones").document(estant).collection("taquillas").document(id);
+            taq.update("idUsuario", ide).addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    Log.d("ocupada", "DocumentSnapshot successfully updated!");
+                }
+            })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.w("ocupada", "Error updating document", e);
+                        }
+                    });
+            taq.update("alquilada", true).addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    Log.d("ocupada", "DocumentSnapshot successfully updated!");
+                }
+            })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.w("ocupada", "Error updating document", e);
+                        }
+                    });
+        }
+
+        private void alquilar(){
+            DocumentReference taquilla = db.collection("estaciones").document(estant).collection("taquillas").document(id);
+            taquilla.update("idUsuario", ide).addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    Log.d("ocupada", "DocumentSnapshot successfully updated!");
+                }
+            })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.w("ocupada", "Error updating document", e);
+                        }
+                    });
+            taquilla.update("ocupada", true).addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    Log.d("ocupada", "DocumentSnapshot successfully updated!");
+                }
+            })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.w("ocupada", "Error updating document", e);
+                        }
+                    });
+        }
+
+        private void inicioContadorAlquilerTaquilla(){
+            //Inicio lógica de alquiler
+            db.collection("estaciones").document(estant).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task){
+                    if (task.isSuccessful()) {
+                        String ubicacion = task.getResult().getString("ubicacion");
+                        Alquiler a = new Alquiler(ide, correo, ubicacion, estant, id);
+                        db.collection("registrosAlquiler").document(a.getFechaInicioAlquiler().toString()).set(a);
+                    } else {
+                        Log.e("Firestore", "Error al leer", task.getException());
+                    }
+                }
+            });
+        }
+
+        private void finAlquiler(){
+            DocumentReference taki = db.collection("estaciones").document(estant).collection("taquillas").document(id);
+            taki.update("idUsuario", "").addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    Log.d("ocupada", "DocumentSnapshot successfully updated!");
+                }
+            })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.w("ocupada", "Error updating document", e);
+                        }
+                    });
+            taki.update("ocupada", false).addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    Log.d("ocupada", "DocumentSnapshot successfully updated!");
+                }
+            })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.w("ocupada", "Error updating document", e);
+                        }
+                    });
+            taki.update("alquilada", false).addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    Log.d("ocupada", "DocumentSnapshot successfully updated!");
+                }
+            })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.w("ocupada", "Error updating document", e);
+                        }
+                    });
+
+            finContadorAlquiler();
+        }
+
+        private void finContadorAlquiler(){
+            //Fin de la lógica de alquiler
+            Query query = db.collection("registrosAlquiler").whereEqualTo("uId", ide)
+                    .orderBy("fechaInicioAlquiler", Query.Direction.DESCENDING ). limit(1);
+
+            query.get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                Log.d("Prova10", "");
+                                //Obtenció de cada estació de su ubicación y su geoposición
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    Log.d("Prova20", "");
+                                    Alquiler a = document.toObject(Alquiler.class);
+                                    a.calcularImporteTotal();
+                                    db.collection("registrosAlquiler").document(a.getFechaInicioAlquiler().toString()).set(a);
+                                }
+                            } else {
+
+                            }
+                        }
+                    });
+        }
+
+        private void cancelarReserva(){
+            DocumentReference document = db.collection("estaciones").document(estant).collection("taquillas").document(id);
+            document.update("idUsuario", "").addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    Log.d("ocupada", "DocumentSnapshot successfully updated!");
+                }
+            })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.w("ocupada", "Error updating document", e);
+                        }
+                    });
+            document.update("alquilada", false).addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    Log.d("ocupada", "DocumentSnapshot successfully updated!");
+                }
+            })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.w("ocupada", "Error updating document", e);
+                        }
+                    });
+        }
+
+
+        private void taquillaVaciaCerrada(){
+
+            DocumentReference document = db.collection("estaciones").document(estant).collection("taquillas").document(id);
+            document.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task){
+                    if (task.isSuccessful()) {
+                        boolean puertaAbierta = task.getResult().getBoolean("puertaAbierta");
+                        Log.d("puertaAbierta", puertaAbierta+"");
+                        if (puertaAbierta==false){
+                            finAlquiler();
+                        }else {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                            builder.setTitle("Error al finalizar el alquiler");
+                            builder.setMessage("Por favor, comprueba que no haya nada dentro de la taquilla y la puerta esté cerrada.");
+                            builder.setPositiveButton("Aceptar", null);
+                            AlertDialog dialog = builder.create();
+                            dialog.show();
+                        }
+                    }
+                }
+            });
+        }
+
         public void abreTaquilla() {
-
-            try {
-                Log.i(Mqtt.TAG, "Conectando al broker " + Mqtt.broker);
-                client = new MqttClient(Mqtt.broker, Mqtt.clientId,
-                        new MemoryPersistence());
-                client.connect();
-            } catch (MqttException e) {
-                Log.e(Mqtt.TAG, "Error al conectar.", e);
-            }
-
-            try {
-                Log.i(Mqtt.TAG, "Conectando al broker " + Mqtt.broker);
-                client = new MqttClient(Mqtt.broker, Mqtt.clientId,
-                        new MemoryPersistence());
-                client.connect();
-            } catch (MqttException e) {
-                Log.e(Mqtt.TAG, "Error al conectar.", e);
-            }
 
             try {
                 Log.i(Mqtt.TAG, "Publicando mensaje: " + "cerradura ON");
@@ -359,15 +473,6 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
         }
 
         public void enchufa(View v) {
-
-            try {
-                Log.i(Mqtt.TAG, "Conectando al broker " + Mqtt.broker);
-                client = new MqttClient(Mqtt.broker, Mqtt.clientId,
-                        new MemoryPersistence());
-                client.connect();
-            } catch (MqttException e) {
-                Log.e(Mqtt.TAG, "Error al conectar.", e);
-            }
 
             try {
                 Log.i(Mqtt.TAG, "Publicando mensaje: " + "power OFF");
