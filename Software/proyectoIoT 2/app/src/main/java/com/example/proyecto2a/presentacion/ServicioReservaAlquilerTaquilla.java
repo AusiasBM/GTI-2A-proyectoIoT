@@ -30,6 +30,7 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
+import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
 import static com.example.proyecto2a.datos.Mqtt.qos;
 import static com.example.proyecto2a.datos.Mqtt.topicRoot;
 
@@ -125,13 +126,12 @@ public class ServicioReservaAlquilerTaquilla extends Service implements MqttCall
         i.putExtra("idUser", ide);
         i.putExtra("nombre", ubicacion);
         PendingIntent intencionPendiente = PendingIntent.getActivity(
-                this, 0, i, 0);
+                this, 0, i, 	FLAG_UPDATE_CURRENT);
         notificacion.setContentIntent(intencionPendiente);
 
 
         //Servici en primer pla (DECLARAR EN EL MANIFEST)
         startForeground(NOTIFICACION_ID, notificacion.build());
-
 
         return START_STICKY;
     }
@@ -178,7 +178,7 @@ public class ServicioReservaAlquilerTaquilla extends Service implements MqttCall
     public void finTiempoReserva(){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference dc = db.collection("estaciones").document(estant).collection("taquillas").document(id);
-        dc.update("alquilada", false);
+        dc.update("reservada", false);
         dc.update("idUsuario", "");
     }
 

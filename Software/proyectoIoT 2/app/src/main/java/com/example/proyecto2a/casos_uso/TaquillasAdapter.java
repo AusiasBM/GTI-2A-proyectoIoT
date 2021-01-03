@@ -1,14 +1,9 @@
 package com.example.proyecto2a.casos_uso;
 
 import android.app.Activity;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Build;
-import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -26,6 +20,7 @@ import com.example.proyecto2a.R;
 import com.example.proyecto2a.datos.Mqtt;
 import com.example.proyecto2a.modelo.Alquiler;
 
+import com.example.proyecto2a.modelo.Taquilla;
 import com.example.proyecto2a.presentacion.MenuDialogActivity;
 import com.example.proyecto2a.presentacion.ServicioReservaAlquilerTaquilla;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
@@ -36,7 +31,6 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -69,7 +63,7 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
     @Override
     protected void onBindViewHolder(@NonNull Viewholder holder, int position, @NonNull Taquilla taquilla) {
 
-        holder.setOnclickListeners(taquilla.getEstant(), taquilla.getId(), taquilla.isCargaPatinete(), taquilla.isAlquilada(), ubicacion);
+        holder.setOnclickListeners(taquilla.getEstant(), taquilla.getId(), taquilla.isCargaPatinete(), taquilla.isReservada(), ubicacion);
         if (taquilla.isPatinNuestro()) {
             holder.textViewNombre.setText("Patinete " + taquilla.getId());
 
@@ -77,13 +71,13 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
             holder.textViewNombre.setText("Taquilla " + taquilla.getId());
         }
         
-        if (taquilla.isAlquilada()) {
+        if (taquilla.isReservada()) {
             holder.boton.setVisibility(View.GONE);
             holder.botonAlquila.setVisibility(View.VISIBLE);
             holder.botoncancelares.setVisibility(View.VISIBLE);
         }
 
-        if (taquilla.isOcupada()) {
+        if (taquilla.isAlquilada()) {
             holder.boton.setVisibility(View.GONE);
             holder.botonAlquila.setVisibility(View.GONE);
             holder.botoncancelares.setVisibility(View.GONE);
@@ -275,7 +269,7 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
                             Log.w("ocupada", "Error updating document", e);
                         }
                     });
-            taq.update("alquilada", true).addOnSuccessListener(new OnSuccessListener<Void>() {
+            taq.update("reservada", true).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
                     Log.d("ocupada", "DocumentSnapshot successfully updated!");
@@ -311,7 +305,7 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
                             Log.w("ocupada", "Error updating document", e);
                         }
                     });
-            document.update("alquilada", false).addOnSuccessListener(new OnSuccessListener<Void>() {
+            document.update("reservada", false).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
                     Log.d("ocupada", "DocumentSnapshot successfully updated!");
@@ -387,7 +381,7 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
                             Log.w("ocupada", "Error updating document", e);
                         }
                     });
-            taquilla.update("ocupada", true).addOnSuccessListener(new OnSuccessListener<Void>() {
+            taquilla.update("alquilada", true).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
                     Log.d("ocupada", "DocumentSnapshot successfully updated!");
@@ -436,7 +430,7 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
                             Log.w("ocupada", "Error updating document", e);
                         }
                     });
-            taki.update("ocupada", false).addOnSuccessListener(new OnSuccessListener<Void>() {
+            taki.update("alquilada", false).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
                     Log.d("ocupada", "DocumentSnapshot successfully updated!");
@@ -461,6 +455,18 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
                         }
                     });
 
+            taki.update("reservada", false).addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    Log.d("ocupada", "DocumentSnapshot successfully updated!");
+                }
+            })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.w("ocupada", "Error updating document", e);
+                        }
+                    });
             //Fin de la cuenta de tiempo de la taquilla alquilada
             finContadorAlquiler();
         }
@@ -498,8 +504,9 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
                 public void onComplete(@NonNull Task<DocumentSnapshot> task){
                     if (task.isSuccessful()) {
                         boolean puertaAbierta = task.getResult().getBoolean("puertaAbierta");
+                        boolean ocupada = task.getResult().getBoolean("ocupada");
                         Log.d("puertaAbierta", puertaAbierta+"");
-                        if (puertaAbierta==false){
+                        if (puertaAbierta==false && ocupada == false){
                             //Calcular el tiempo alquilada i el importe correspondiente
                             finAlquiler();
 
