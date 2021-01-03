@@ -192,6 +192,14 @@
 
     <string name="infoFoto">Pulse sobre la imagen para visualizarla</string>
 
+    <string name="btEmpezar">¡Empieza!</string>
+    <string name="tvAbrir">Abrir puerta</string>
+    <string name="tvCancelar">Cancelar</string>
+    <string name="tvAtras">Atrás</string>
+
+    <string name="tvTaquilla">Taquilla</string>
+    <string name="tvPatinete">Patinete</string>
+
     <string name="terminos1">El administrador de los datos recopilados es Green Electricity Sp. z o.o. con domicilio social en c. Matuszewska 14, 01-402 Warszawa, inscrita en el Registro Nacional Judicial con el número de registro (número KRS): 0000643112, número de identificación fiscal (NIP): 5272783384 y número de estadística (REGON): 365684398. Datos de contacto: teléfono: +48 (22) 290 25 25, e-mail: tricoopark@gmail.com</string>
     <string name="terminos2">Tricoopark CITY, SL con domicilio  Carretera de Artés 17, 46013 Valencia, provista de CIF: B-98992076,Datos de contacto: teléfono: +34 658 311 988, e-mail: triccoopark@gmail.com  Green Electricity Sp. z o.o. y TRICOOPARK CITY, SL conceden especial importancia al respeto de la privacidad de los Usuarios que visitan sitios del dominio *tricoopark.city. Los datos recopilados en los registros se usan sólo con el fin de administrar el servicio TricooPark.city.</string>
 </resources>

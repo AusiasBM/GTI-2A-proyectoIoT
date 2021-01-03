@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.proyecto2a.R;
 import com.example.proyecto2a.modelo.Incidencia;
+import com.example.proyecto2a.modelo.Stant;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -31,6 +32,8 @@ public class InfoFoto extends AppCompatActivity {
     private FirebaseFirestore firebaseFirestore;
     Button btEliminar, btAlertar;
     private String incidenciaID;
+    Stant stant = new Stant();
+    Incidencia incidencia = new Incidencia();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,12 +94,16 @@ public class InfoFoto extends AppCompatActivity {
         btAlertar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_SEND);
-                intent.putExtra(Intent.EXTRA_EMAIL,
+                Intent emailIntent = new Intent(Intent.ACTION_SEND);
+                emailIntent.putExtra(Intent.EXTRA_EMAIL,
                         new String[] { "incidencias@policia.es" });
-                intent.putExtra(Intent.EXTRA_SUBJECT, "Incidencia TRICOOPARK");
-                intent.putExtra(Intent.EXTRA_TEXT, "Problema, falta adjuntar foto");
-                startActivity(intent);
+                emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Incidencia TRICOOPARK");
+                emailIntent.putExtra(Intent.EXTRA_TEXT, "Datos de la incidencia:");
+                emailIntent.putExtra(Intent.EXTRA_TEXT, "Ubicación:" + stant.getUbicacion());
+                emailIntent.putExtra(Intent.EXTRA_TEXT, "Fecha:" + incidencia.getDate(incidencia.getTiempo(),"dd/MM/yyyy HH:mm:ss"));
+                emailIntent.setType("application/pdf");
+                emailIntent.putExtra(Intent.EXTRA_STREAM, "URL de la fotografia:" + incidencia.getUrl());
+                startActivity(emailIntent);
             }
         });
     }
