@@ -13,6 +13,7 @@ import android.os.HandlerThread;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -89,6 +90,9 @@ public class MainActivity extends AppCompatActivity implements MqttCallback {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        TextView txNombre = findViewById(R.id.txNombre);
+        txNombre.setText("BIENVENIDO, \n" + user.getNombre());
+
         try {
             client = new MqttClient(Mqtt.broker, Mqtt.clientId, new
                     MemoryPersistence());
@@ -145,11 +149,6 @@ public class MainActivity extends AppCompatActivity implements MqttCallback {
         mCameraThread.start();
         mCameraHandler = new Handler(mCameraThread.getLooper());
 
-    }
-
-    public void escuchaCambiosFirestore(DocumentSnapshot snapshot){
-
-        Log.d("alquilada", snapshot.getData().get("alquilada").toString());
     }
 
     public void getTaquillasEstant(int estant){

@@ -110,7 +110,7 @@ public class MenuTaquilla extends AppCompatActivity {
     public void eleccion(final View v){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         // Add the buttons
-        builder.setPositiveButton("Terminar", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton("Si", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 terminarBd();
                 cerrar(v);
@@ -187,14 +187,14 @@ public class MenuTaquilla extends AppCompatActivity {
     public void cargar(View v){
         String mensaje = "";
         if (taquillas.get(taquilla).cargarPatinete){
-            mensaje = "¿Estas seguro de apagar el cargador? te podrías quedar tirado";
+            mensaje = "¿Estas seguro de apagar el cargador?\nTe podrías quedar tirado.";
         }else{
-            mensaje = "¿Estas seguro de encender el cargador? esta acción tiene un coste extra";
+            mensaje = "¿Estas seguro de encender el cargador?\nEsta acción tiene un coste extra.";
         }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         // Add the buttons
-        builder.setPositiveButton("Terminar", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton("Si", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 apagarEncenderCarga();
                 if (swCarga.isChecked()){
