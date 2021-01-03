@@ -20,19 +20,27 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.NoActionBar">
-        <activity android:name=".presentacion.InfoStant"
-            android:screenOrientation="portrait" ></activity>
-        <activity android:name=".presentacion.AnyadirStantActivity"
+        <activity android:name=".presentacion.InfoFoto"></activity>
+        <activity
+            android:name=".presentacion.InfoStant"
             android:screenOrientation="portrait" />
-        <activity android:name=".presentacion.InfoUsuario"
+        <activity
+            android:name=".presentacion.AnyadirStantActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".presentacion.StantsActivity"
+        <activity
+            android:name=".presentacion.InfoUsuario"
             android:screenOrientation="portrait" />
-        <activity android:name=".presentacion.UsuariosActivity"
+        <activity
+            android:name=".presentacion.StantsActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".presentacion.IncidenciasActivity"
+        <activity
+            android:name=".presentacion.UsuariosActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".presentacion.InfoTarjeta"
+        <activity
+            android:name=".presentacion.IncidenciasActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".presentacion.InfoTarjeta"
             android:screenOrientation="portrait" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -77,19 +85,21 @@
             android:theme="@style/Theme.AppCompat.Light.Dialog" />
         <activity
             android:name=".presentacion.MenuDialogActivity"
-            android:theme="@style/NoLabel"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/NoLabel" />
         <activity
             android:name=".presentacion.MensajeActivity"
-            android:theme="@style/NoLabel"
-            android:screenOrientation="portrait" />
-        <activity android:name=".presentacion.Ayuda"
+            android:screenOrientation="portrait"
+            android:theme="@style/NoLabel" />
+        <activity
+            android:name=".presentacion.Ayuda"
             android:screenOrientation="portrait" />
         <activity
             android:name=".presentacion.InfoPago"
-            android:theme="@style/Theme.AppCompat.Light"
-            android:screenOrientation="portrait" />
-        <activity android:name=".presentacion.RecyclerTarjetas"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light" />
+        <activity
+            android:name=".presentacion.RecyclerTarjetas"
             android:screenOrientation="portrait" />
         <activity
             android:name=".presentacion.EditarPerfilUsuarioActivity"
@@ -106,8 +116,8 @@
         <activity
             android:name=".casos_uso.Asistente"
             android:label="¡Contacta con nosotros!"
-            android:theme="@style/Theme.AppCompat.Light.Dialog"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.Dialog" />
 
         <meta-data
             android:name="preloaded_fonts"
