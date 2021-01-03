@@ -21,7 +21,9 @@ import com.example.proyecto2a.modelo.Stant;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.io.File;
@@ -31,7 +33,8 @@ public class InfoFoto extends AppCompatActivity {
     ImageView ivFoto, ivBack;
     private FirebaseFirestore firebaseFirestore;
     Button btEliminar, btAlertar;
-    private String incidenciaID;
+    private String incidenciaID, incidenciaURL;
+    private long incidenciaTiempo;
     Stant stant = new Stant();
     Incidencia incidencia = new Incidencia();
     @Override
@@ -43,6 +46,8 @@ public class InfoFoto extends AppCompatActivity {
         ivBack = findViewById(R.id.ivBackFoto);
         ivFoto = findViewById(R.id.ivFotoInfo);
         incidenciaID = getIntent().getStringExtra("incidenciaID");
+        incidenciaURL = getIntent().getStringExtra("incidenciaURL");
+        incidenciaTiempo = getIntent().getLongExtra("incidenciaTiempo", incidenciaTiempo);
 
         firebaseFirestore = FirebaseFirestore.getInstance();
 
@@ -98,11 +103,15 @@ public class InfoFoto extends AppCompatActivity {
                 emailIntent.putExtra(Intent.EXTRA_EMAIL,
                         new String[] { "incidencias@policia.es" });
                 emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Incidencia TRICOOPARK");
-                emailIntent.putExtra(Intent.EXTRA_TEXT, "Datos de la incidencia:");
-                emailIntent.putExtra(Intent.EXTRA_TEXT, "Ubicación:" + stant.getUbicacion());
-                emailIntent.putExtra(Intent.EXTRA_TEXT, "Fecha:" + incidencia.getDate(incidencia.getTiempo(),"dd/MM/yyyy HH:mm:ss"));
+                /*emailIntent.putExtra(Intent.EXTRA_TEXT, "Datos de la incidencia:");
+                emailIntent.putExtra(Intent.EXTRA_TEXT, "Ubicación: Stant Univeritat Politécnica de València - ESPG");
+                emailIntent.putExtra(Intent.EXTRA_TEXT, "Fecha:" + incidencia.getDate(incidenciaTiempo,"dd/MM/yyyy HH:mm:ss"));
+                 */
                 emailIntent.setType("application/pdf");
-                emailIntent.putExtra(Intent.EXTRA_STREAM, "URL de la fotografia:" + incidencia.getUrl());
+                emailIntent.putExtra(Intent.EXTRA_TEXT, "Datos de la incidencia: \n \n" +
+                        "Ubicación stant: Universitat Politècnica de València - ESPG. \n \n" +
+                        "Fecha: " + incidencia.getDate(incidenciaTiempo,"dd/MM/yyyy HH:mm:ss") + ".\n \n" +
+                        "URL: "+ incidenciaURL);
                 startActivity(emailIntent);
             }
         });
