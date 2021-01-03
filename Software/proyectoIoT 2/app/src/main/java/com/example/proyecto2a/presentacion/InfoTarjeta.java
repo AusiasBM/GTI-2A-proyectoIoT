@@ -55,8 +55,6 @@ public class InfoTarjeta extends AppCompatActivity {
         btEliminar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
                 final AlertDialog.Builder alert =new AlertDialog.Builder(InfoTarjeta.this);
                 alert.setMessage(R.string.preguntaTarjeta);
                 alert.setTitle(R.string.eliminarTarjeta);
