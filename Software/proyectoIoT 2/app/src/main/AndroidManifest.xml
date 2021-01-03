@@ -114,6 +114,7 @@
             android:resource="@array/preloaded_fonts" />
 
         <service android:name=".presentacion.ServicioLocalizacion" />
+        <service android:name=".presentacion.ServicioReservaAlquilerTaquilla"/>
     </application>
 
 </manifest>
