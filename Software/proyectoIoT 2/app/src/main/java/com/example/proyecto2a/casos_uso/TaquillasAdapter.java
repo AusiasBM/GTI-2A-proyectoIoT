@@ -20,17 +20,13 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
-import androidx.core.app.NotificationCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.proyecto2a.R;
 import com.example.proyecto2a.datos.Mqtt;
 import com.example.proyecto2a.modelo.Alquiler;
-import com.example.proyecto2a.presentacion.MainActivity;
 
-import com.example.proyecto2a.presentacion.MensajeActivity;
 import com.example.proyecto2a.presentacion.MenuDialogActivity;
-import com.example.proyecto2a.presentacion.ResActivity;
 import com.example.proyecto2a.presentacion.ServicioReservaAlquilerTaquilla;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
@@ -53,8 +49,6 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
-import static android.content.Context.NOTIFICATION_SERVICE;
-import static java.lang.System.currentTimeMillis;
 
 public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, TaquillasAdapter.Viewholder> implements View.OnClickListener {
     private String ubicacion;
@@ -171,14 +165,7 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
             i = new Intent(context, ServicioReservaAlquilerTaquilla.class);
 
 
-            try {
-                Log.i(Mqtt.TAG, "Conectando al broker " + Mqtt.broker);
-                client = new MqttClient(Mqtt.broker, Mqtt.clientId,
-                        new MemoryPersistence());
-                client.connect();
-            } catch (MqttException e) {
-                Log.e(Mqtt.TAG, "Error al conectar.", e);
-            }
+
 
         }
 
@@ -208,6 +195,7 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
                 case R.id.bt_reserva:
                     reservar();
                     i.putExtra("ide", ide);
+                    i.putExtra("flagReserva", true);
                     context.startService(i);
 
                     break;
@@ -232,7 +220,7 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
                             //Si la puerta está cerrada pasará al método finAlquiler() y al finContadorAlquiler()
                             //Sino, mostrará un AlertDialog diciendo que cierre la puerta
                             taquillaVaciaCerrada();
-                            context.stopService(i);
+
                         }
                     });
                     builderFin.setNegativeButton("No", null);
@@ -250,8 +238,10 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
                     builderInicio.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
+                            i.putExtra("ide", ide);
+                            i.putExtra("flagReserva", false);
+                            context.startService(i);
                             alquilar();
-                            inicioContadorAlquilerTaquilla();
                         }
                     });
                     builderInicio.setNegativeButton("No", null);
@@ -261,12 +251,16 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
                     break;
 
                 case R.id.buttonCanReserva:
-                    cancelarReserva();
                     context.stopService(i);
+                    cancelarReserva();
+
                     break;
             }
         }
 
+        //*****************************************************************************
+        //Lógica de reservar
+        //*****************************************************************************
         private void reservar(){
             DocumentReference taq = db.collection("estaciones").document(estant).collection("taquillas").document(id);
             taq.update("idUsuario", ide).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -293,9 +287,93 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
                             Log.w("ocupada", "Error updating document", e);
                         }
                     });
+
+            //Enviar mensage MQTT a la taquilla para que inicie la cuenta de tiempo que puede estar reservada
+            // Durante ese tiempo la taquilla estará esperando otro MQTT confirmando el alquiler o la cancelación de la resrva.
+            // En caso de expirar el tiempo, enviará otro MQTT para que la taquilla quede liberada
+            contadorTiempoReserva();
         }
 
+        private void cancelarReserva(){
+            //Parar el contador de tiempo de reserva de la taquilla
+            pararContadorTiempoReserva();
+
+            DocumentReference document = db.collection("estaciones").document(estant).collection("taquillas").document(id);
+            document.update("idUsuario", "").addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    Log.d("ocupada", "DocumentSnapshot successfully updated!");
+                }
+            })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.w("ocupada", "Error updating document", e);
+                        }
+                    });
+            document.update("alquilada", false).addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    Log.d("ocupada", "DocumentSnapshot successfully updated!");
+                }
+            })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.w("ocupada", "Error updating document", e);
+                        }
+                    });
+        }
+
+
+        //*******************************Mensages MQTT**********************************************
+        public void contadorTiempoReserva(){
+            try {
+                Log.i(Mqtt.TAG, "Conectando al broker " + Mqtt.broker);
+                client = new MqttClient(Mqtt.broker, Mqtt.clientId,
+                        new MemoryPersistence());
+                client.connect();
+            } catch (MqttException e) {
+                Log.e(Mqtt.TAG, "Error al conectar.", e);
+            }
+            try {
+                MqttMessage message = new MqttMessage("inicio".getBytes());
+                message.setQos(Mqtt.qos);
+                message.setRetained(false);
+                client.publish(Mqtt.topicRoot + "tiempoReserva", message);
+            } catch (MqttException e) {
+                Log.e(Mqtt.TAG, "Error al publicar.", e);
+            }
+        }
+
+        public void pararContadorTiempoReserva(){
+            try {
+                Log.i(Mqtt.TAG, "Conectando al broker " + Mqtt.broker);
+                client = new MqttClient(Mqtt.broker, Mqtt.clientId,
+                        new MemoryPersistence());
+                client.connect();
+            } catch (MqttException e) {
+                Log.e(Mqtt.TAG, "Error al conectar.", e);
+            }
+            try {
+                MqttMessage message = new MqttMessage("parar".getBytes());
+                message.setQos(Mqtt.qos);
+                message.setRetained(false);
+                client.publish(Mqtt.topicRoot + "tiempoReserva", message);
+            } catch (MqttException e) {
+                Log.e(Mqtt.TAG, "Error al publicar.", e);
+            }
+        }
+
+
+        //*****************************************************************************
+        //Lógica de alquilar
+        //*****************************************************************************
         private void alquilar(){
+            //Primero, parar el contador de tiempo de la taquilla
+            pararContadorTiempoReserva();
+
+            //Registrar alquiler de la taquilla
             DocumentReference taquilla = db.collection("estaciones").document(estant).collection("taquillas").document(id);
             taquilla.update("idUsuario", ide).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
@@ -321,8 +399,12 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
                             Log.w("ocupada", "Error updating document", e);
                         }
                     });
+
+            //Inicio de la cuenta de tiempo de la taquilla alquilada
+            inicioContadorAlquilerTaquilla();
         }
 
+        //Contador del tiempo alquilada para después aplicar los precios
         private void inicioContadorAlquilerTaquilla(){
             //Inicio lógica de alquiler
             db.collection("estaciones").document(estant).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -339,6 +421,7 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
             });
         }
 
+        //Finalizar el alquiler de la taquilla
         private void finAlquiler(){
             DocumentReference taki = db.collection("estaciones").document(estant).collection("taquillas").document(id);
             taki.update("idUsuario", "").addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -378,9 +461,11 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
                         }
                     });
 
+            //Fin de la cuenta de tiempo de la taquilla alquilada
             finContadorAlquiler();
         }
 
+        //Finalizar contador del tiempo alquilada i calcular el importe
         private void finContadorAlquiler(){
             //Fin de la lógica de alquiler
             Query query = db.collection("registrosAlquiler").whereEqualTo("uId", ide)
@@ -399,42 +484,12 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
                                     a.calcularImporteTotal();
                                     db.collection("registrosAlquiler").document(a.getFechaInicioAlquiler().toString()).set(a);
                                 }
-                            } else {
-
                             }
                         }
                     });
         }
 
-        private void cancelarReserva(){
-            DocumentReference document = db.collection("estaciones").document(estant).collection("taquillas").document(id);
-            document.update("idUsuario", "").addOnSuccessListener(new OnSuccessListener<Void>() {
-                @Override
-                public void onSuccess(Void aVoid) {
-                    Log.d("ocupada", "DocumentSnapshot successfully updated!");
-                }
-            })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.w("ocupada", "Error updating document", e);
-                        }
-                    });
-            document.update("alquilada", false).addOnSuccessListener(new OnSuccessListener<Void>() {
-                @Override
-                public void onSuccess(Void aVoid) {
-                    Log.d("ocupada", "DocumentSnapshot successfully updated!");
-                }
-            })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.w("ocupada", "Error updating document", e);
-                        }
-                    });
-        }
-
-
+        //Comprobar que la taquilla que va a dejar de estar alquilada esté cerrada y vacía
         private void taquillaVaciaCerrada(){
 
             DocumentReference document = db.collection("estaciones").document(estant).collection("taquillas").document(id);
@@ -445,7 +500,11 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
                         boolean puertaAbierta = task.getResult().getBoolean("puertaAbierta");
                         Log.d("puertaAbierta", puertaAbierta+"");
                         if (puertaAbierta==false){
+                            //Calcular el tiempo alquilada i el importe correspondiente
                             finAlquiler();
+
+                            //Finalizar el servicio
+                            context.stopService(i);
                         }else {
                             AlertDialog.Builder builder = new AlertDialog.Builder(context);
                             builder.setTitle("Error al finalizar el alquiler");
@@ -459,8 +518,18 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
             });
         }
 
+
+
         public void abreTaquilla() {
 
+            try {
+                Log.i(Mqtt.TAG, "Conectando al broker " + Mqtt.broker);
+                client = new MqttClient(Mqtt.broker, Mqtt.clientId,
+                        new MemoryPersistence());
+                client.connect();
+            } catch (MqttException e) {
+                Log.e(Mqtt.TAG, "Error al conectar.", e);
+            }
             try {
                 Log.i(Mqtt.TAG, "Publicando mensaje: " + "cerradura ON");
                 MqttMessage message = new MqttMessage("cerradura ON".getBytes());
@@ -474,6 +543,14 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
 
         public void enchufa(View v) {
 
+            try {
+                Log.i(Mqtt.TAG, "Conectando al broker " + Mqtt.broker);
+                client = new MqttClient(Mqtt.broker, Mqtt.clientId,
+                        new MemoryPersistence());
+                client.connect();
+            } catch (MqttException e) {
+                Log.e(Mqtt.TAG, "Error al conectar.", e);
+            }
             try {
                 Log.i(Mqtt.TAG, "Publicando mensaje: " + "power OFF");
                 //MqttMessage message = new MqttMessage("toggle".getBytes());

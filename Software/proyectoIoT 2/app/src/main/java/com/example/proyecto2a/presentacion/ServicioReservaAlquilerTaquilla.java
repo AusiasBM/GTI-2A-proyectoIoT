@@ -34,9 +34,7 @@ import static com.example.proyecto2a.datos.Mqtt.qos;
 import static com.example.proyecto2a.datos.Mqtt.topicRoot;
 
 
-public class ServicioReservaAlquilerTaquilla extends Service implements MqttCallback/*implements SensorEventListener*/ {
-
-    //DECLARAR SERVEI EN EL MANIFEST!!!!
+public class ServicioReservaAlquilerTaquilla extends Service implements MqttCallback {
 
     public static MqttClient client = null;
     private String payload;
@@ -45,16 +43,13 @@ public class ServicioReservaAlquilerTaquilla extends Service implements MqttCall
     private String id;
     private String ide;
     private String ubicacion;
+    private boolean flagReserva;
 
     private NotificationManager notificationManager;
     static final String CANAL_ID = "mi_canal";
     static final int NOTIFICACION_ID = 1;
 
     @Override public void onCreate() {
-        Toast.makeText(this,"Servicio creado",
-                Toast.LENGTH_SHORT).show();
-
-
 
         try {
             Log.i(Mqtt.TAG, "Conectando al broker " + Mqtt.broker);
@@ -81,8 +76,8 @@ public class ServicioReservaAlquilerTaquilla extends Service implements MqttCall
         // Servirá para que una vez pasado un tiempo determinado desde que se reserva la taquilla
         // si no se ha alquilado, liberar la taquilla.
         try {
-            Log.i(Mqtt.TAG, "Suscrito a " + topicRoot+"tiempoExpirado");
-            client.subscribe(topicRoot+"tiempoExpirado", qos);
+            Log.i(Mqtt.TAG, "Suscrito a " + topicRoot+"tiempoReserva");
+            client.subscribe(topicRoot+"tiempoReserva", qos);
             client.setCallback(this);
         } catch (MqttException e) {
             Log.e(Mqtt.TAG, "Error al suscribir.", e);
@@ -97,6 +92,7 @@ public class ServicioReservaAlquilerTaquilla extends Service implements MqttCall
         ide = e.getString("ide");
         id = e.getString("id");
         ubicacion = e.getString("ubicacion");
+        flagReserva = e.getBoolean("flagReserva");
 
         Log.d("Id ",  ide);
         //Crear la notificació
@@ -109,13 +105,22 @@ public class ServicioReservaAlquilerTaquilla extends Service implements MqttCall
             notificationChannel.setDescription("Descripcion del canal");
             notificationManager.createNotificationChannel(notificationChannel);
         }
-        NotificationCompat.Builder notificacion =
-                new NotificationCompat.Builder(this, CANAL_ID)
-                        .setSmallIcon(R.mipmap.ic_launcher)
-                        .setContentTitle("Taquilla Reservada")
-                        .setContentText("Notificación de servicio activo.");
-        //Llançar l'aplicació des de la notificació
 
+        NotificationCompat.Builder notificacion = new NotificationCompat.Builder(this, CANAL_ID);
+
+        if(flagReserva){
+             notificacion.setSmallIcon(R.mipmap.ic_launcher)
+                            .setContentTitle("Taquilla Reservada")
+                            .setContentText("Notificación de taquilla reservada. Tiene 15 minutos para confirmar " +
+                                    "el alquiler o la reserva quedará anulada");
+        }else {
+             notificacion.setSmallIcon(R.mipmap.ic_launcher)
+                            .setContentTitle("Taquilla Alquilada")
+                            .setContentText("Notificación de taquilla alquilada.");
+        }
+
+
+        //Llançar l'aplicació des de la notificació
         Intent i = new Intent(this, MenuDialogActivity.class);
         i.putExtra("idUser", ide);
         i.putExtra("nombre", ubicacion);
@@ -133,9 +138,6 @@ public class ServicioReservaAlquilerTaquilla extends Service implements MqttCall
 
     //Accions per a donar per acabat el servici
     @Override public void onDestroy() {
-        Toast.makeText(this,"Servicio detenido",
-                Toast.LENGTH_SHORT).show();
-        notificationManager.cancel(NOTIFICACION_ID);
         try {
             Log.i(Mqtt.TAG, "Desconectado");
             client.disconnect();
@@ -143,8 +145,6 @@ public class ServicioReservaAlquilerTaquilla extends Service implements MqttCall
             Log.e(Mqtt.TAG, "Error al desconectar.", e);
         }
         super.onDestroy();
-
-
     }
 
 
@@ -163,7 +163,7 @@ public class ServicioReservaAlquilerTaquilla extends Service implements MqttCall
         payload = new String(message.getPayload());
         Log.d(Mqtt.TAG, "Recibiendo: " + topic + "->" + payload);
 
-        if(topic.equals(topicRoot+"tiempoExpirado")){
+        if(topic.equals(topicRoot+"tiempoReserva")){
             Log.d(Mqtt.TAG, "Recibiendo: " + topic + "->" + payload);
             finTiempoReserva();
             stopSelf();
