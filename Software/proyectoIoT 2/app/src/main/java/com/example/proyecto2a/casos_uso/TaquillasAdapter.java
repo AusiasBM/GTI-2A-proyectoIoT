@@ -260,12 +260,13 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
         // el usuario podrá reservar una taquilla.
         // Sirve para evitar que un usuario pueda reservar todas las taquillas.
         private void comprovarTaquillaPatinReservado(){
+            db.collection("usuarios").document(ide).update("reservaAlquilerTaquilla", false);
+            db.collection("usuarios").document(ide).update("reservaAlquilerPatin", false);
             db.collection("usuarios").document(ide).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                     if(task.isSuccessful()){
-                        //db.collection("usuarios").document(ide).update("reservaAlquilerTaquilla", false);
-                        //db.collection("usuarios").document(ide).update("reservaAlquilerPatin", false);
+
                         boolean reservaAlquilerTaquilla = task.getResult().getBoolean("reservaAlquilerTaquilla");
                         boolean reservaAlquilerPatin = task.getResult().getBoolean("reservaAlquilerPatin");
 

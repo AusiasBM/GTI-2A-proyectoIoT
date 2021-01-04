@@ -6,10 +6,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 public class Usuario {
     private String uId, nombre, correo, dirección, población, llave, foto;
     private int telefono;
-    private boolean admin = false, reservaAlquilerTaquilla = false, reservaAlquilerPatin = false, nuevo;
-    private boolean admin = false;
-    private boolean nuevo = true;
-    private boolean reservaAlquilerTaquilla, reservaAlquilerPatin;
+    private boolean admin = false, reservaAlquilerTaquilla = false, reservaAlquilerPatin = false, nuevo = true;
+
 
 
     //Constructores
@@ -131,28 +129,6 @@ public class Usuario {
                 '}';
     }
 
-    public boolean isReservaAlquilerTaquilla() {
-        return reservaAlquilerTaquilla;
-    }
 
-    public void setReservaAlquilerTaquilla(boolean reservaAlquilerTaquilla) {
-        this.reservaAlquilerTaquilla = reservaAlquilerTaquilla;
-    }
-
-    public boolean isReservaAlquilerPatin() {
-        return reservaAlquilerPatin;
-    }
-
-    public void setReservaAlquilerPatin(boolean reservaAlquilerPatin) {
-        this.reservaAlquilerPatin = reservaAlquilerPatin;
-    }
-
-    public boolean isNuevo() {
-        return nuevo;
-    }
-
-    public void setNuevo(boolean nuevo) {
-        this.nuevo = nuevo;
-    }
 
 }
