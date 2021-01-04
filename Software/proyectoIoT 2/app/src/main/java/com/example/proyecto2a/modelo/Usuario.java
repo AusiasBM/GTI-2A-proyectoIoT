@@ -6,8 +6,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 public class Usuario {
     private String uId, nombre, correo, dirección, población, llave, foto;
     private int telefono;
-    private boolean admin = false;
-
+    private boolean admin = false, reservaAlquilerTaquilla = false, reservaAlquilerPatin = false, nuevo;
 
     //Constructores
     public Usuario() {
@@ -100,12 +99,29 @@ public class Usuario {
                 ", admin=" + admin +
                 '}';
     }
-    /*
-    public static void registrarImagen(String url) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        Usuario imagen = new Usuario();
-        db.collection("usuarios").document(imagen.uId).set(imagen.foto);
+
+    public boolean isReservaAlquilerTaquilla() {
+        return reservaAlquilerTaquilla;
     }
 
-     */
+    public void setReservaAlquilerTaquilla(boolean reservaAlquilerTaquilla) {
+        this.reservaAlquilerTaquilla = reservaAlquilerTaquilla;
+    }
+
+    public boolean isReservaAlquilerPatin() {
+        return reservaAlquilerPatin;
+    }
+
+    public void setReservaAlquilerPatin(boolean reservaAlquilerPatin) {
+        this.reservaAlquilerPatin = reservaAlquilerPatin;
+    }
+
+    public boolean isNuevo() {
+        return nuevo;
+    }
+
+    public void setNuevo(boolean nuevo) {
+        this.nuevo = nuevo;
+    }
+
 }

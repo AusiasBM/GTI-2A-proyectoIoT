@@ -1,64 +1,31 @@
 package com.example.proyecto2a.modelo;
 
 public class Taquilla {
-    /*
-    private boolean alquilada, cargaPatinete, ocupada, patinNuestro, puertaAbierta;
-    private String estant, id, idUsuario;
+    private String id;
+    private String estant;
+    private String idUsuario;
+    private boolean cargaPatinete;
+    private boolean puertaAbierta;
+    private boolean patinNuestro;
+    private boolean ocupada;
+    private boolean alquilada;
+    private boolean reservada;
 
-    public Taquilla() {
-        alquilada = false;
-        cargaPatinete = false;
-        ocupada = false;
-        puertaAbierta = false;
+
+
+    public Taquilla(){
+
     }
 
-    public Taquilla(String estant, boolean patinNuestro) {
-        this.estant = estant;
-        this.patinNuestro = patinNuestro;
-        alquilada = false;
-        cargaPatinete = false;
-        ocupada = false;
-        puertaAbierta = false;
-    }
-
-    public boolean isAlquilada() {
-        return alquilada;
-    }
-
-    public void setAlquilada(boolean alquilada) {
-        this.alquilada = alquilada;
-    }
-
-    public boolean isCargaPatinete() {
-        return cargaPatinete;
-    }
-
-    public void setCargaPatinete(boolean cargaPatinete) {
+    public Taquilla(String id, String idUsuario, String estant, boolean cargaPatinete, boolean puertaAbierta, boolean patinNuestro, boolean ocupada, boolean alquilada) {
+        this.id = id;
+        this.idUsuario = idUsuario;
         this.cargaPatinete = cargaPatinete;
-    }
-
-    public boolean isOcupada() {
-        return ocupada;
-    }
-
-    public void setOcupada(boolean ocupada) {
-        this.ocupada = ocupada;
-    }
-
-    public boolean isPatinNuestro() {
-        return patinNuestro;
-    }
-
-    public void setPatinNuestro(boolean patinNuestro) {
-        this.patinNuestro = patinNuestro;
-    }
-
-    public boolean isPuertaAbierta() {
-        return puertaAbierta;
-    }
-
-    public void setPuertaAbierta(boolean puertaAbierta) {
         this.puertaAbierta = puertaAbierta;
+        this.patinNuestro = patinNuestro;
+        this.ocupada = ocupada;
+        this.estant = estant;
+        this.alquilada = alquilada;
     }
 
     public String getEstant() {
@@ -85,5 +52,51 @@ public class Taquilla {
         this.idUsuario = idUsuario;
     }
 
-     */
+    public boolean isCargaPatinete() {
+        return cargaPatinete;
+    }
+
+    public void setCargaPatinete(boolean cargaPatinete) {
+        this.cargaPatinete = cargaPatinete;
+    }
+
+    public boolean isPuertaAbierta() {
+        return puertaAbierta;
+    }
+
+    public void setPuertaAbierta(boolean puertaAbierta) {
+        this.puertaAbierta = puertaAbierta;
+    }
+
+    public boolean isPatinNuestro() {
+        return patinNuestro;
+    }
+
+    public void setPatinNuestro(boolean patinNuestro) {
+        this.patinNuestro = patinNuestro;
+    }
+
+    public boolean isOcupada() {
+        return ocupada;
+    }
+
+    public void setOcupada(boolean ocupada) {
+        this.ocupada = ocupada;
+    }
+
+    public boolean isAlquilada() {
+        return alquilada;
+    }
+
+    public void setAlquilada(boolean alquilada) {
+        this.alquilada = alquilada;
+    }
+
+    public boolean isReservada() {
+        return reservada;
+    }
+
+    public void setReservada(boolean reservada) {
+        this.reservada = reservada;
+    }
 }
