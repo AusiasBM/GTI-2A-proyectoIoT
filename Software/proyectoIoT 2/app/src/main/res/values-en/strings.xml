@@ -45,6 +45,12 @@
     <string name="address_title">Address</string>
     <string name="email_title">Email</string>
     <string name="city_title">City</string>
+    <string name="pin">PIN</string>
+    <string name="pin_campo">PIN</string>
+    <string name="dni_campo">DNI</string>
+    <string name="dni">DNI</string>
+    <string name="pin_incorrecto"> Incorrect pin ,please enter a 4 digit number </string>
+    <string name="dni_incorrecto">Please introduce a correct idn</string>
 
     <!-- Info usuario-->
     <string name="et_nombreUsuario">Add your name</string>

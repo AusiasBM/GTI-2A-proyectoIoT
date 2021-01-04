@@ -51,6 +51,8 @@ public class EditarPerfilUsuarioActivity extends AppCompatActivity {
     private EditText telefono;
     private EditText direccion;
     private EditText poblacion;
+    private EditText pin;
+    private EditText dni;
     private TextView correo;
     private FirebaseFirestore db;
     private static ProgressDialog progressDialog;
@@ -78,6 +80,10 @@ public class EditarPerfilUsuarioActivity extends AppCompatActivity {
         poblacion = findViewById(R.id.etPoblacion);
         correo = findViewById(R.id.tvCorreo);
         fotoPerfil = findViewById(R.id.imagenLogo);
+        //
+        dni = findViewById(R.id.dni);
+        pin = findViewById(R.id.pin);
+
 
         usuarios = new Usuarios();
 
@@ -109,8 +115,18 @@ public class EditarPerfilUsuarioActivity extends AppCompatActivity {
         nombre.setText(user.getNombre());
         direccion.setText(user.getDirección());
         poblacion.setText(user.getPoblación());
+       // pin.setText(user.getDirección());
+        //dni.setText(user.getPoblación());
+        //
+
         if (String.valueOf(user.getTelefono()).length() != 1){
             telefono.setText(String.valueOf(user.getTelefono()));
+        }
+        if (String.valueOf(user.getDni()).length() != 1){
+            dni.setText(String.valueOf(user.getDni()));
+        }
+        if (String.valueOf(user.getPin()).length() != 1){
+           pin.setText(String.valueOf(user.getPin()));
         }
         correo.setText(user.getCorreo());
         progressDialog.dismiss();
@@ -222,6 +238,24 @@ public class EditarPerfilUsuarioActivity extends AppCompatActivity {
                 usuario.setPoblación("");
             }else {
                 usuario.setPoblación(poblacion.getText().toString());
+            }
+
+
+         if (dni.getText().toString().length() != 8 && dni.getText().toString().length() != 0) {
+                usuario.setDni(0);
+                Toast.makeText(this, R.string.dni_incorrecto, Toast.LENGTH_SHORT).show();
+            } else if(dni.getText().toString().length() == 0){
+                usuario.setDni(0);
+            } else {
+                usuario.setDni(Integer.parseInt(dni.getText().toString()));
+            }
+            if (pin.getText().toString().length() != 4 && pin.getText().toString().length() != 0) {
+                usuario.setPin(0);
+                Toast.makeText(this, R.string.pin_incorrecto, Toast.LENGTH_SHORT).show();
+            } else if(pin.getText().toString().length() == 0){
+                usuario.setPin(0);
+            } else {
+                usuario.setPin(Integer.parseInt(pin.getText().toString()));
             }
             usuarios.actualizarUsuario(idUsuario, usuario);
         }catch (Exception e){
