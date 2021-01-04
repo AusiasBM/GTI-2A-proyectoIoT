@@ -11,6 +11,7 @@ import android.text.TextUtils;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
+import android.util.Pair;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -86,6 +87,7 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener, G
         visible = (ImageView) findViewById(R.id.iv_ver);
 
         progressDialog = new ProgressDialog(this);
+
 
         //----------------------------------------------------
         //Código para ir a la página Registro mediante TextView

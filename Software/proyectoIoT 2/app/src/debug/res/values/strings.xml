@@ -202,4 +202,24 @@
 
     <string name="terminos1">El administrador de los datos recopilados es Green Electricity Sp. z o.o. con domicilio social en c. Matuszewska 14, 01-402 Warszawa, inscrita en el Registro Nacional Judicial con el número de registro (número KRS): 0000643112, número de identificación fiscal (NIP): 5272783384 y número de estadística (REGON): 365684398. Datos de contacto: teléfono: +48 (22) 290 25 25, e-mail: tricoopark@gmail.com</string>
     <string name="terminos2">Tricoopark CITY, SL con domicilio  Carretera de Artés 17, 46013 Valencia, provista de CIF: B-98992076,Datos de contacto: teléfono: +34 658 311 988, e-mail: triccoopark@gmail.com  Green Electricity Sp. z o.o. y TRICOOPARK CITY, SL conceden especial importancia al respeto de la privacidad de los Usuarios que visitan sitios del dominio *tricoopark.city. Los datos recopilados en los registros se usan sólo con el fin de administrar el servicio TricooPark.city.</string>
+
+
+    <!-- Tutorial de la App-->
+    <string name="bienvenido_tutorial"> ¡Bienvenido a Tricoopark!</string>
+    <string name="patines_tutorial"> Nuestros patienetes </string>
+    <string name="usuario_tutorial"> Tus datos de usuario</string>
+    <string name="pagos_tutorial"> Tarifas y pagos</string>
+    <string name="fin_tutorial"> Cobro y asistencia</string>
+
+    <string name="parrafoA1_tutorial"> En la aplicación móvil de Tricoopark podrás reservar taquillas para que puedas dejar de forma fácil, sencilla y barata tu patinene eléctrico, para que luego puedas regresar a por él una vez finalizado el alquiler de la taquilla </string>
+    <string name="parrafoA2_tutorial"> Selecciona la estación mas cercana a ti para poder reservar la taquilla que desees, para que cuando llegues, puedas guardar tu patinete e incluso cargarlo y así poder ir a donde necesites sin tener que preocuparte por tu patiene eléctico ¡Nosotros te lo cuidamos!</string>
+    <string name="parrafoP1_tutorial"> Contamos con nuestros propios patinetes electricos que podrás alquilar durante el tiempo que necesites para recorrer la ciudad cuando lo necesites </string>
+    <string name="parrafoP2_tutorial"> Puedes dejar el patinete en cualquiera de nuestras taquillas habilitadas para ello de cualquiera de nuestras estaciones ¡No te olvides de dejar nuestros patienetes cargando, por favor! </string>
+    <string name="parrafoB1_tutorial"> La aplicación dispondrá de tu correo electrónico y número de teléfono. Además puedes modificar tu nombre de usuario, DNI, teléfono, foto de perfil y demás datos personales en el apartado de Perfil</string>
+    <string name="parrafoB2_tutorial"> Además, la aplicación te facilitará un PIN generado aleatoriamente, éste te servirá para reservar taquillas y patinetes de forma presencial en cualquiera de nuestras estaciones</string>
+    <string name="parrafoC1_tutorial"> Para poder pagar de forma sencilla por alquilar nuestras taquillas o patinetes puedes introducir las targetas de crédito que necesites con su número de tarjeta correspondiente y así poder pagar de forma automática </string>
+    <string name="parrafoC2_tutorial"> No te cobraremos nada al reservar una de nuestras taquillas o patines, pero dispondrás tan solo de 15 minutos para llegar a una estación y alquilar. Cuando pulses en "¡Empieza!" en cualquiera de nuestras taquillas empezará el proceso de alquiler</string>
+    <string name="parrafoD1_tutorial"> Por último te queremos informar de que se te cobrará 0.05€ por cada minuto que hayas reservado un patín, además de un extra por cargar tu propio patinete, opcion que puedes activar y desactivar desde el menú </string>
+    <string name="parrafoD2_tutorial"> Si necesitas cualquier tipo de ayuda extra contacta con nuestro equipo en la opción "Asistencia" del menú desplegable</string>
+
 </resources>

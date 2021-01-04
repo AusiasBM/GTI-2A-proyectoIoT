@@ -165,6 +165,33 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
 
         manejador = (LocationManager) getSystemService(LOCATION_SERVICE);
         solicitarPermisos();
+
+        //Tutorial
+
+        db.collection("usuarios").document(firebaseAuth.getUid()).get()
+                .addOnCompleteListener(
+                        new OnCompleteListener<DocumentSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    boolean esNuevo = task.getResult().toObject(Usuario.class).isNuevo();
+                                    if (esNuevo){
+                                        lanzaTutorial();
+                                    }
+                                    menuTipoUsuario(usuario);
+                                }else {
+                                    Log.d("Error usuario", "");
+                                }
+                            }
+                        }
+                );
+
+    }
+
+    public void lanzaTutorial(){
+        Intent intent = new Intent(this, TutorialActivity.class);
+        intent.putExtra("id", firebaseAuth.getUid());
+        startActivity(intent);
     }
 
     private void menuTipoUsuario(Usuario user){

@@ -60,6 +60,11 @@
         <activity
             android:name=".presentacion.ResActivity"
             android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".presentacion.TutorialActivity"
+            android:screenOrientation="portrait"
+            />
         <activity
             android:name=".presentacion.MainActivity"
             android:screenOrientation="portrait" />
