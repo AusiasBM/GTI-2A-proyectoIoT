@@ -180,6 +180,8 @@ public class ServicioReservaAlquilerTaquilla extends Service implements MqttCall
         DocumentReference dc = db.collection("estaciones").document(estant).collection("taquillas").document(id);
         dc.update("reservada", false);
         dc.update("idUsuario", "");
+        db.collection("usuarios").document(ide).update("reservaAlquilerTaquilla", false);
+        db.collection("usuarios").document(ide).update("reservaAlquilerPatin", false);
     }
 
 
