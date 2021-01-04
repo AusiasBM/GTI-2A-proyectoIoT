@@ -46,6 +46,8 @@ public class IncidenciasAdapter extends FirestoreRecyclerAdapter<Incidencia, Inc
 
         DocumentSnapshot documentSnapshot = getSnapshots().getSnapshot(holder.getAdapterPosition());
         final String id = documentSnapshot.getId();
+        final long tiempo = model.getTiempo();
+        final String url = model.getUrl();
 
         firebaseFirestore = FirebaseFirestore.getInstance();
 
@@ -59,6 +61,8 @@ public class IncidenciasAdapter extends FirestoreRecyclerAdapter<Incidencia, Inc
             public void onClick(View v) {
                 Intent intent = new Intent(activity, InfoFoto.class);
                 intent.putExtra("incidenciaID", id);
+                intent.putExtra("incidenciaTiempo", tiempo);
+                intent.putExtra("incidenciaURL", url);
                 activity.startActivity(intent);
             }
         });
