@@ -47,6 +47,12 @@
     <string name="menu_perfil_admin">Usuarios</string>
     <string name="menu_incidencias">Incidencias</string>
     <string name="menu_opciones">Configurar stants</string>
+    <string name="pin">PIN</string>
+    <string name="pin_campo">PIN</string>
+    <string name="dni_campo">DNI</string>
+    <string name="dni">DNI</string>
+    <string name="pin_incorrecto">Pin incorrecto,introduzca uno de 4 dígitos</string>
+    <string name="dni_incorrecto">Introduzca un dni valido</string>
 
 
 
