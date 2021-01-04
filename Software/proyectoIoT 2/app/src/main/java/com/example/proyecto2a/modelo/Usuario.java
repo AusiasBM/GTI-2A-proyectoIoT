@@ -7,6 +7,8 @@ public class Usuario {
     private String uId, nombre, correo, dirección, población, llave, foto;
     private int telefono;
     private boolean admin = false;
+    private boolean nuevo = true;
+    private boolean reservaAlquilerTaquilla, reservaAlquilerPatin;
 
 
     //Constructores
@@ -86,6 +88,30 @@ public class Usuario {
         this.admin = admin;
     }
 
+    public boolean isNuevo() {
+        return nuevo;
+    }
+
+    public void setNuevo(boolean nuevo) {
+        this.nuevo = nuevo;
+    }
+
+    public boolean isReservaAlquilerTaquilla() {
+        return reservaAlquilerTaquilla;
+    }
+
+    public void setReservaAlquilerTaquilla(boolean reservaAlquilerTaquilla) {
+        this.reservaAlquilerTaquilla = reservaAlquilerTaquilla;
+    }
+
+    public boolean isReservaAlquilerPatin() {
+        return reservaAlquilerPatin;
+    }
+
+    public void setReservaAlquilerPatin(boolean reservaAlquilerPatin) {
+        this.reservaAlquilerPatin = reservaAlquilerPatin;
+    }
+
     @Override
     public String toString() {
         return "Usuario{" +
@@ -98,8 +124,12 @@ public class Usuario {
                 ", foto='" + foto + '\'' +
                 ", telefono=" + telefono +
                 ", admin=" + admin +
+                ", nuevo=" + nuevo +
+                ", reservaAlquilerTaquilla=" + reservaAlquilerTaquilla +
+                ", reservaAlquilerPatin=" + reservaAlquilerPatin +
                 '}';
     }
+
     /*
     public static void registrarImagen(String url) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
