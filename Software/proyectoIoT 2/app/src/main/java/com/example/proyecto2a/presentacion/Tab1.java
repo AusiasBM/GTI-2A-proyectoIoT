@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.proyecto2a.R;
-import com.example.proyecto2a.casos_uso.Taquilla;
+import com.example.proyecto2a.modelo.Taquilla;
 import com.example.proyecto2a.casos_uso.TaquillasAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -62,7 +62,7 @@ public class Tab1 extends Fragment {
                 if (task.isSuccessful()) {
                     for (QueryDocumentSnapshot document : task.getResult()) {
                         id = (String) document.getId();
-                        Query lista = mFirestore.collection("estaciones").document(id).collection("taquillas").whereEqualTo("alquilada", true).whereEqualTo("idUsuario", idUsuario).whereEqualTo("patinNuestro", false);
+                        Query lista = mFirestore.collection("estaciones").document(id).collection("taquillas").whereEqualTo("reservada", true).whereEqualTo("idUsuario", idUsuario).whereEqualTo("patinNuestro", false);
                         FirestoreRecyclerOptions<Taquilla> options = new FirestoreRecyclerOptions.Builder<Taquilla>()
                                 .setQuery(lista, Taquilla.class)
                                 .build();
@@ -81,7 +81,7 @@ public class Tab1 extends Fragment {
                 if (task.isSuccessful()) {
                     for (QueryDocumentSnapshot document : task.getResult()) {
                         id = (String) document.getId();
-                        Query lista = mFirestore.collection("estaciones").document(id).collection("taquillas").whereEqualTo("alquilada", false).whereEqualTo("patinNuestro", false);
+                        Query lista = mFirestore.collection("estaciones").document(id).collection("taquillas").whereEqualTo("reservada", false).whereEqualTo("patinNuestro", false);
 
                         FirestoreRecyclerOptions<Taquilla> options = new FirestoreRecyclerOptions.Builder<Taquilla>()
                                 .setQuery(lista, Taquilla.class)

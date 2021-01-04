@@ -58,6 +58,7 @@ public class MenuDialogActivity extends AppCompatActivity {
     double longitud;
 
     public String idUser;
+    public String nombre;
     public static MqttClient client = null;
     private String[] nombres = new String[]{"Taquillas","Patinetes"};
 
@@ -68,7 +69,11 @@ public class MenuDialogActivity extends AppCompatActivity {
 
        //Consulta a bbdd para cargar las estaciones
         idUser = getIntent().getStringExtra("idUser");
-        String nombre = getIntent().getStringExtra("nombre");
+        nombre = getIntent().getStringExtra("nombre");
+
+        Log.d("Id", "123 " + idUser);
+        Log.d("Id", "123 " + nombre);
+
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("estaciones").whereEqualTo("ubicacion", nombre).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
@@ -89,7 +94,7 @@ public class MenuDialogActivity extends AppCompatActivity {
         LatLng pos = new LatLng(latitud, longitud);
         nombreLugar.setText(nombre);
         ViewPager2 viewPager = findViewById(R.id.viewpager);
-        viewPager.setAdapter(new MiPagerAdapter(this));
+        viewPager.setAdapter(new MiPagerAdapter(this, nombre, idUser));
         TabLayout tabs = findViewById(R.id.tabs);
         new TabLayoutMediator(tabs, viewPager,
                 new TabLayoutMediator.TabConfigurationStrategy() {
@@ -102,34 +107,6 @@ public class MenuDialogActivity extends AppCompatActivity {
     }
 
 
-    public class MiPagerAdapter extends FragmentStateAdapter {
-        String nombre = getIntent().getStringExtra("nombre");
-        public MiPagerAdapter(FragmentActivity activity){
-            super(activity);
-        }
-        @Override
-        public int getItemCount() {
-            return 2;
-        }
-        @Override @NonNull
-        public Fragment createFragment(int position) {
 
-            switch (position) {
-                case 0: Fragment fr=new Tab1();
-                    Bundle args = new Bundle();
-                    args.putString("CID", nombre);
-                    args.putString("idUser", idUser);
-                    fr.setArguments(args);
-                    return fr;
-                case 1: Fragment frr=new Tab2();
-                    Bundle arrgs = new Bundle();
-                    arrgs.putString("CID", nombre);
-                    arrgs.putString("idUser", idUser);
-                    frr.setArguments(arrgs);
-                    return frr;
-            }
-            return null;
-        }
-    }
 
 }
