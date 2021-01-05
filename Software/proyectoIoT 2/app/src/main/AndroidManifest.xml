@@ -92,10 +92,7 @@
             android:name=".presentacion.MenuDialogActivity"
             android:screenOrientation="portrait"
             android:theme="@style/NoLabel" />
-        <activity
-            android:name=".presentacion.MensajeActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/NoLabel" />
+
         <activity
             android:name=".presentacion.Ayuda"
             android:screenOrientation="portrait" />

@@ -19,6 +19,8 @@ import com.example.proyecto2a.R;
 import com.example.proyecto2a.casos_uso.TaquillasAdapter;
 import com.example.proyecto2a.datos.Mqtt;
 import com.example.proyecto2a.datos.Taquillas;
+import com.example.proyecto2a.modelo.DatosAlquiler;
+import com.google.android.gms.common.internal.Constants;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -88,12 +90,30 @@ public class ServicioReservaAlquilerTaquilla extends Service implements MqttCall
     @Override
     public int onStartCommand(Intent intent, int flags, int idArranque) {
 
+        try {
+            //Cerrar el servicio de alquiler de taquilla cuando el usuario haga Logout
+            if (intent.getAction().equals( "terminar")) {
+                //your end servce code
+                stopForeground(true);
+                //Parar el servicio con el id 0
+                stopSelfResult(0);
+                return START_NOT_STICKY;
+            }
+        }catch (Exception e){}
+
+
         Bundle e = intent.getExtras();
         estant = e.getString("estant");
         ide = e.getString("ide");
         id = e.getString("id");
         ubicacion = e.getString("ubicacion");
         flagReserva = e.getBoolean("flagReserva");
+
+        DatosAlquiler d = new DatosAlquiler();
+        d.setFlagReserva(flagReserva);
+        d.setUbicacionTaquilla(ubicacion);
+        FirebaseFirestore.getInstance().collection("usuarios").document(ide).update("datos", d);
+
 
         Log.d("Id ",  ide);
         //Crear la notificació
@@ -132,6 +152,7 @@ public class ServicioReservaAlquilerTaquilla extends Service implements MqttCall
 
         //Servici en primer pla (DECLARAR EN EL MANIFEST)
         startForeground(NOTIFICACION_ID, notificacion.build());
+
 
         return START_STICKY;
     }
@@ -177,11 +198,14 @@ public class ServicioReservaAlquilerTaquilla extends Service implements MqttCall
 
     public void finTiempoReserva(){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        db.collection("usuarios").document(ide).update("reservaAlquiler", false);
+        db.collection("usuarios").document(ide).update("datos", new DatosAlquiler());
+
         DocumentReference dc = db.collection("estaciones").document(estant).collection("taquillas").document(id);
         dc.update("reservada", false);
         dc.update("idUsuario", "");
-        db.collection("usuarios").document(ide).update("reservaAlquilerTaquilla", false);
-        db.collection("usuarios").document(ide).update("reservaAlquilerPatin", false);
+
     }
 
 
