@@ -20,6 +20,7 @@ import com.example.proyecto2a.R;
 import com.example.proyecto2a.datos.Mqtt;
 import com.example.proyecto2a.modelo.Alquiler;
 
+import com.example.proyecto2a.modelo.DatosAlquiler;
 import com.example.proyecto2a.modelo.Taquilla;
 import com.example.proyecto2a.modelo.Usuario;
 import com.example.proyecto2a.presentacion.MenuDialogActivity;
@@ -260,17 +261,15 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
         // el usuario podrá reservar una taquilla.
         // Sirve para evitar que un usuario pueda reservar todas las taquillas.
         private void comprovarTaquillaPatinReservado(){
-            db.collection("usuarios").document(ide).update("reservaAlquilerTaquilla", false);
-            db.collection("usuarios").document(ide).update("reservaAlquilerPatin", false);
+
+            //db.collection("usuarios").document(ide).update("reservaAlquiler", false);
             db.collection("usuarios").document(ide).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                     if(task.isSuccessful()){
+                        boolean reservaAlquiler= task.getResult().getBoolean("reservaAlquiler");
 
-                        boolean reservaAlquilerTaquilla = task.getResult().getBoolean("reservaAlquilerTaquilla");
-                        boolean reservaAlquilerPatin = task.getResult().getBoolean("reservaAlquilerPatin");
-
-                        if (reservaAlquilerPatin == false && reservaAlquilerTaquilla == false){
+                        if (reservaAlquiler == false){
                             //Reservamos la taquilla
                             reservar();
 
@@ -321,7 +320,7 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
                         }
                     });
 
-            db.collection("usuarios").document(ide).update("reservaAlquilerTaquilla", true);
+            db.collection("usuarios").document(ide).update("reservaAlquiler", true);
 
             //Enviar mensage MQTT a la taquilla para que inicie la cuenta de tiempo que puede estar reservada
             // Durante ese tiempo la taquilla estará esperando otro MQTT confirmando el alquiler o la cancelación de la resrva.
@@ -359,7 +358,8 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
                         }
                     });
 
-            db.collection("usuarios").document(ide).update("reservaAlquilerTaquilla", false);
+            db.collection("usuarios").document(ide).update("reservaAlquiler", false);
+            db.collection("usuarios").document(ide).update("datos", new DatosAlquiler());
         }
 
 
@@ -511,7 +511,8 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
                         }
                     });
 
-            db.collection("usuarios").document(ide).update("reservaAlquilerTaquilla", false);
+            db.collection("usuarios").document(ide).update("reservaAlquiler", false);
+            db.collection("usuarios").document(ide).update("datos", new DatosAlquiler());
 
             //Fin de la cuenta de tiempo de la taquilla alquilada
             finContadorAlquiler();
