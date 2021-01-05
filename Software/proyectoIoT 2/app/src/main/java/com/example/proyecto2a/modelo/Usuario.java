@@ -5,7 +5,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 public class Usuario {
     private String uId, nombre, correo, dirección, población, llave, foto;
-    private int telefono;
+    private int telefono,dni,pin;
     private boolean admin = false, reservaAlquiler = false, nuevo = true;
     private DatosAlquiler datos;
 
@@ -14,6 +14,24 @@ public class Usuario {
     }
 
     //Getters y Setters
+
+
+    public int getDni() {
+        return dni;
+    }
+
+    public void setDni(int dni) {
+        this.dni = dni;
+    }
+
+    public int getPin() {
+        return pin;
+    }
+
+    public void setPin(int pin) {
+        this.pin = pin;
+    }
+
     public String getNombre() {
         return nombre;
     }
@@ -109,6 +127,8 @@ public class Usuario {
                 ", telefono=" + telefono +
                 ", admin=" + admin +
                 ", nuevo=" + nuevo +
+                ", pin=" + pin +
+                ", dni=" + dni +
                 ", reservaAlquiler=" + reservaAlquiler +
                 '}';
     }
