@@ -7,7 +7,8 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class Taquillas {
-    /*private static DocumentReference taquillas;
+    /*
+    private static DocumentReference taquillas;
     Taquilla taquilla = new Taquilla();
 
     public Taquillas(){

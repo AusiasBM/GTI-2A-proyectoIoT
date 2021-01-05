@@ -20,7 +20,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.NoActionBar">
-        <activity android:name=".presentacion.InfoFoto"></activity>
+        <activity android:name=".presentacion.AnadirTaquilla"></activity>
+        <activity android:name=".presentacion.InfoFoto" />
         <activity
             android:name=".presentacion.InfoStant"
             android:screenOrientation="portrait" />
@@ -60,11 +61,9 @@
         <activity
             android:name=".presentacion.ResActivity"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".presentacion.TutorialActivity"
-            android:screenOrientation="portrait"
-            />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".presentacion.MainActivity"
             android:screenOrientation="portrait" />
@@ -92,7 +91,6 @@
             android:name=".presentacion.MenuDialogActivity"
             android:screenOrientation="portrait"
             android:theme="@style/NoLabel" />
-
         <activity
             android:name=".presentacion.Ayuda"
             android:screenOrientation="portrait" />
@@ -126,7 +124,7 @@
             android:resource="@array/preloaded_fonts" />
 
         <service android:name=".presentacion.ServicioLocalizacion" />
-        <service android:name=".presentacion.ServicioReservaAlquilerTaquilla"/>
+        <service android:name=".presentacion.ServicioReservaAlquilerTaquilla" />
     </application>
 
 </manifest>
