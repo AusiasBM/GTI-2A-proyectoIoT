@@ -177,8 +177,9 @@
     <string name="faq3">¿Como puedo editar mi perfil?</string>
     <string name="faq4">Desde el menu lateral puedes acceder a tu perfil y desde ahí modificar todos los campos.</string>
     <string name="faq5">¿Como cambiar de ciudad?</string>
-    <string name="faq6">Para poder ir a otra ciudad a ver los stants puedes ir desde el propio mapa navegando y vuscado la ciudad deseada. En el caso de que quieras volver a tu posicion existe un boton arriba a la derecha  </string>
-
+    <string name="faq6">Para poder ir a otra ciudad a ver los stants puedes ir desde el propio mapa navegando y buscado la ciudad deseada. En el caso de que quieras volver a tu posicion existe un boton arriba a la derecha  </string>
+    <string name="faq7">¿Para que se sirve poner el DNI y el Pin?</string>
+    <string name="faq8">El pin y el DNI son utilizados unicamente para acceder de una forma distinta a la aplicación.¿Cómo se usan? en las distintas estaciones encontrarás una pantalla donde podrás introducir los datos </string>
     <string name="preguntaReservar">¿Desea reservar esta taquilla?</string>
 
     <string name="politica1">El aviso legal y las condiciones generales de uso, o términos y condiciones de uso, está pensado para todos aquellos que van a crear una página o sitio web. Este documento está adaptado al Reglamento Europeo de Protección de Datos (RGPD) y a la reciente Ley Orgánica 3/2018, de 5 de diciembre, de Protección de Datos Personales y garantía de los derechos digitales.</string>
