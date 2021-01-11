@@ -171,6 +171,8 @@
     <string name="faq4"> From the side menu you can access to your profile and from there you can modify all the fields</string>
     <string name="faq5">How to change the city?</string>
     <string name="faq6">In order to go to another city to see the stants you can go from the map itself by navigating and searching for the desired city. In case you want to return to your position there is a button on the top right</string>
+    <string name="faq7">¿What is the use of putting the IDN and the Pin?</string>
+    <string name="faq8">The PIN and IDN are only used to access the application in a different way. How are they used? at the different stations you will find a screen where you can enter the data </string>
 
     <string name="preguntaReservar">Do you want to book this locker?</string>
     <string name="politica1">The legal notice and the general conditions of use, or terms and conditions of use, are intended for all those who are going to create a page or website. This document is adapted to the European Regulation of Data Protection (RGPD) and to the recent Organic Law 3/2018, of 5 December, on Personal Data Protection and guarantee of digital rights.</string>
