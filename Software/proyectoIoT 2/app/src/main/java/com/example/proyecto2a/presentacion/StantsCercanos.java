@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 import com.example.proyecto2a.R;
+import com.example.proyecto2a.casos_uso.CercanosAdapter;
 import com.example.proyecto2a.modelo.Stant;
 import com.example.proyecto2a.modelo.Usuario;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
@@ -39,7 +40,7 @@ public class StantsCercanos extends AppCompatActivity {
 
         Query quey = firebaseFirestore.collection("estaciones");
         FirestoreRecyclerOptions<Stant> firestoreRecyclerOptions = new FirestoreRecyclerOptions.Builder<Stant>().setQuery(quey, Stant.class).build();
-        adapter = new CercanosAdapter(firestoreRecyclerOptions);
+        adapter = new CercanosAdapter(firestoreRecyclerOptions, this);
         adapter.notifyDataSetChanged();
         recyclerView.setAdapter(adapter);
 
@@ -52,12 +53,7 @@ public class StantsCercanos extends AppCompatActivity {
         });
     }
 
-    public void abrirEstacion(View view){
-        Intent intent = new Intent(StantsCercanos.this, MenuDialogActivity.class);
-        intent.putExtra("idUser", usuario.getuId());
-        intent.putExtra("nombre", stant.getUbicacion());
-        startActivity(intent);
-    }
+
 
     @Override
     protected void onStart() {

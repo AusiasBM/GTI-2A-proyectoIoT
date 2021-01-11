@@ -56,34 +56,34 @@ public class Tab2 extends Fragment {RecyclerView recyclerView;
 
 
     public void setUpRecyclerView(){
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
+                            FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        db.collection("estaciones").whereEqualTo("ubicacion", nombre).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    for (QueryDocumentSnapshot document : task.getResult()) {
-                        id = (String) document.getId();
-                        Query lista = mFirestore.collection("estaciones").document(id).collection("taquillas").whereEqualTo("reservada", true).whereEqualTo("idUsuario", idUsuario).whereEqualTo("patinNuestro", true);
-                        FirestoreRecyclerOptions<Taquilla> options = new FirestoreRecyclerOptions.Builder<Taquilla>()
-                                .setQuery(lista, Taquilla.class)
-                                .build();
-                        mAdapter = new TaquillasAdapter(options,getActivity(), nombre);
-                        mAdapter.notifyDataSetChanged();
-                        recyclerViewReservas.setAdapter(mAdapter);
-                        listenm();
-                    }
-                }
-            }
-        });
+                            db.collection("estaciones").whereEqualTo("ubicacion", nombre).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        for (QueryDocumentSnapshot document : task.getResult()) {
+                                            id = (String) document.getId();
+                                            Query lista = mFirestore.collection("estaciones").document(id).collection("taquillas").whereEqualTo("reservada", true).whereEqualTo("idUsuario", idUsuario).whereEqualTo("patinNuestro", true);
+                                            FirestoreRecyclerOptions<Taquilla> options = new FirestoreRecyclerOptions.Builder<Taquilla>()
+                                                    .setQuery(lista, Taquilla.class)
+                                                    .build();
+                                            mAdapter = new TaquillasAdapter(options,getActivity(), nombre);
+                                            mAdapter.notifyDataSetChanged();
+                                            recyclerViewReservas.setAdapter(mAdapter);
+                                            listenm();
+                                        }
+                                    }
+                                }
+                            });
 
-        db.collection("estaciones").whereEqualTo("ubicacion", nombre).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    for (QueryDocumentSnapshot document : task.getResult()) {
-                        id = (String) document.getId();
-                        Query lista = mFirestore.collection("estaciones").document(id).collection("taquillas").whereEqualTo("reservada", false).whereEqualTo("patinNuestro", true);
+                            db.collection("estaciones").whereEqualTo("ubicacion", nombre).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        for (QueryDocumentSnapshot document : task.getResult()) {
+                                            id = (String) document.getId();
+                                            Query lista = mFirestore.collection("estaciones").document(id).collection("taquillas").whereEqualTo("reservada", false).whereEqualTo("patinNuestro", true);
 
                         FirestoreRecyclerOptions<Taquilla> options = new FirestoreRecyclerOptions.Builder<Taquilla>()
                                 .setQuery(lista, Taquilla.class)
@@ -118,7 +118,7 @@ public class Tab2 extends Fragment {RecyclerView recyclerView;
     @Override
     public void onStop() {
         super.onStop();
-        nAdapter.stopListening();
-        mAdapter.stopListening();
+        //nAdapter.stopListening();
+        //mAdapter.stopListening();
     }
 }

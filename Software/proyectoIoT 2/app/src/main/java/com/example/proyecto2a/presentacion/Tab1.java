@@ -115,8 +115,8 @@ public class Tab1 extends Fragment {
 
     @Override
     public void onStop() {
-        super.onStop();
         nAdapter.stopListening();
         mAdapter.stopListening();
+        super.onStop();
     }
 }
