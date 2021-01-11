@@ -572,5 +572,10 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
             }
         }
     }
+
+    public void abrirCercano(View view){
+        Intent i = new Intent(this, StantsCercanos.class);
+        startActivity(i);
+    }
 }
 
