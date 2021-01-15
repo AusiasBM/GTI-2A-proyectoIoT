@@ -2,6 +2,7 @@ package com.example.proyecto2a.casos_uso;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,25 +20,29 @@ import com.example.proyecto2a.presentacion.MenuDialogActivity;
 import com.example.proyecto2a.presentacion.StantsCercanos;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 
 public class CercanosAdapter extends FirestoreRecyclerAdapter<Stant, CercanosAdapter.ViewHolder> {
 
     Activity activity;
+    private String isUser;
     /**
      * Create a new RecyclerView adapter that listens to a Firestore Query.  See {@link
      * FirestoreRecyclerOptions} for configuration options.
      *
      * @param options
      */
-    public CercanosAdapter(@NonNull FirestoreRecyclerOptions<Stant> options, Activity activity) {
+    public CercanosAdapter(@NonNull FirestoreRecyclerOptions<Stant> options, Activity activity, String idUser) {
         super(options);
         this.activity = activity;
+        this.isUser = idUser;
     }
 
     @Override
     protected void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull final Stant model) {
-        final Usuario usuario = new Usuario();
+
         DocumentSnapshot documentSnapshot= getSnapshots().getSnapshot(holder.getAdapterPosition());
         final String id = documentSnapshot.getId();
         holder.nombreStant.setText(model.getUbicacion());
@@ -45,7 +50,7 @@ public class CercanosAdapter extends FirestoreRecyclerAdapter<Stant, CercanosAda
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(activity, MenuDialogActivity.class);
-                intent.putExtra("idUser", usuario.getuId());
+                intent.putExtra("idUser", isUser);
                 intent.putExtra("nombre", model.getUbicacion());
                 activity.startActivity(intent);
             }

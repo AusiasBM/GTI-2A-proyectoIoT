@@ -118,7 +118,7 @@ public class Tab2 extends Fragment {RecyclerView recyclerView;
     @Override
     public void onStop() {
         super.onStop();
-        //nAdapter.stopListening();
-        //mAdapter.stopListening();
+        nAdapter.stopListening();
+        mAdapter.stopListening();
     }
 }
