@@ -31,7 +31,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/ivAlarma"
         app:layout_constraintStart_toEndOf="@+id/ivAlarma"
         app:layout_constraintTop_toTopOf="@+id/ivAlarma"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.512" />
 
     <View
         android:id="@+id/view6"
@@ -45,21 +45,6 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ivAlarma" />
-
-    <TextView
-        android:id="@+id/textView21"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/poppins_light"
-        android:text="@string/infoFoto"
-        android:textColor="#000000"
-        android:textSize="10sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/tvFechaIncidencia"
-        app:layout_constraintTop_toBottomOf="@+id/tvFechaIncidencia"
-        app:layout_constraintVertical_bias="0.863" />
 
     <Button
         android:id="@+id/btEliminarRv"

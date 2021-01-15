@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.proyecto2a.R;
@@ -35,17 +36,17 @@ public class CercanosAdapter extends FirestoreRecyclerAdapter<Stant, CercanosAda
     }
 
     @Override
-    protected void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull Stant model) {
+    protected void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull final Stant model) {
         final Usuario usuario = new Usuario();
         DocumentSnapshot documentSnapshot= getSnapshots().getSnapshot(holder.getAdapterPosition());
         final String id = documentSnapshot.getId();
         holder.nombreStant.setText(model.getUbicacion());
-        holder.irStant.setOnClickListener(new View.OnClickListener() {
+        holder.clcercano.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(activity, MenuDialogActivity.class);
                 intent.putExtra("idUser", usuario.getuId());
-                intent.putExtra("nombre", id);
+                intent.putExtra("nombre", model.getUbicacion());
                 activity.startActivity(intent);
             }
         });
@@ -61,12 +62,12 @@ public class CercanosAdapter extends FirestoreRecyclerAdapter<Stant, CercanosAda
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView nombreStant;
-        Button irStant;
+        ConstraintLayout clcercano;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             nombreStant = itemView.findViewById(R.id.tvNombreStant);
-            irStant = itemView.findViewById(R.id.btIrStant);
+            clcercano = itemView.findViewById(R.id.clcercano);
 
         }
 

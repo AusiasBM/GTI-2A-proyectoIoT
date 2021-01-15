@@ -76,23 +76,26 @@
                 android:layout_height="0dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/guideline"
+                app:layout_constraintVertical_bias="0.0"
                 tools:context=".presentacion.ResActivity" />
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/faBCercano"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="3dp"
                 android:clickable="true"
                 android:onClick="abrirCercano"
                 app:backgroundTint="@color/colorPrimary"
-                app:layout_constraintBottom_toBottomOf="@+id/map"
+                app:layout_constraintBottom_toTopOf="@+id/textView26"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.188"
+                app:layout_constraintHorizontal_bias="0.205"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/guideline"
-                app:layout_constraintVertical_bias="0.972"
+                app:layout_constraintVertical_bias="1.0"
                 app:srcCompat="@drawable/logo" />
 
             <TextView
@@ -101,16 +104,15 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
+                android:layout_marginBottom="16dp"
                 android:background="@color/colorPrimary"
                 android:fontFamily="@font/poppins_light"
                 android:text="@string/tvCercano"
                 android:textColor="#FFFFFF"
-                app:layout_constraintBottom_toTopOf="@+id/faBCercano"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@+id/faBCercano"
-                app:layout_constraintHorizontal_bias="0.525"
-                app:layout_constraintStart_toStartOf="@+id/faBCercano"
-                app:layout_constraintTop_toTopOf="@+id/map"
-                app:layout_constraintVertical_bias="1.0" />
+                app:layout_constraintHorizontal_bias="0.513"
+                app:layout_constraintStart_toStartOf="@+id/faBCercano" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
