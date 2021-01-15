@@ -21,12 +21,11 @@ import com.google.firebase.firestore.Query;
 public class StantsCercanos extends AppCompatActivity {
 
     ImageView volver;
-    Button abrirStant;
     RecyclerView recyclerView;
     CercanosAdapter adapter;
     FirebaseFirestore firebaseFirestore;
-    Usuario usuario = new Usuario();
-    Stant stant = new Stant();
+    private String idUser;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,13 +33,15 @@ public class StantsCercanos extends AppCompatActivity {
         setContentView(R.layout.activity_stants_cercanos);
         volver = findViewById(R.id.ivBackCercano);
 
+        idUser = getIntent().getStringExtra("idUser");
+
         recyclerView = findViewById(R.id.recyclerViewCercanos);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         firebaseFirestore = FirebaseFirestore.getInstance();
 
         Query quey = firebaseFirestore.collection("estaciones");
         FirestoreRecyclerOptions<Stant> firestoreRecyclerOptions = new FirestoreRecyclerOptions.Builder<Stant>().setQuery(quey, Stant.class).build();
-        adapter = new CercanosAdapter(firestoreRecyclerOptions, this);
+        adapter = new CercanosAdapter(firestoreRecyclerOptions, this, idUser);
         adapter.notifyDataSetChanged();
         recyclerView.setAdapter(adapter);
 
