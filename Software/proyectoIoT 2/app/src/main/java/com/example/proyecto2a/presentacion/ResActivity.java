@@ -11,10 +11,11 @@ import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,7 +33,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.example.proyecto2a.R;
 import com.example.proyecto2a.casos_uso.Asistente;
 import com.example.proyecto2a.modelo.DatosAlquiler;
-import com.example.proyecto2a.modelo.Taquilla;
 import com.example.proyecto2a.modelo.Usuario;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -40,7 +40,6 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.common.internal.Constants;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -63,7 +62,6 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.Objects;
 
 import static android.view.Gravity.END;
-import static android.view.Gravity.LEFT;
 
 public class ResActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, OnMapReadyCallback, GoogleMap.OnMapClickListener {
 
@@ -344,6 +342,7 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
     }
 
     public void logOut() {
+        /*
         final AlertDialog.Builder alert =new AlertDialog.Builder(this);
         alert.setMessage(R.string.preguntaCerrarSesion);
         alert.setTitle(R.string.cerrarSesion);
@@ -378,6 +377,46 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
         });
         AlertDialog dialog=alert.create();
         dialog.show();
+        */
+        //
+        //
+
+        final LayoutInflater inflater = LayoutInflater.from(this);
+        final View view = inflater.inflate(R.layout.custom_dialog,null);
+        Button acceptButton= view.findViewById(R.id.btn_accp);
+        final Button cancelButton = view.findViewById(R.id.btn_cancel);
+        acceptButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                //Cerrar el servicio de alquiler de taquilla
+                Intent stopIntent = new Intent(ResActivity.this, ServicioReservaAlquilerTaquilla.class);
+                stopIntent.setAction("terminar");
+                startService(stopIntent);
+
+                Auth.GoogleSignInApi.signOut(googleApiClient).setResultCallback(new ResultCallback<Status>() {
+                    @Override
+                    public void onResult(@NonNull Status status) {
+                        if (status.isSuccess()) {
+                            goMain();
+                            finish();
+                        } else {
+                            Toast.makeText(getApplicationContext(), R.string.cerrarSesionError, Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+            }
+        });
+        final AlertDialog alertDialog=new AlertDialog.Builder(this)
+                .setView(view)
+                .create();
+        alertDialog.show();
+        cancelButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                  alertDialog.cancel();
+            }
+        });
+
     }
 
     @Override

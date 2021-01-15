@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -55,7 +56,7 @@ public class InfoTarjeta extends AppCompatActivity {
         btEliminar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final AlertDialog.Builder alert =new AlertDialog.Builder(InfoTarjeta.this);
+            /*    final AlertDialog.Builder alert =new AlertDialog.Builder(InfoTarjeta.this);
                 alert.setMessage(R.string.preguntaTarjeta);
                 alert.setTitle(R.string.eliminarTarjeta);
                 alert.setPositiveButton(R.string.si, new DialogInterface.OnClickListener() {
@@ -77,17 +78,41 @@ public class InfoTarjeta extends AppCompatActivity {
                         });
                     }
                 });
-                alert.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+*/
+//
+                final LayoutInflater inflater = LayoutInflater.from(InfoTarjeta.this);
+                final View view = inflater.inflate(R.layout.custom_dialog_eliminar_tarjeta,null);
+                Button acceptButton= view.findViewById(R.id.btn_si);
+                final Button cancelButton = view.findViewById(R.id.btn_no);
+                acceptButton.setOnClickListener(new View.OnClickListener(){
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
+                    public void onClick(View v) {
+                        firebaseFirestore.collection("tarjetas").document(tarjetaID).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Toast.makeText(InfoTarjeta.this, R.string.tarjetaEliminada, Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(InfoTarjeta.this, RecyclerTarjetas.class);
+                                startActivity(intent);
+                                finish();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(InfoTarjeta.this, R.string.tarjetaNoEliminada, Toast.LENGTH_SHORT).show();
+                            }
+                        });
                     }
                 });
-                AlertDialog dialog=alert.create();
-                dialog.show();
-
-
-
+                final AlertDialog alertDialog=new AlertDialog.Builder(InfoTarjeta.this)
+                        .setView(view)
+                        .create();
+                alertDialog.show();
+                cancelButton.setOnClickListener(new View.OnClickListener(){
+                    @Override
+                    public void onClick(View v) {
+                        alertDialog.cancel();
+                    }
+                });
             }
         });
     }
@@ -113,3 +138,6 @@ public class InfoTarjeta extends AppCompatActivity {
         });
     }
 }
+
+
+

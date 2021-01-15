@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -77,8 +78,8 @@ public class InfoPago extends AppCompatActivity {
         Intent intent=new Intent(this, RecyclerTarjetas.class);
         startActivity(intent);
     }
-    public void guardarTarjeta(View view){
-        final AlertDialog.Builder alert =new AlertDialog.Builder(InfoPago.this);
+    public void guardarTarjeta(View h){
+       /* final AlertDialog.Builder alert =new AlertDialog.Builder(InfoPago.this);
         alert.setMessage(R.string.preguntaTarjeta);
         alert.setTitle(R.string.añadirTarjeta);
         alert.setPositiveButton(R.string.si, new DialogInterface.OnClickListener() {
@@ -102,8 +103,36 @@ public class InfoPago extends AppCompatActivity {
             }
         });
         AlertDialog dialog=alert.create();
-        dialog.show();
+        dialog.show();*/
+//
+        final LayoutInflater inflater = LayoutInflater.from(InfoPago.this);
+        final View view = inflater.inflate(R.layout.custom_dialog_anyadir_tarjeta,null);
+        Button acceptButton= view.findViewById(R.id.btn_si);
+        final Button cancelButton = view.findViewById(R.id.btn_no);
+        acceptButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                Log.d("hi", num.getText().equals("") + "");
+                if (num.getText().toString().isEmpty() || mes.getText().toString().isEmpty()
+                        || año.getText().toString().isEmpty()
+                        || cvv.getText().toString().isEmpty() || name.getText().toString().isEmpty()
+                        || apellido.getText().toString().isEmpty()){
 
+                } else {
+                    actualizarPerfilTarjeta();
+                }
+            }
+        });
+        final AlertDialog alertDialog=new AlertDialog.Builder(this)
+                .setView(view)
+                .create();
+        alertDialog.show();
+        cancelButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                alertDialog.cancel();
+            }
+        });
     }
 
     public void actualizarPerfilTarjeta(){
