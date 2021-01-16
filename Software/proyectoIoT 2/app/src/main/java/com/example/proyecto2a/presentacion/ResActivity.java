@@ -195,11 +195,6 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
             goMain();
         }
 
-        if (!checkIfLocationOpened()){
-            cercano.setVisibility(View.GONE);
-            txCercano.setVisibility(View.GONE);
-        }
-
     }
 
     private boolean checkIfLocationOpened() {
@@ -639,9 +634,14 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
     }
 
     public void abrirCercano(View view){
-        Intent i = new Intent(this, StantsCercanos.class);
-        i.putExtra("idUser", usuario.getuId());
-        startActivity(i);
+        if (!checkIfLocationOpened()){
+            Toast.makeText(this, "Active la localización para usar esta funcionalidad", Toast.LENGTH_SHORT).show();
+        } else {
+            Intent i = new Intent(this, StantsCercanos.class);
+            i.putExtra("idUser", usuario.getuId());
+            startActivity(i);
+        }
+
     }
 }
 
