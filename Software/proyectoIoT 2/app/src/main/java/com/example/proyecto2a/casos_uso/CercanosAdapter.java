@@ -142,6 +142,8 @@ public class CercanosAdapter extends FirestoreRecyclerAdapter<Stant, CercanosAda
             }
         }
 
+
+
     }
 
     @NonNull

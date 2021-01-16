@@ -166,25 +166,31 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
         manejador = (LocationManager) getSystemService(LOCATION_SERVICE);
         solicitarPermisos();
         //Tutorial
-        db.collection("usuarios").document(firebaseAuth.getUid()).get()
-                .addOnCompleteListener(
-                        new OnCompleteListener<DocumentSnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                if (task.isSuccessful()) {
-                                    usuario = task.getResult().toObject(Usuario.class);
-                                    boolean esNuevo = task.getResult().toObject(Usuario.class).isNuevo();
-                                    if (esNuevo){
-                                        lanzaTutorial();
-                                    }
-                                    menuTipoUsuario(usuario);
+        try {
+            db.collection("usuarios").document(firebaseAuth.getUid()).get()
+                    .addOnCompleteListener(
+                            new OnCompleteListener<DocumentSnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        usuario = task.getResult().toObject(Usuario.class);
+                                        boolean esNuevo = task.getResult().toObject(Usuario.class).isNuevo();
+                                        if (esNuevo){
+                                            lanzaTutorial();
+                                        }
+                                        menuTipoUsuario(usuario);
 
-                                }else {
-                                    Log.d("Error usuario", "");
+                                    }else {
+                                        Log.d("Error usuario", "");
+                                    }
                                 }
                             }
-                        }
-                );
+                    );
+
+
+        }catch (Exception ex){
+            goMain();
+        }
 
     }
 
@@ -198,36 +204,41 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
     protected void onResume() {
         super.onResume();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("usuarios").document(firebaseAuth.getUid()).get()
-                .addOnCompleteListener(
-                        new OnCompleteListener<DocumentSnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                if (task.isSuccessful()) {
-                                    DatosAlquiler d = new DatosAlquiler();
+        try {
+            db.collection("usuarios").document(firebaseAuth.getUid()).get()
+                    .addOnCompleteListener(
+                            new OnCompleteListener<DocumentSnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        DatosAlquiler d = new DatosAlquiler();
 
-                                    //En caso de que el usuario tenga algo alquilado o reservado poner visible el botón
-                                    // de acceso rápido a la taquilla para no tener que buscar la estación.
-                                    if(task.getResult().getBoolean("reservaAlquiler") == true){
-                                        d = (task.getResult().get("datos", DatosAlquiler.class));
-                                        visibilidadBtnAccRapido(d);
-                                    }else {
-                                        btn_accRapidoTaquilla.setVisibility(View.GONE);
-                                    }
-
-                                    final DatosAlquiler finalD = d;
-                                    btn_accRapidoTaquilla.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {
-                                            lanzarTaquillaAlquilada(finalD.getUbicacionTaquilla(), user.getUid());
+                                        //En caso de que el usuario tenga algo alquilado o reservado poner visible el botón
+                                        // de acceso rápido a la taquilla para no tener que buscar la estación.
+                                        if(task.getResult().getBoolean("reservaAlquiler") == true){
+                                            d = (task.getResult().get("datos", DatosAlquiler.class));
+                                            visibilidadBtnAccRapido(d);
+                                        }else {
+                                            btn_accRapidoTaquilla.setVisibility(View.GONE);
                                         }
-                                    });
+
+                                        final DatosAlquiler finalD = d;
+                                        btn_accRapidoTaquilla.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                lanzarTaquillaAlquilada(finalD.getUbicacionTaquilla(), user.getUid());
+                                            }
+                                        });
 
 
+                                    }
                                 }
                             }
-                        }
-                );
+                    );
+        }catch (Exception ex){
+            goMain();
+        }
+
 
     }
 
