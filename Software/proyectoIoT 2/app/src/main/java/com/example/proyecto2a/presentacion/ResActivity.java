@@ -10,6 +10,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -74,6 +75,7 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
     TextView txtUser;
     private ImageButton btn_accRapidoTaquilla;
     FloatingActionButton cercano;
+    TextView txCercano;
 
     private GoogleApiClient googleApiClient;
     private GoogleMap mMap;
@@ -105,6 +107,7 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
         setContentView(R.layout.result);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         cercano = findViewById(R.id.faBCercano);
+        txCercano = findViewById(R.id.textView26);
 
         //inicializamos el objeto firebaseAuth
         firebaseAuth = FirebaseAuth.getInstance();
@@ -192,6 +195,20 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
             goMain();
         }
 
+        if (!checkIfLocationOpened()){
+            cercano.setVisibility(View.GONE);
+            txCercano.setVisibility(View.GONE);
+        }
+
+    }
+
+    private boolean checkIfLocationOpened() {
+        String provider = Settings.Secure.getString(getContentResolver(), Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
+        System.out.println("Provider contains=> " + provider);
+        if (provider.contains("gps") || provider.contains("network")){
+            return true;
+        }
+        return false;
     }
 
     @Override
