@@ -182,7 +182,7 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener, G
             return;
         }
 
-        progressDialog.setMessage(R.string.signInPensando+"");
+        progressDialog.setMessage(getText(R.string.signInPensando)+"...");
         progressDialog.show();
 
         firebaseAuth.signInWithEmailAndPassword(email, password)

@@ -50,6 +50,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -72,6 +73,7 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
     private static String method = "sin iniciar";
     TextView txtUser;
     private ImageButton btn_accRapidoTaquilla;
+    FloatingActionButton cercano;
 
     private GoogleApiClient googleApiClient;
     private GoogleMap mMap;
@@ -102,7 +104,7 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.result);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-
+        cercano = findViewById(R.id.faBCercano);
 
         //inicializamos el objeto firebaseAuth
         firebaseAuth = FirebaseAuth.getInstance();
@@ -163,7 +165,6 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
 
         manejador = (LocationManager) getSystemService(LOCATION_SERVICE);
         solicitarPermisos();
-
         //Tutorial
 
         db.collection("usuarios").document(firebaseAuth.getUid()).get()
