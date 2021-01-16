@@ -108,7 +108,7 @@
 
     <string name="signInNecesario">Email must be entered</string>
     <string name="signInNecesarioContra">Not entered password</string>
-    <string name="signInPensando">Making online consultation...</string>
+    <string name="signInPensando">Making online consultation</string>
     <string name="signInCheck">Please verify your email</string>
     <string name="signInUsuarioExiste">User already registered</string>
     <string name="signInMal">Incorrect email or password</string>
