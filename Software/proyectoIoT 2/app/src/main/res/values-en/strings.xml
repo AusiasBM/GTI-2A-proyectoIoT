@@ -131,7 +131,13 @@
     <string name="eliminarTarjeta">Delete card</string>
     <string name="si">Yes</string>
     <string name="no">No</string>
+    <string name="eliminar_estacion">Delete station</string>
+    <string name="txt_eliminar_estacion">Are you sure you want to delete this station?</string>
+    <string name="taquilla_eliminada_correctamente">Locker removed successfully</string>
+    <string name="fallo_al_eliminar_taquilla">An error occurred while deleting this locker</string>
 
+    <string name="eliminar_taquilla">Delete locker</string>
+    <string name="txt_eliminar_taquilla">Are you sure you want to delete this locker?</string>
     <string name="mesIncorrecto">Wrong month</string>
     <string name="cvvIncorrecto">Wrong CVV</string>
     <string name="tarjetaIntroducida">Card added succesfuly</string>

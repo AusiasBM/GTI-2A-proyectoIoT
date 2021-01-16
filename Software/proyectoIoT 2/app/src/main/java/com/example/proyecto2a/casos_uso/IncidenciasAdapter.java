@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,7 @@ import com.example.proyecto2a.presentacion.IncidenciasActivity;
 import com.example.proyecto2a.presentacion.InfoFoto;
 import com.example.proyecto2a.R;
 import com.example.proyecto2a.modelo.Incidencia;
+import com.example.proyecto2a.presentacion.InfoPago;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -70,7 +72,7 @@ public class IncidenciasAdapter extends FirestoreRecyclerAdapter<Incidencia, Inc
         holder.eliminar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final AlertDialog.Builder alert =new AlertDialog.Builder(activity);
+               /* final AlertDialog.Builder alert =new AlertDialog.Builder(activity);
                 alert.setMessage(R.string.preguntaFoto);
                 alert.setTitle(R.string.eliminarFoto);
                 alert.setPositiveButton(R.string.si, new DialogInterface.OnClickListener() {
@@ -96,7 +98,38 @@ public class IncidenciasAdapter extends FirestoreRecyclerAdapter<Incidencia, Inc
                     }
                 });
                 AlertDialog dialog=alert.create();
-                dialog.show();
+                dialog.show();*/
+                //
+                final LayoutInflater inflater = LayoutInflater.from(activity);
+                final View view = inflater.inflate(R.layout.dialog_eliminar_incidencias,null);
+                Button acceptButton= view.findViewById(R.id.btn_si);
+                final Button cancelButton = view.findViewById(R.id.btn_no);
+                acceptButton.setOnClickListener(new View.OnClickListener(){
+                    @Override
+                    public void onClick(View v) {
+                        firebaseFirestore.collection("imagenesSeguridad").document(id).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Toast.makeText(activity, R.string.fotoEliminada, Toast.LENGTH_SHORT).show();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(activity, R.string.fotoNoEliminada, Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                });
+                final AlertDialog alertDialog=new AlertDialog.Builder(activity)
+                        .setView(view)
+                        .create();
+                alertDialog.show();
+                cancelButton.setOnClickListener(new View.OnClickListener(){
+                    @Override
+                    public void onClick(View v) {
+                        alertDialog.cancel();
+                    }
+                });
             }
         });
     }

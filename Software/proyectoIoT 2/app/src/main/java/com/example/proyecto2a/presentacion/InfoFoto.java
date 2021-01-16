@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -64,7 +65,7 @@ public class InfoFoto extends AppCompatActivity {
         btEliminar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final AlertDialog.Builder alert =new AlertDialog.Builder(InfoFoto.this);
+              /*  final AlertDialog.Builder alert =new AlertDialog.Builder(InfoFoto.this);
                 alert.setMessage(R.string.preguntaFoto);
                 alert.setTitle(R.string.eliminarFoto);
                 alert.setPositiveButton(R.string.si, new DialogInterface.OnClickListener() {
@@ -92,7 +93,40 @@ public class InfoFoto extends AppCompatActivity {
                     }
                 });
                 AlertDialog dialog=alert.create();
-                dialog.show();
+                dialog.show();*/
+                //
+                final LayoutInflater inflater = LayoutInflater.from(InfoFoto.this);
+                final View view = inflater.inflate(R.layout.dialog_eliminar_incidencias,null);
+                Button acceptButton= view.findViewById(R.id.btn_si);
+                final Button cancelButton = view.findViewById(R.id.btn_no);
+                acceptButton.setOnClickListener(new View.OnClickListener(){
+                    @Override
+                    public void onClick(View v) {
+                        firebaseFirestore.collection("imagenesSeguridad").document(incidenciaID).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Toast.makeText(InfoFoto.this, R.string.fotoEliminada, Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(InfoFoto.this, IncidenciasActivity.class);
+                                startActivity(intent);
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(InfoFoto.this, R.string.fotoNoEliminada, Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                });
+                final AlertDialog alertDialog=new AlertDialog.Builder(InfoFoto.this)
+                        .setView(view)
+                        .create();
+                alertDialog.show();
+                cancelButton.setOnClickListener(new View.OnClickListener(){
+                    @Override
+                    public void onClick(View v) {
+                        alertDialog.cancel();
+                    }
+                });
             }
         });
 
