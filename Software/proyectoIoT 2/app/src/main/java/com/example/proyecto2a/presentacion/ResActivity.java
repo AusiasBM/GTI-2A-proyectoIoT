@@ -166,7 +166,6 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
         manejador = (LocationManager) getSystemService(LOCATION_SERVICE);
         solicitarPermisos();
         //Tutorial
-
         db.collection("usuarios").document(firebaseAuth.getUid()).get()
                 .addOnCompleteListener(
                         new OnCompleteListener<DocumentSnapshot>() {
@@ -174,12 +173,10 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
                             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                                 if (task.isSuccessful()) {
                                     usuario = task.getResult().toObject(Usuario.class);
-
                                     boolean esNuevo = task.getResult().toObject(Usuario.class).isNuevo();
                                     if (esNuevo){
                                         lanzaTutorial();
                                     }
-
                                     menuTipoUsuario(usuario);
 
                                 }else {

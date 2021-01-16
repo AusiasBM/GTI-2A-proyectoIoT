@@ -131,10 +131,15 @@ public class CercanosAdapter extends FirestoreRecyclerAdapter<Stant, CercanosAda
 
         //Mostrar distancia
         Log.d("TAGdistancia", locationB + "," + locationA + ", " + dist);
-        if (dist > 1){
-            holder.distanica.setText(String.format("%.2f", dist)+"km");
+
+        if (latitud == 0 && longitud == 0){
+            holder.distanica.setText("Active la ubicación");
         } else {
-            holder.distanica.setText(String.format("%.0f", dist*1000)+"m");
+            if (dist > 1){
+                holder.distanica.setText(String.format("%.2f", dist)+"km");
+            } else {
+                holder.distanica.setText(String.format("%.0f", dist*1000)+"m");
+            }
         }
 
     }
