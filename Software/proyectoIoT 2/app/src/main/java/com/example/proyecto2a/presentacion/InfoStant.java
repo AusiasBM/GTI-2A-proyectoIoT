@@ -5,9 +5,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -94,7 +96,7 @@ public class InfoStant extends AppCompatActivity {
         btEliminar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                firebaseFirestore.collection("estaciones").document(stantID).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+               /* firebaseFirestore.collection("estaciones").document(stantID).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
                         Toast.makeText(InfoStant.this, R.string.estacionEliminada, Toast.LENGTH_SHORT).show();
@@ -106,6 +108,39 @@ public class InfoStant extends AppCompatActivity {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Toast.makeText(InfoStant.this, R.string.estacionNoEliminada, Toast.LENGTH_SHORT).show();
+                    }
+                });*/
+                final LayoutInflater inflater = LayoutInflater.from(InfoStant.this);
+                final View view = inflater.inflate(R.layout.dialog_eliminar_estacion,null);
+                Button acceptButton= view.findViewById(R.id.btn_si);
+                final Button cancelButton = view.findViewById(R.id.btn_no);
+                acceptButton.setOnClickListener(new View.OnClickListener(){
+                    @Override
+                    public void onClick(View v) {
+                        firebaseFirestore.collection("estaciones").document(stantID).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Toast.makeText(InfoStant.this, R.string.estacionEliminada, Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(InfoStant.this, StantsActivity.class);
+                                startActivity(intent);
+                                finish();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(InfoStant.this, R.string.estacionNoEliminada, Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                });
+                final AlertDialog alertDialog=new AlertDialog.Builder(InfoStant.this)
+                        .setView(view)
+                        .create();
+                alertDialog.show();
+                cancelButton.setOnClickListener(new View.OnClickListener(){
+                    @Override
+                    public void onClick(View v) {
+                        alertDialog.cancel();
                     }
                 });
             }
