@@ -184,7 +184,7 @@ public class ServicioReservaAlquilerTaquilla extends Service implements MqttCall
         payload = new String(message.getPayload());
         Log.d(Mqtt.TAG, "Recibiendo: " + topic + "->" + payload);
 
-        if(topic.equals(topicRoot+"tiempoReserva")){
+        if(topic.equals(topicRoot+"tiempoReserva") && payload.equals("parar")){
             Log.d(Mqtt.TAG, "Recibiendo: " + topic + "->" + payload);
             finTiempoReserva();
             stopSelf();

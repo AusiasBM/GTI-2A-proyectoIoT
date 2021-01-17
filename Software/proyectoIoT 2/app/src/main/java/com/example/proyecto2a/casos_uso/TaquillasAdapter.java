@@ -374,7 +374,7 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
                 Log.e(Mqtt.TAG, "Error al conectar.", e);
             }
             try {
-                MqttMessage message = new MqttMessage("inicio".getBytes());
+                MqttMessage message = new MqttMessage("inicio reserva".getBytes());
                 message.setQos(Mqtt.qos);
                 message.setRetained(false);
                 client.publish(Mqtt.topicRoot + "tiempoReserva", message);
