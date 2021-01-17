@@ -20,6 +20,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 
 import androidx.annotation.NonNull;
@@ -53,12 +54,16 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.HashMap;
 import java.util.Objects;
 
 import static android.view.Gravity.END;
@@ -200,37 +205,39 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
     protected void onResume() {
         super.onResume();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("usuarios").document(firebaseAuth.getUid()).get()
-                .addOnCompleteListener(
-                        new OnCompleteListener<DocumentSnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                if (task.isSuccessful()) {
-                                    DatosAlquiler d = new DatosAlquiler();
+        final DocumentReference docRef =  db.collection("usuarios").document(firebaseAuth.getUid());
+        docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot snapshot,
+                                @Nullable FirebaseFirestoreException e) {
 
-                                    //En caso de que el usuario tenga algo alquilado o reservado poner visible el botón
-                                    // de acceso rápido a la taquilla para no tener que buscar la estación.
-                                    if(task.getResult().getBoolean("reservaAlquiler") == true){
-                                        d = (task.getResult().get("datos", DatosAlquiler.class));
-                                        visibilidadBtnAccRapido(d);
-                                    }else {
-                                        btn_accRapidoTaquilla.setVisibility(View.GONE);
-                                    }
+                if (snapshot != null && snapshot.exists()) {
+                    DatosAlquiler d = new DatosAlquiler();
+                    btn_accRapidoTaquilla = findViewById(R.id.btn_taqResAl);
+                    Log.d(TAG,  " 987: " + ((Boolean) snapshot.getData().get("reservaAlquiler")));
+                    if((Boolean) snapshot.getData().get("reservaAlquiler")==true){
+                        HashMap a = ((HashMap) snapshot.getData().get("datos"));
+                        d.setFlagReserva((Boolean) a.get("flagReserva"));
+                        d.setUbicacionTaquilla((String) a.get("ubicacionTaquilla"));
+                        visibilidadBtnAccRapido(d);
+                    }else {
+                        btn_accRapidoTaquilla.setVisibility(View.GONE);
+                    }
 
-                                    final DatosAlquiler finalD = d;
-                                    btn_accRapidoTaquilla.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {
-                                            lanzarTaquillaAlquilada(finalD.getUbicacionTaquilla(), user.getUid());
-                                        }
-                                    });
-
-
-                                }
-                            }
+                    final DatosAlquiler finalD = d;
+                    btn_accRapidoTaquilla.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            lanzarTaquillaAlquilada(finalD.getUbicacionTaquilla(), user.getUid());
                         }
-                );
+                    });
 
+
+                } else {
+                    Log.d(TAG, " 987: null");
+                }
+            }
+        });
     }
 
     public void lanzaTutorial(){
@@ -241,7 +248,6 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
 
     private void visibilidadBtnAccRapido(DatosAlquiler d){
         btn_accRapidoTaquilla.setVisibility(View.VISIBLE);
-
         //Si está reservada poner el fondo en naranja, y si está alquilada poner en verde
         if(d.isFlagReserva() == true){
             btn_accRapidoTaquilla.setBackground(ContextCompat.getDrawable(this, R.drawable.acc_rapido_reservada));
