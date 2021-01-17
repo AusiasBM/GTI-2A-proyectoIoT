@@ -136,8 +136,16 @@
     <string name="preguntaTarjeta">¿Estas seguro de que quieres añadir esta tarjeta?</string>
     <string name="añadirTarjeta">Añadir tarjeta</string>
     <string name="eliminarTarjeta">Eliminar tarjeta</string>
+
     <string name="si">Si</string>
     <string name="no">No</string>
+
+    <string name="eliminar_estacion">Eliminar estación</string>
+    <string name="txt_eliminar_estacion">¿Estás seguro que quieres eliminar esta estación?</string>
+    <string name="eliminar_taquilla">Eliminar taquilla</string>
+    <string name="txt_eliminar_taquilla">¿Estás seguro que quieres eliminar esta taquilla?</string>
+    <string name="taquilla_eliminada_correctamente">Taquilla eliminada correctamente</string>
+    <string name="fallo_al_eliminar_taquilla">Ha ocurrido un error al eliminar esta taquilla</string>
 
     <string name="mesIncorrecto">Mes incorrecto</string>
     <string name="cvvIncorrecto">CVV incorrecto</string>

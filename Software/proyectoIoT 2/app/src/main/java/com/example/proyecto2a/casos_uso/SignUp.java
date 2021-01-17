@@ -172,7 +172,7 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener, G
             return;
         }
 
-        this.progressDialog.setMessage(R.string.signInPensando+"");
+        this.progressDialog.setMessage(getText(R.string.signInPensando)+"...");
         progressDialog.show();
 
         //creating a new user

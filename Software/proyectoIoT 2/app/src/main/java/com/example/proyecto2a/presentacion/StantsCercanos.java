@@ -1,14 +1,22 @@
 package com.example.proyecto2a.presentacion;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.Manifest;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.example.proyecto2a.R;
 import com.example.proyecto2a.casos_uso.CercanosAdapter;
@@ -25,6 +33,9 @@ public class StantsCercanos extends AppCompatActivity {
     CercanosAdapter adapter;
     FirebaseFirestore firebaseFirestore;
     private String idUser;
+    private double latUsu = 0;
+    private double longUsu = 0;
+    int FlagUbicacion = 0;
 
 
     @Override
@@ -39,9 +50,16 @@ public class StantsCercanos extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         firebaseFirestore = FirebaseFirestore.getInstance();
 
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(this, "Active la ubicación para usar esta funcionalidad", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
         Query quey = firebaseFirestore.collection("estaciones");
         FirestoreRecyclerOptions<Stant> firestoreRecyclerOptions = new FirestoreRecyclerOptions.Builder<Stant>().setQuery(quey, Stant.class).build();
-        adapter = new CercanosAdapter(firestoreRecyclerOptions, this, idUser);
+        adapter = new CercanosAdapter(firestoreRecyclerOptions, this, idUser, latUsu, longUsu);
         adapter.notifyDataSetChanged();
         recyclerView.setAdapter(adapter);
 
@@ -52,6 +70,25 @@ public class StantsCercanos extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+    }
+    //  Receptor broadcast
+    public class ReceptorOperacion extends BroadcastReceiver {
+        public static final String ACTION_RESP= "com.example.exempleexam20192.LATITUD_LONGITUD";
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (FlagUbicacion ==0){
+                Double latUsu = intent.getDoubleExtra("latitud", 0.0);
+                Double longUsu = intent.getDoubleExtra("longitud", 0.0);
+                Query quey = firebaseFirestore.collection("estaciones");
+                FirestoreRecyclerOptions<Stant> firestoreRecyclerOptions = new FirestoreRecyclerOptions.Builder<Stant>().setQuery(quey, Stant.class).build();
+                adapter = new CercanosAdapter(firestoreRecyclerOptions, StantsCercanos.this, idUser, latUsu, longUsu);
+                adapter.notifyDataSetChanged();
+                recyclerView.setAdapter(adapter);
+                FlagUbicacion ++;
+            }
+        }
     }
 
 
@@ -59,12 +96,28 @@ public class StantsCercanos extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        adapter.startListening();
+        try {
+            startService(new Intent(this,
+                    ServicioLocalizacion.class));
+            adapter.startListening();
+        }catch (Exception ex){
+            Toast.makeText(this, "Active la ubicación para usar esta funcionalidad", Toast.LENGTH_SHORT).show();
+            finish();
+        }
+
     }
 
     @Override
     protected void onStop() {
-        super.onStop();
-        adapter.stopListening();
+        try {
+            super.onStop();
+            adapter.stopListening();
+            stopService(new Intent(this,
+                    ServicioLocalizacion.class));
+        }catch (Exception ex){
+            Toast.makeText(this, "Active la ubicación para usar esta funcionalidad", Toast.LENGTH_SHORT).show();
+            finish();
+        }
+
     }
 }

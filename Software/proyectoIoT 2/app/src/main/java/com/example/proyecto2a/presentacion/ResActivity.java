@@ -10,6 +10,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -51,6 +52,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -77,6 +79,8 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
     private static String method = "sin iniciar";
     TextView txtUser;
     private ImageButton btn_accRapidoTaquilla;
+    FloatingActionButton cercano;
+    TextView txCercano;
 
     private GoogleApiClient googleApiClient;
     private GoogleMap mMap;
@@ -107,7 +111,8 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.result);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-
+        cercano = findViewById(R.id.faBCercano);
+        txCercano = findViewById(R.id.textView26);
 
         //inicializamos el objeto firebaseAuth
         firebaseAuth = FirebaseAuth.getInstance();
@@ -168,31 +173,42 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
 
         manejador = (LocationManager) getSystemService(LOCATION_SERVICE);
         solicitarPermisos();
-
         //Tutorial
+        try {
+            db.collection("usuarios").document(firebaseAuth.getUid()).get()
+                    .addOnCompleteListener(
+                            new OnCompleteListener<DocumentSnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        usuario = task.getResult().toObject(Usuario.class);
+                                        boolean esNuevo = task.getResult().toObject(Usuario.class).isNuevo();
+                                        if (esNuevo){
+                                            lanzaTutorial();
+                                        }
+                                        menuTipoUsuario(usuario);
 
-        db.collection("usuarios").document(firebaseAuth.getUid()).get()
-                .addOnCompleteListener(
-                        new OnCompleteListener<DocumentSnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                if (task.isSuccessful()) {
-                                    usuario = task.getResult().toObject(Usuario.class);
-
-                                    boolean esNuevo = task.getResult().toObject(Usuario.class).isNuevo();
-                                    if (esNuevo){
-                                        lanzaTutorial();
+                                    }else {
+                                        Log.d("Error usuario", "");
                                     }
-
-                                    menuTipoUsuario(usuario);
-
-                                }else {
-                                    Log.d("Error usuario", "");
                                 }
                             }
-                        }
-                );
+                    );
 
+
+        }catch (Exception ex){
+            goMain();
+        }
+
+    }
+
+    private boolean checkIfLocationOpened() {
+        String provider = Settings.Secure.getString(getContentResolver(), Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
+        System.out.println("Provider contains=> " + provider);
+        if (provider.contains("gps") || provider.contains("network")){
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -619,9 +635,14 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
     }
 
     public void abrirCercano(View view){
-        Intent i = new Intent(this, StantsCercanos.class);
-        i.putExtra("idUser", usuario.getuId());
-        startActivity(i);
+        if (!checkIfLocationOpened()){
+            Toast.makeText(this, "Active la localización para usar esta funcionalidad", Toast.LENGTH_SHORT).show();
+        } else {
+            Intent i = new Intent(this, StantsCercanos.class);
+            i.putExtra("idUser", usuario.getuId());
+            startActivity(i);
+        }
+
     }
 }
 

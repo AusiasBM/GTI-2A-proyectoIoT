@@ -13,6 +13,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
@@ -28,7 +29,7 @@ public class ServicioLocalizacion extends Service implements LocationListener {
 
 
     //Per a localització
-    private static final long CINCO_SEGUNDOS = 5000;
+    private static final long CINCO_SEGUNDOS = 100;
     private LocationManager locationManager;
     private Location location;
     private Criteria criterio;
@@ -40,8 +41,8 @@ public class ServicioLocalizacion extends Service implements LocationListener {
 
     @Override
     public void onCreate() {
-        Toast.makeText(this, R.string.servicioCreado,
-                Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, R.string.servicioCreado,
+//                Toast.LENGTH_SHORT).show();
 
         //Per a localització
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
@@ -55,6 +56,7 @@ public class ServicioLocalizacion extends Service implements LocationListener {
     @SuppressLint("MissingPermission")
     @Override
     public int onStartCommand(Intent intent, int flags, int idArranque) {
+/*
         //Crear la notificació
         notificationManager = (NotificationManager)
                 getSystemService(NOTIFICATION_SERVICE);
@@ -82,6 +84,7 @@ public class ServicioLocalizacion extends Service implements LocationListener {
         Toast.makeText(this, "Servicio arrancado " + idArranque,
                 Toast.LENGTH_SHORT).show();
 
+*/
 
         //LOCALITZACIÓ
         //Per a actualitzar la posició cada 5 segons, distància minima per a mostra el canvi de 0 metres
@@ -93,9 +96,9 @@ public class ServicioLocalizacion extends Service implements LocationListener {
 
     //Accions per a donar per acabat el servici
     @Override public void onDestroy() {
-        Toast.makeText(this,"Servicio detenido",
+/*        Toast.makeText(this,"Servicio detenido",
                 Toast.LENGTH_SHORT).show();
-        notificationManager.cancel(NOTIFICACION_ID);
+        notificationManager.cancel(NOTIFICACION_ID);*/
         locationManager.removeUpdates(this);
 
     }
@@ -121,6 +124,26 @@ public class ServicioLocalizacion extends Service implements LocationListener {
     @Override
     public void onLocationChanged(@NonNull Location localizacion) {
         actualizaMejorLocaliz(localizacion);
+    }
+
+
+    @Override
+    public void onProviderEnabled(@NonNull String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(@NonNull String provider) {
+        Intent i = new Intent();
+        i.setAction("com.example.exempleexam20192.LATITUD_LONGITUD");
+        i.putExtra("latitud", 0);
+        i.putExtra("longitud", 0);
+        sendBroadcast(i);
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
     }
 
 }

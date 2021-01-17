@@ -3,6 +3,7 @@ package com.example.proyecto2a.casos_uso;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +19,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.proyecto2a.R;
 import com.example.proyecto2a.modelo.Stant;
 import com.example.proyecto2a.modelo.Taquilla;
+import com.example.proyecto2a.presentacion.InfoStant;
+import com.example.proyecto2a.presentacion.StantsActivity;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -60,7 +63,7 @@ public class TaquillasRecyclerAdatper extends FirestoreRecyclerAdapter<Taquilla,
         holder.eliminar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final AlertDialog.Builder alert =new AlertDialog.Builder(activity);
+              /*  final AlertDialog.Builder alert =new AlertDialog.Builder(activity);
                 alert.setMessage(R.string.preguntaFoto);
                 alert.setTitle(R.string.eliminarFoto);
 
@@ -68,17 +71,7 @@ public class TaquillasRecyclerAdatper extends FirestoreRecyclerAdapter<Taquilla,
                 alert.setPositiveButton(R.string.si, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        firebaseFirestore.collection("estaciones").document(model.getEstant()).collection("taquillas").document(model.getId()).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                Toast.makeText(activity, R.string.fotoEliminada, Toast.LENGTH_SHORT).show();
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(activity, R.string.fotoNoEliminada, Toast.LENGTH_SHORT).show();
-                            }
-                        });
+
                     }
                 });
                 alert.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
@@ -88,7 +81,38 @@ public class TaquillasRecyclerAdatper extends FirestoreRecyclerAdapter<Taquilla,
                     }
                 });
                 AlertDialog dialog=alert.create();
-                dialog.show();
+                dialog.show();*/
+                //
+                final LayoutInflater inflater = LayoutInflater.from(activity);
+                final View view = inflater.inflate(R.layout.dialog_eliminar_taquilla,null);
+                Button acceptButton= view.findViewById(R.id.btn_si);
+                final Button cancelButton = view.findViewById(R.id.btn_no);
+                acceptButton.setOnClickListener(new View.OnClickListener(){
+                    @Override
+                    public void onClick(View v) {
+                        firebaseFirestore.collection("estaciones").document(model.getEstant()).collection("taquillas").document(model.getId()).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Toast.makeText(activity, R.string.taquilla_eliminada_correctamente, Toast.LENGTH_SHORT).show();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(activity, R.string.fallo_al_eliminar_taquilla, Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                });
+                final AlertDialog alertDialog=new AlertDialog.Builder(activity)
+                        .setView(view)
+                        .create();
+                alertDialog.show();
+                cancelButton.setOnClickListener(new View.OnClickListener(){
+                    @Override
+                    public void onClick(View v) {
+                        alertDialog.cancel();
+                    }
+                });
             }
         });
     }
