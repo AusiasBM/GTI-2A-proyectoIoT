@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -70,7 +71,7 @@ import java.util.Objects;
 
 import static android.view.Gravity.END;
 
-public class ResActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, OnMapReadyCallback, GoogleMap.OnMapClickListener {
+public class ResActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, OnMapReadyCallback, GoogleMap.OnMapClickListener, LocationListener {
 
 
     final private int REQUEST_CODE_ASK_PERMISSION = 111;
@@ -335,8 +336,6 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
         }
 
     }
-
-
 
     @Override
     protected void onStop() {
@@ -615,11 +614,6 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onBackPressed() {
-
-    }
-
     public void onMapClick(LatLng latLng) {
 
     }
@@ -639,9 +633,24 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
             Toast.makeText(this, "Active la localización para usar esta funcionalidad", Toast.LENGTH_SHORT).show();
         } else {
             Intent i = new Intent(this, StantsCercanos.class);
-            i.putExtra("idUser", usuario.getuId());
+            i.putExtra("idUser", user.getUid());
             startActivity(i);
         }
+
+    }
+
+    @Override
+    public void onLocationChanged(@NonNull Location location) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(@NonNull String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(@NonNull String provider) {
 
     }
 }

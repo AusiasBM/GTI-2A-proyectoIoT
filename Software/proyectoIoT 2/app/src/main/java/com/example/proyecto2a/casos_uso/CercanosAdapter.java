@@ -78,6 +78,20 @@ public class CercanosAdapter extends FirestoreRecyclerAdapter<Stant, CercanosAda
         public void onLocationChanged(@NonNull Location location) {
             actualizarUbicacion(location);
         }
+        @Override
+        public void onProviderEnabled(@NonNull String provider) {
+
+        }
+
+        @Override
+        public void onProviderDisabled(@NonNull String provider) {
+
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+
+        }
     };
 
     private void miUbicacion() {
@@ -133,7 +147,7 @@ public class CercanosAdapter extends FirestoreRecyclerAdapter<Stant, CercanosAda
         Log.d("TAGdistancia", locationB + "," + locationA + ", " + dist);
 
         if (latitud == 0 && longitud == 0){
-            holder.distanica.setText("Active la ubicación");
+            holder.distanica.setText("Sincronizando ubicación...");
         } else {
             if (dist > 1){
                 holder.distanica.setText(String.format("%.2f", dist)+"km");

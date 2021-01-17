@@ -1,5 +1,6 @@
 package com.example.proyecto2a.presentacion;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -11,6 +12,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationListener;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -26,7 +28,7 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
-public class StantsCercanos extends AppCompatActivity {
+public class StantsCercanos extends AppCompatActivity implements LocationListener {
 
     ImageView volver;
     RecyclerView recyclerView;
@@ -72,6 +74,27 @@ public class StantsCercanos extends AppCompatActivity {
         });
 
     }
+
+    @Override
+    public void onLocationChanged(@NonNull Location location) {
+        
+    }
+
+    @Override
+    public void onProviderEnabled(@NonNull String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(@NonNull String provider) {
+
+    }
+
+    @Override
+    public void onPointerCaptureChanged(boolean hasCapture) {
+
+    }
+
     //  Receptor broadcast
     public class ReceptorOperacion extends BroadcastReceiver {
         public static final String ACTION_RESP= "com.example.exempleexam20192.LATITUD_LONGITUD";
