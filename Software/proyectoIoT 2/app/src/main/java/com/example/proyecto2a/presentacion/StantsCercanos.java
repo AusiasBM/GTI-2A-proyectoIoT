@@ -65,6 +65,9 @@ public class StantsCercanos extends AppCompatActivity implements LocationListene
         adapter.notifyDataSetChanged();
         recyclerView.setAdapter(adapter);
 
+        latUsu = getIntent().getDoubleExtra("latitud", 0.0);
+        longUsu = getIntent().getDoubleExtra("longitud", 0.0);
+
         volver.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -94,27 +97,6 @@ public class StantsCercanos extends AppCompatActivity implements LocationListene
     public void onPointerCaptureChanged(boolean hasCapture) {
 
     }
-
-    //  Receptor broadcast
-    public class ReceptorOperacion extends BroadcastReceiver {
-        public static final String ACTION_RESP= "com.example.exempleexam20192.LATITUD_LONGITUD";
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (FlagUbicacion ==0){
-                Double latUsu = intent.getDoubleExtra("latitud", 0.0);
-                Double longUsu = intent.getDoubleExtra("longitud", 0.0);
-                Query quey = firebaseFirestore.collection("estaciones");
-                FirestoreRecyclerOptions<Stant> firestoreRecyclerOptions = new FirestoreRecyclerOptions.Builder<Stant>().setQuery(quey, Stant.class).build();
-                adapter = new CercanosAdapter(firestoreRecyclerOptions, StantsCercanos.this, idUser, latUsu, longUsu);
-                adapter.notifyDataSetChanged();
-                recyclerView.setAdapter(adapter);
-                FlagUbicacion ++;
-            }
-        }
-    }
-
-
 
     @Override
     protected void onStart() {

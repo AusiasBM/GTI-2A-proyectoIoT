@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="#FFFFFF"
-    android:onClick="abrirEstacion">
+    android:onClick="abrirEstacion"
+    android:visibility="visible">
 
     <ImageView
         android:id="@+id/imageView11"

@@ -206,7 +206,7 @@
     <string name="tvPatinete">Scooter</string>
 
 
-    <string name="tvCercano">Nearest stant</string>
+    <string name="tvCercano">Stants less than 1km awayt</string>
     <string name="tvEstacion">Go to the stant</string>
     <string name="tvPulsarEstacion">Click on the stant to open its menu</string>
 
