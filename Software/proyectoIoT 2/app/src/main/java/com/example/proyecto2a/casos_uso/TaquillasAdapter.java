@@ -201,46 +201,61 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
                     break;
 
                 case R.id.buttonCan:
-                    AlertDialog.Builder builderFin = new AlertDialog.Builder(context);
-                    builderFin.setTitle("Fin alquiler de taquilla");
-                    builderFin.setMessage("¿Desea finalizar el alquiler de la taquilla? Si acepta, ya no podrá volver a abrirla. ");
+                final LayoutInflater inflater = LayoutInflater.from(context);
+                final View view = inflater.inflate(R.layout.dialog_reservar_fin,null);
+                Button acceptButton= view.findViewById(R.id.btn_si);
+                final Button cancelButton = view.findViewById(R.id.btn_no);
+                final android.app.AlertDialog alertDialog=new android.app.AlertDialog.Builder(context)
+                        .setView(view)
+                        .create();
+                alertDialog.show();
+                acceptButton.setOnClickListener(new View.OnClickListener(){
+                    @Override
+                    public void onClick(View v) {
+                        //Metodo que comprueba que la taquilla está cerrada (y sin nada dentro)
+                        //Si la puerta está cerrada pasará al método finAlquiler() y al finContadorAlquiler()
+                        //Sino, mostrará un AlertDialog diciendo que cierre la puerta
+                        taquillaVaciaCerrada();
+                        alertDialog.cancel();
+                    }
+                });
 
-                    builderFin.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            //Metodo que comprueba que la taquilla está cerrada (y sin nada dentro)
-                            //Si la puerta está cerrada pasará al método finAlquiler() y al finContadorAlquiler()
-                            //Sino, mostrará un AlertDialog diciendo que cierre la puerta
-                            taquillaVaciaCerrada();
-
-                        }
-                    });
-                    builderFin.setNegativeButton("No", null);
-
-                    AlertDialog dialogFin = builderFin.create();
-                    dialogFin.show();
-                    break;
+                cancelButton.setOnClickListener(new View.OnClickListener(){
+                    @Override
+                    public void onClick(View v) {
+                        alertDialog.cancel();
+                    }
+                });
+                break;
 
                 case R.id.bt_alquila:
-                    AlertDialog.Builder builderInicio = new AlertDialog.Builder(context);
-                    builderInicio.setTitle("Inicio alquiler de taquilla");
-                    builderInicio.setMessage("¿Desea alquilar la taquilla? Si acepta, dará comienzo al contador para " +
-                            "después aplicar los cargos correspondientes");
 
-                    builderInicio.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            i.putExtra("ide", ide);
-                            i.putExtra("flagReserva", false);
-                            context.startService(i);
-                            alquilar();
-                        }
-                    });
-                    builderInicio.setNegativeButton("No", null);
+                final LayoutInflater inf = LayoutInflater.from(context);
+                final View view1 = inf.inflate(R.layout.dialog_reservar,null);
+                Button accept= view1.findViewById(R.id.btn_si);
+                final Button cancel = view1.findViewById(R.id.btn_no);
+                final android.app.AlertDialog alertDialog1=new android.app.AlertDialog.Builder(context)
+                        .setView(view1)
+                        .create();
+                alertDialog1.show();
+                accept.setOnClickListener(new View.OnClickListener(){
+                    @Override
+                    public void onClick(View v) {
+                        i.putExtra("ide", ide);
+                        i.putExtra("flagReserva", false);
+                        context.startService(i);
+                        alquilar();
+                        alertDialog1.cancel();
+                    }
+                });
 
-                    AlertDialog dialogInicio = builderInicio.create();
-                    dialogInicio.show();
-                    break;
+                cancel.setOnClickListener(new View.OnClickListener(){
+                    @Override
+                    public void onClick(View v) {
+                        alertDialog1.cancel();
+                    }
+                });
+                break;
 
                 case R.id.buttonCanReserva:
                     context.stopService(i);
