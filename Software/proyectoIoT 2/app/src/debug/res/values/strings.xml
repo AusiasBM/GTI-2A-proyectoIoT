@@ -97,7 +97,7 @@
     <!-- Pago usuario-->
     <string name="btn_AñadirTarjeta">Añadir una tarjeta de crédito</string>
     <string name="tv_Tarjetas">Opciones de pago</string>
-    <string name="et_NumTarjeta">Número de tarjeta(XXXX-XXXX-XXXX-XXXX)</string>
+    <string name="et_NumTarjeta">Número de tarjeta(XXX-XXX-XXX)</string>
     <string name="et_Mes">Mes(XX)</string>
     <string name="et_Año">Año(XX)</string>
     <string name="et_CVV">CVV(XXX)</string>

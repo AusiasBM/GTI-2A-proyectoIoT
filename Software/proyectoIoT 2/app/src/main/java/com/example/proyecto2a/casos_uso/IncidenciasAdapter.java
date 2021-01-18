@@ -72,38 +72,14 @@ public class IncidenciasAdapter extends FirestoreRecyclerAdapter<Incidencia, Inc
         holder.eliminar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               /* final AlertDialog.Builder alert =new AlertDialog.Builder(activity);
-                alert.setMessage(R.string.preguntaFoto);
-                alert.setTitle(R.string.eliminarFoto);
-                alert.setPositiveButton(R.string.si, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        firebaseFirestore.collection("imagenesSeguridad").document(id).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                Toast.makeText(activity, R.string.fotoEliminada, Toast.LENGTH_SHORT).show();
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(activity, R.string.fotoNoEliminada, Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                    }
-                });
-                alert.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
-                AlertDialog dialog=alert.create();
-                dialog.show();*/
-                //
                 final LayoutInflater inflater = LayoutInflater.from(activity);
                 final View view = inflater.inflate(R.layout.dialog_eliminar_incidencias,null);
                 Button acceptButton= view.findViewById(R.id.btn_si);
                 final Button cancelButton = view.findViewById(R.id.btn_no);
+                final AlertDialog alertDialog=new AlertDialog.Builder(activity)
+                        .setView(view)
+                        .create();
+                alertDialog.show();
                 acceptButton.setOnClickListener(new View.OnClickListener(){
                     @Override
                     public void onClick(View v) {
@@ -111,6 +87,7 @@ public class IncidenciasAdapter extends FirestoreRecyclerAdapter<Incidencia, Inc
                             @Override
                             public void onSuccess(Void aVoid) {
                                 Toast.makeText(activity, R.string.fotoEliminada, Toast.LENGTH_SHORT).show();
+                                alertDialog.cancel();
                             }
                         }).addOnFailureListener(new OnFailureListener() {
                             @Override
@@ -120,10 +97,7 @@ public class IncidenciasAdapter extends FirestoreRecyclerAdapter<Incidencia, Inc
                         });
                     }
                 });
-                final AlertDialog alertDialog=new AlertDialog.Builder(activity)
-                        .setView(view)
-                        .create();
-                alertDialog.show();
+
                 cancelButton.setOnClickListener(new View.OnClickListener(){
                     @Override
                     public void onClick(View v) {
