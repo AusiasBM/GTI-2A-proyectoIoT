@@ -87,7 +87,7 @@
     <string name="bt_EliminarTarjeta">Delete card</string>
 
     <!-- Pago usuario-->
-    <string name="btn_AñadirTarjeta">Add a Credit Card(XXXX-XXXX-XXXX-XXXX)</string>
+    <string name="btn_AñadirTarjeta">Add a Credit Card(XXX-XXX-XXX)</string>
     <string name="tv_Tarjetas">Payment settings</string>
     <string name="et_NumTarjeta">Card Number</string>
     <string name="et_Mes">Month(XX)</string>
