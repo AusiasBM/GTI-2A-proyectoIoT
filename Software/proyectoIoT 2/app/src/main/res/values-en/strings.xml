@@ -235,4 +235,17 @@
     <string name="parrafoD1_tutorial"> Finally we want to inform you that you will be charged € 0.05 for each minute you have reserved a skate, as well as an extra for loading your own scooter, an option that you can activate and deactivate from the menu  </string>
     <string name="parrafoD2_tutorial"> If you need any kind of extra help, contact our team in the "Assistance" option of the drop-down menu</string>
 
+    <string name="reservada">Locker rental start</string>
+    <string name="txt_reservada">Do you want to rent the locker? If you accept, it will start the counter for "+" after applying the corresponding charges</string>
+    <string name="reservada_fin">End of locker rental</string>
+    <string name="txt_reservada_fin"> Do you want to finish the rental of the locker? If you accept, you will no longer be able to open it.</string>
+
+
+    <!--dialog-->
+    <string name="cerrar_sesion">Close sesion</string>
+    <string name="cerrar_sesion_text">Are you sure you want to log out?</string>
+    <string name="anyadir_tarjeta">Add card</string>
+    <string name="anyadir_tarjeta_text">Do you want to add this card?</string>
+    <string name="eliminar_tarjeta">Delete card</string>
+    <string name="eleminar_tarjeta_text">Do you want to delete this card?</string>
 </resources>

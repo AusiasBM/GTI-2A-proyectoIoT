@@ -229,6 +229,11 @@
     <string name="anyadir_tarjeta_text">¿Quieres añadir esta tarjeta?</string>
     <string name="eliminar_tarjeta">Eliminar Tarjeta</string>
     <string name="eleminar_tarjeta_text">¿Quieres eliminar esta tarjeta?</string>
+    <string name="reservada">Inicio alquiler de taquilla</string>
+    <string name="txt_reservada">¿Desea alquilar la taquilla? Si acepta, dará comienzo al contador para "+"después aplicar los cargos correspondientes</string>
+    <string name="reservada_fin">Fin alquiler de taquilla</string>
+    <string name="txt_reservada_fin"> ¿Desea finalizar el alquiler de la taquilla? Si acepta, ya no podrá volver a abrirla.</string>
+
     <!-- Tutorial de la App-->
     <string name="bienvenido_tutorial"> ¡Bienvenido a Tricoopark!</string>
     <string name="patines_tutorial"> Nuestros patienetes </string>
