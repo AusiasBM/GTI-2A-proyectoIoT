@@ -221,6 +221,9 @@
     <string name="pagos_tutorial"> Fees and payments</string>
     <string name="fin_tutorial"> Charge and assistance </string>
 
+    <string name="ubicacionNecesaria">Activate location to use this functionality</string>
+    <string name="sincronizandoUbicacion">Loading location</string>
+
     <string name="parrafoA1_tutorial"> In the Tricoopark mobile application you can reserve lockers so that you can easily, simply and cheaply leave your electric skateboard, so that later you can return for it once the ticket office rental is finished </string>
     <string name="parrafoA2_tutorial"> Select the station closest to you to be able to reserve the locker you want, so that when you arrive, you can store your scooter and thus be able to go where you need to without having to worry about your electric scooter. We will take care of it!</string>
     <string name="parrafoP1_tutorial"> We have our own electric scooters that you can rent for as long as you need to tour the city when you need it. </string>

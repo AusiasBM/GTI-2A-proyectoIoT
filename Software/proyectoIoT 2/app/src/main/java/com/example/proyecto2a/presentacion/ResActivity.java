@@ -630,7 +630,7 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
 
     public void abrirCercano(View view){
         if (!checkIfLocationOpened()){
-            Toast.makeText(this, "Active la localización para usar esta funcionalidad", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.ubicacionNecesaria, Toast.LENGTH_SHORT).show();
         } else {
             Intent i = new Intent(this, StantsCercanos.class);
             i.putExtra("idUser", user.getUid());

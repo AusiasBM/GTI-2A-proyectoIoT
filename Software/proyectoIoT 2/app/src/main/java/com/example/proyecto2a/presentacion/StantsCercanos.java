@@ -55,7 +55,7 @@ public class StantsCercanos extends AppCompatActivity implements LocationListene
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(this, "Active la ubicación para usar esta funcionalidad", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.ubicacionNecesaria, Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
@@ -77,7 +77,7 @@ public class StantsCercanos extends AppCompatActivity implements LocationListene
 
     @Override
     public void onLocationChanged(@NonNull Location location) {
-        
+
     }
 
     @Override
@@ -124,7 +124,7 @@ public class StantsCercanos extends AppCompatActivity implements LocationListene
                     ServicioLocalizacion.class));
             adapter.startListening();
         }catch (Exception ex){
-            Toast.makeText(this, "Active la ubicación para usar esta funcionalidad", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.ubicacionNecesaria, Toast.LENGTH_SHORT).show();
             finish();
         }
 
@@ -138,7 +138,7 @@ public class StantsCercanos extends AppCompatActivity implements LocationListene
             stopService(new Intent(this,
                     ServicioLocalizacion.class));
         }catch (Exception ex){
-            Toast.makeText(this, "Active la ubicación para usar esta funcionalidad", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.ubicacionNecesaria, Toast.LENGTH_SHORT).show();
             finish();
         }
 
