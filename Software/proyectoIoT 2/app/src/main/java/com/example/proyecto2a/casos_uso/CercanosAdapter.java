@@ -151,6 +151,8 @@ public class CercanosAdapter extends FirestoreRecyclerAdapter<Stant, CercanosAda
         } else {
             if (dist > 1){
                 holder.distanica.setText(String.format("%.2f", dist)+"km");
+                holder.clcercano.setMaxHeight(0);
+
             } else {
                 holder.distanica.setText(String.format("%.0f", dist*1000)+"m");
             }

@@ -215,7 +215,7 @@
     <string name="tvTaquilla">Taquilla</string>
     <string name="tvPatinete">Patinete</string>
 
-    <string name="tvCercano">Estación más cercana</string>
+    <string name="tvCercano">Estaciones a menos de 1km</string>
     <string name="tvEstacion">Ir a la estación</string>
     <string name="tvPulsarEstacion">Pulse sobre la estación para abrir su menú</string>
 
