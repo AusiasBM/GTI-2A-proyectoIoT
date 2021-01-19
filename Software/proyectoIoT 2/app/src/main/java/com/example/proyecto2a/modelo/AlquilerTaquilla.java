@@ -7,7 +7,7 @@ public class AlquilerTaquilla {
     private String uId, correo, ubicacion, estant, taquilla, tipoAlquiler;
     private long fechaInicioAlquiler, tiempoAlquilada;
     private double importeAlquiler;
-    private double mWConsumidos;
+    private double mWConsumidos, vatiosInicio;
     private double importeCarga;
     private double importeTotal;
 
@@ -41,6 +41,7 @@ public class AlquilerTaquilla {
         fechaInicioAlquiler = currentTimeMillis();
         importeCarga = 0;
         mWConsumidos = 0;
+        vatiosInicio = 0;
         importeTotal = 0;
         tipoAlquiler = "taquilla";
 
@@ -144,8 +145,20 @@ public class AlquilerTaquilla {
         this.tipoAlquiler = tipoAlquiler;
     }
 
+    public double getVatiosInicio() {
+        return vatiosInicio;
+    }
+
+    public void setVatiosInicio(double vatiosInicio) {
+        this.vatiosInicio = vatiosInicio;
+    }
+
     private void calcularTiempoAlquiler(){
         this.tiempoAlquilada = currentTimeMillis() - fechaInicioAlquiler;
+    }
+
+    public void calcularVatios(double vatios){
+        this.mWConsumidos += vatios - vatiosInicio;
     }
 
     private void calcularImporte(){
@@ -168,8 +181,9 @@ public class AlquilerTaquilla {
 
     }
 
+    //Per connectar el sonoff es cobrarà 0.1€ i cada Watt consumit (no són mW perque el sonoff va en W) costarà 0.05€
     private void calcularImporteCarga() {
-        importeCarga += mWConsumidos * 0.001;
+        importeCarga += (mWConsumidos * 0.05) + 0.1;
     }
 
     public void calcularImporteTotal(){

@@ -108,7 +108,7 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
     public void onClick(View v) {
     }
 
-    public class Viewholder extends RecyclerView.ViewHolder implements View.OnClickListener, MqttCallback {
+    public class Viewholder extends RecyclerView.ViewHolder implements View.OnClickListener{
         private FirebaseAuth firebaseAuth;
         private FirebaseAuth.AuthStateListener firebaseAuthListener;
         private FirebaseUser user;
@@ -556,8 +556,9 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
                     if (task.isSuccessful()) {
                         boolean puertaAbierta = task.getResult().getBoolean("puertaAbierta");
                         boolean ocupada = task.getResult().getBoolean("ocupada");
+                        boolean cargaPatinete = task.getResult().getBoolean("cargaPatinete");
                         Log.d("puertaAbierta", puertaAbierta+"");
-                        if (puertaAbierta==false && ocupada == false){
+                        if (puertaAbierta==false && ocupada == false && cargaPatinete == false){
                             //Calcular el tiempo alquilada i el importe correspondiente
                             finAlquiler();
 
@@ -566,7 +567,8 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
                         }else {
                             AlertDialog.Builder builder = new AlertDialog.Builder(context);
                             builder.setTitle("Error al finalizar el alquiler");
-                            builder.setMessage("Por favor, comprueba que no haya nada dentro de la taquilla y la puerta esté cerrada.");
+                            builder.setMessage("Por favor, comprueba que no haya nada dentro de la taquilla, el conector" +
+                                    "esté desenchufado y la puerta esté cerrada.");
                             builder.setPositiveButton("Aceptar", null);
                             AlertDialog dialog = builder.create();
                             dialog.show();
@@ -594,20 +596,7 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
             context.startService(i);
         }
 
-        @Override
-        public void connectionLost(Throwable cause) {
 
-        }
-
-        @Override
-        public void messageArrived(String topic, MqttMessage message) throws Exception {
-
-        }
-
-        @Override
-        public void deliveryComplete(IMqttDeliveryToken token) {
-
-        }
     }
 
 }
