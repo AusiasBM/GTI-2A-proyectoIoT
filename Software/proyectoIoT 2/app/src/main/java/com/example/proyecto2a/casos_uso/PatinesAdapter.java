@@ -19,19 +19,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.proyecto2a.R;
 import com.example.proyecto2a.datos.Mqtt;
-import com.example.proyecto2a.modelo.Alquiler;
+import com.example.proyecto2a.modelo.AlquilerPatin;
+import com.example.proyecto2a.modelo.AlquilerTaquilla;
 
 import com.example.proyecto2a.modelo.DatosAlquiler;
 import com.example.proyecto2a.modelo.Taquilla;
 import com.example.proyecto2a.modelo.Usuario;
 import com.example.proyecto2a.presentacion.MenuDialogActivity;
 import com.example.proyecto2a.presentacion.ServicioReservaAlquilerPatinete;
-import com.example.proyecto2a.presentacion.ServicioReservaAlquilerTaquilla;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -468,8 +466,8 @@ public class PatinesAdapter extends FirestoreRecyclerAdapter<Taquilla, PatinesAd
                 public void onComplete(@NonNull Task<DocumentSnapshot> task){
                     if (task.isSuccessful()) {
                         String ubicacion = task.getResult().getString("ubicacion");
-                        Alquiler a = new Alquiler(idUser, correo, ubicacion, estant, id, true);
-                        db.collection("registrosAlquiler").document(a.getFechaInicioAlquiler().toString()).set(a);
+                        AlquilerPatin a = new AlquilerPatin(idUser, correo,  ubicacion);
+                        db.collection("registrosAlquiler").document(String.valueOf(a.getFechaInicioAlquiler())).set(a);
                     } else {
                         Log.e("Firestore", "Error al leer", task.getException());
                     }
@@ -506,9 +504,10 @@ public class PatinesAdapter extends FirestoreRecyclerAdapter<Taquilla, PatinesAd
                                 //Obtenció de cada estació de su ubicación y su geoposición
                                 for (QueryDocumentSnapshot document : task.getResult()) {
 
-                                    Alquiler a = document.toObject(Alquiler.class);
-                                    a.calcularImporteTotal();
-                                    db.collection("registrosAlquiler").document(a.getFechaInicioAlquiler().toString()).set(a);
+                                    AlquilerPatin a = document.toObject(AlquilerPatin.class);
+                                    a.setUbicacionFinal(ubicacion);
+                                    a.calcularImporte();
+                                    db.collection("registrosAlquiler").document(String.valueOf(a.getFechaInicioAlquiler())).set(a);
                                 }
                             }
                         }

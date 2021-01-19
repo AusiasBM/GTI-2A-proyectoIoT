@@ -2,7 +2,6 @@ package com.example.proyecto2a.casos_uso;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,11 +17,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.proyecto2a.R;
 import com.example.proyecto2a.datos.Mqtt;
-import com.example.proyecto2a.modelo.Alquiler;
+import com.example.proyecto2a.modelo.AlquilerTaquilla;
 
 import com.example.proyecto2a.modelo.DatosAlquiler;
 import com.example.proyecto2a.modelo.Taquilla;
-import com.example.proyecto2a.modelo.Usuario;
 import com.example.proyecto2a.presentacion.MenuDialogActivity;
 import com.example.proyecto2a.presentacion.ServicioReservaAlquilerTaquilla;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
@@ -461,7 +459,7 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
                 public void onComplete(@NonNull Task<DocumentSnapshot> task){
                     if (task.isSuccessful()) {
                         String ubicacion = task.getResult().getString("ubicacion");
-                        Alquiler a = new Alquiler(ide, correo, ubicacion, estant, id, false);
+                        AlquilerTaquilla a = new AlquilerTaquilla(ide, correo, ubicacion, estant, id);
                         db.collection("registrosAlquiler").document(a.getFechaInicioAlquiler().toString()).set(a);
                     } else {
                         Log.e("Firestore", "Error al leer", task.getException());
@@ -533,7 +531,7 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
                                 //Obtenció de cada estació de su ubicación y su geoposición
                                 for (QueryDocumentSnapshot document : task.getResult()) {
                                     Log.d("Prova20", "");
-                                    Alquiler a = document.toObject(Alquiler.class);
+                                    AlquilerTaquilla a = document.toObject(AlquilerTaquilla.class);
                                     a.calcularImporteTotal();
                                     db.collection("registrosAlquiler").document(a.getFechaInicioAlquiler().toString()).set(a);
                                 }
