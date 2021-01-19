@@ -114,7 +114,7 @@ public class ServicioLocalizacion extends Service implements LocationListener {
         Log.d("Localización: ", "" + location.getLatitude() + " " + location.getLongitude());
         //Crear una intenció amb el setAcTion creat per mí i declarat al manifest, i enviar-ho broadcast
         Intent i = new Intent();
-        i.setAction("com.example.exempleexam20192.LATITUD_LONGITUD");
+        i.setAction(" ");
         i.putExtra("latitud", location.getLatitude());
         i.putExtra("longitud", location.getLongitude());
         sendBroadcast(i);

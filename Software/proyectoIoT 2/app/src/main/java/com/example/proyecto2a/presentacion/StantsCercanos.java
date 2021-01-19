@@ -1,5 +1,6 @@
 package com.example.proyecto2a.presentacion;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -11,6 +12,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationListener;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -26,7 +28,7 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
-public class StantsCercanos extends AppCompatActivity {
+public class StantsCercanos extends AppCompatActivity implements LocationListener {
 
     ImageView volver;
     RecyclerView recyclerView;
@@ -53,7 +55,7 @@ public class StantsCercanos extends AppCompatActivity {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(this, "Active la ubicación para usar esta funcionalidad", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.ubicacionNecesaria, Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
@@ -62,6 +64,9 @@ public class StantsCercanos extends AppCompatActivity {
         adapter = new CercanosAdapter(firestoreRecyclerOptions, this, idUser, latUsu, longUsu);
         adapter.notifyDataSetChanged();
         recyclerView.setAdapter(adapter);
+
+        latUsu = getIntent().getDoubleExtra("latitud", 0.0);
+        longUsu = getIntent().getDoubleExtra("longitud", 0.0);
 
         volver.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,26 +77,26 @@ public class StantsCercanos extends AppCompatActivity {
         });
 
     }
-    //  Receptor broadcast
-    public class ReceptorOperacion extends BroadcastReceiver {
-        public static final String ACTION_RESP= "com.example.exempleexam20192.LATITUD_LONGITUD";
 
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (FlagUbicacion ==0){
-                Double latUsu = intent.getDoubleExtra("latitud", 0.0);
-                Double longUsu = intent.getDoubleExtra("longitud", 0.0);
-                Query quey = firebaseFirestore.collection("estaciones");
-                FirestoreRecyclerOptions<Stant> firestoreRecyclerOptions = new FirestoreRecyclerOptions.Builder<Stant>().setQuery(quey, Stant.class).build();
-                adapter = new CercanosAdapter(firestoreRecyclerOptions, StantsCercanos.this, idUser, latUsu, longUsu);
-                adapter.notifyDataSetChanged();
-                recyclerView.setAdapter(adapter);
-                FlagUbicacion ++;
-            }
-        }
+    @Override
+    public void onLocationChanged(@NonNull Location location) {
+
     }
 
+    @Override
+    public void onProviderEnabled(@NonNull String provider) {
 
+    }
+
+    @Override
+    public void onProviderDisabled(@NonNull String provider) {
+
+    }
+
+    @Override
+    public void onPointerCaptureChanged(boolean hasCapture) {
+
+    }
 
     @Override
     protected void onStart() {
@@ -101,7 +106,7 @@ public class StantsCercanos extends AppCompatActivity {
                     ServicioLocalizacion.class));
             adapter.startListening();
         }catch (Exception ex){
-            Toast.makeText(this, "Active la ubicación para usar esta funcionalidad", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.ubicacionNecesaria, Toast.LENGTH_SHORT).show();
             finish();
         }
 
@@ -115,7 +120,7 @@ public class StantsCercanos extends AppCompatActivity {
             stopService(new Intent(this,
                     ServicioLocalizacion.class));
         }catch (Exception ex){
-            Toast.makeText(this, "Active la ubicación para usar esta funcionalidad", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.ubicacionNecesaria, Toast.LENGTH_SHORT).show();
             finish();
         }
 

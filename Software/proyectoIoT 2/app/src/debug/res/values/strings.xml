@@ -97,7 +97,7 @@
     <!-- Pago usuario-->
     <string name="btn_AñadirTarjeta">Añadir una tarjeta de crédito</string>
     <string name="tv_Tarjetas">Opciones de pago</string>
-    <string name="et_NumTarjeta">Número de tarjeta(XXXX-XXXX-XXXX-XXXX)</string>
+    <string name="et_NumTarjeta">Número de tarjeta(XXX-XXX-XXX)</string>
     <string name="et_Mes">Mes(XX)</string>
     <string name="et_Año">Año(XX)</string>
     <string name="et_CVV">CVV(XXX)</string>
@@ -216,7 +216,7 @@
     <string name="tvTaquilla">Taquilla</string>
     <string name="tvPatinete">Patinete</string>
 
-    <string name="tvCercano">Estación más cercana</string>
+    <string name="tvCercano">Estaciones a menos de 1km</string>
     <string name="tvEstacion">Ir a la estación</string>
     <string name="tvPulsarEstacion">Pulse sobre la estación para abrir su menú</string>
 
@@ -230,6 +230,11 @@
     <string name="anyadir_tarjeta_text">¿Quieres añadir esta tarjeta?</string>
     <string name="eliminar_tarjeta">Eliminar Tarjeta</string>
     <string name="eleminar_tarjeta_text">¿Quieres eliminar esta tarjeta?</string>
+    <string name="reservada">Inicio alquiler de taquilla</string>
+    <string name="txt_reservada">¿Desea alquilar la taquilla? Si acepta, dará comienzo al contador para "+"después aplicar los cargos correspondientes</string>
+    <string name="reservada_fin">Fin alquiler de taquilla</string>
+    <string name="txt_reservada_fin"> ¿Desea finalizar el alquiler de la taquilla? Si acepta, ya no podrá volver a abrirla.</string>
+
     <!-- Tutorial de la App-->
     <string name="bienvenido_tutorial"> ¡Bienvenido a Tricoopark!</string>
     <string name="patines_tutorial"> Nuestros patienetes </string>
@@ -237,6 +242,8 @@
     <string name="pagos_tutorial"> Tarifas y pagos</string>
     <string name="fin_tutorial"> Cobro y asistencia</string>
 
+    <string name="ubicacionNecesaria">Active la localización para usar esta funcionalidad</string>
+    <string name="sincronizandoUbicacion">Sincronizando ubicación</string>
     <string name="parrafoA1_tutorial"> En la aplicación móvil de Tricoopark podrás reservar taquillas para que puedas dejar de forma fácil, sencilla y barata tu patinene eléctrico, para que luego puedas regresar a por él una vez finalizado el alquiler de la taquilla </string>
     <string name="parrafoA2_tutorial"> Selecciona la estación mas cercana a ti para poder reservar la taquilla que desees, para que cuando llegues, puedas guardar tu patinete e incluso cargarlo y así poder ir a donde necesites sin tener que preocuparte por tu patiene eléctico ¡Nosotros te lo cuidamos!</string>
     <string name="parrafoP1_tutorial"> Contamos con nuestros propios patinetes electricos que podrás alquilar durante el tiempo que necesites para recorrer la ciudad cuando lo necesites </string>

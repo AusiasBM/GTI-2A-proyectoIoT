@@ -3,10 +3,13 @@ package com.example.proyecto2a.presentacion;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -34,8 +37,11 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.proyecto2a.R;
 import com.example.proyecto2a.casos_uso.Asistente;
+import com.example.proyecto2a.casos_uso.CercanosAdapter;
 import com.example.proyecto2a.modelo.DatosAlquiler;
+import com.example.proyecto2a.modelo.Stant;
 import com.example.proyecto2a.modelo.Usuario;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.ConnectionResult;
@@ -62,6 +68,7 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.GeoPoint;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -70,7 +77,7 @@ import java.util.Objects;
 
 import static android.view.Gravity.END;
 
-public class ResActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, OnMapReadyCallback, GoogleMap.OnMapClickListener {
+public class ResActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, OnMapReadyCallback, GoogleMap.OnMapClickListener, LocationListener {
 
 
     final private int REQUEST_CODE_ASK_PERMISSION = 111;
@@ -100,6 +107,8 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
     private Location mejorLocaliz;
 
     Usuario usuario = new Usuario();
+
+    private double latUsu, longUsu;
 
 
     //--------
@@ -336,6 +345,16 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
 
     }
 
+    //  Receptor broadcast
+    public class ReceptorOperacion extends BroadcastReceiver {
+        public static final String ACTION_RESP= "com.example.exempleexam20192.LATITUD_LONGITUD";
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            latUsu = intent.getDoubleExtra("latitud", 0.0);
+            longUsu = intent.getDoubleExtra("longitud", 0.0);
+        }
+    }
 
 
     @Override
@@ -615,11 +634,6 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onBackPressed() {
-
-    }
-
     public void onMapClick(LatLng latLng) {
 
     }
@@ -636,12 +650,29 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
 
     public void abrirCercano(View view){
         if (!checkIfLocationOpened()){
-            Toast.makeText(this, "Active la localización para usar esta funcionalidad", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.ubicacionNecesaria, Toast.LENGTH_SHORT).show();
         } else {
             Intent i = new Intent(this, StantsCercanos.class);
-            i.putExtra("idUser", usuario.getuId());
+            i.putExtra("idUser", user.getUid());
+            i.putExtra("latitud", latUsu);
+            i.putExtra("longitud", longUsu);
             startActivity(i);
         }
+
+    }
+
+    @Override
+    public void onLocationChanged(@NonNull Location location) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(@NonNull String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(@NonNull String provider) {
 
     }
 }
