@@ -19,10 +19,17 @@ import com.example.proyecto2a.R;
 import com.example.proyecto2a.casos_uso.TaquillasAdapter;
 import com.example.proyecto2a.datos.Mqtt;
 import com.example.proyecto2a.datos.Taquillas;
+import com.example.proyecto2a.modelo.AlquilerTaquilla;
 import com.example.proyecto2a.modelo.DatosAlquiler;
 import com.google.android.gms.common.internal.Constants;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
@@ -31,6 +38,7 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
+import org.json.JSONObject;
 
 import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
 import static com.example.proyecto2a.datos.Mqtt.qos;
@@ -47,6 +55,8 @@ public class ServicioReservaAlquilerTaquilla extends Service implements MqttCall
     private String ide;
     private String ubicacion;
     private boolean flagReserva;
+    private boolean flagAbrirPuerta;
+    private boolean flagEnchufe;
 
     private NotificationManager notificationManager;
     static final String CANAL_ID = "mi_canal";
@@ -78,6 +88,7 @@ public class ServicioReservaAlquilerTaquilla extends Service implements MqttCall
         // Nos suscribimos al topic "tiempoExpirado"
         // Servirá para que una vez pasado un tiempo determinado desde que se reserva la taquilla
         // si no se ha alquilado, liberar la taquilla.
+
         try {
             Log.i(Mqtt.TAG, "Suscrito a " + topicRoot+"tiempoReserva");
             client.subscribe(topicRoot+"tiempoReserva", qos);
@@ -85,6 +96,23 @@ public class ServicioReservaAlquilerTaquilla extends Service implements MqttCall
         } catch (MqttException e) {
             Log.e(Mqtt.TAG, "Error al suscribir.", e);
         }
+
+        try {
+            Log.i(Mqtt.TAG, "Suscrito a " + topicRoot+"cerradura/STATUS8");
+            client.subscribe(topicRoot+"cerradura/STATUS8", qos);
+            client.setCallback(this);
+        } catch (MqttException e) {
+            Log.e(Mqtt.TAG, "Error al suscribir.", e);
+        }
+
+        try {
+            Log.i(Mqtt.TAG, "Suscrito a " + topicRoot+"cmnd");
+            client.subscribe(topicRoot+"cerradura/POWER", qos);
+            client.setCallback(this);
+        } catch (MqttException e) {
+            Log.e(Mqtt.TAG, "Error al suscribir.", e);
+        }
+
     }
 
     @Override
@@ -108,7 +136,32 @@ public class ServicioReservaAlquilerTaquilla extends Service implements MqttCall
         id = e.getString("id");
         ubicacion = e.getString("ubicacion");
         flagReserva = e.getBoolean("flagReserva");
+        flagAbrirPuerta = e.getBoolean("flagAbrir", false);
+        flagEnchufe = e.getBoolean("flagEnchufar", false);
 
+        if (flagAbrirPuerta == true){
+            try {
+                Log.i(Mqtt.TAG, "Publicando mensaje: " + "cerradura ON");
+                MqttMessage message = new MqttMessage("cerradura ON".getBytes());
+                message.setQos(Mqtt.qos);
+                message.setRetained(false);
+                client.publish(Mqtt.topicRoot + "cerradura", message);
+            } catch (MqttException ex) {
+                Log.e(Mqtt.TAG, "Error al publicar.", ex);
+            }
+        }
+
+        if(flagEnchufe == true){
+            try {
+                Log.i(Mqtt.TAG, "Publicando mensaje: " + "power Toggle");
+                MqttMessage message = new MqttMessage("TOGGLE".getBytes());
+                message.setQos(Mqtt.qos);
+                message.setRetained(false);
+                client.publish(Mqtt.topicRoot + "cerradura/cmnd/power", message);
+            } catch (MqttException exc) {
+                exc.printStackTrace();
+            }
+        }
         DatosAlquiler d = new DatosAlquiler();
         d.setFlagReserva(flagReserva);
         d.setUbicacionTaquilla(ubicacion);
@@ -189,6 +242,100 @@ public class ServicioReservaAlquilerTaquilla extends Service implements MqttCall
             finTiempoReserva();
             stopSelf();
         }
+
+        if(topic.equals(topicRoot+"cerradura/POWER")){
+
+            sonoff(payload);
+        }
+
+        if(topic.equals(topicRoot+"cerradura/STATUS8")){
+            Log.d(Mqtt.TAG, "66666: " + topic + "->" + payload);
+            JSONObject jsonObject = new JSONObject(payload);
+            JSONObject jsonObject1 = jsonObject.getJSONObject("StatusSNS");
+            JSONObject jsonObject2 = jsonObject1.getJSONObject("ENERGY");
+            double total = jsonObject2.getDouble("Total");
+            Log.d("Prova", "333: " + total);
+            registroPotencia(total);
+        }
+    }
+
+    public void sonoff(final String payload) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference dc = db.collection("estaciones").document(estant).collection("taquillas").document(id);
+        // Actualiza el estado de la carga en fireStore
+        if (payload.equals("ON")){
+            Log.d("Prova", "444: " + payload);
+            dc.update("cargaPatinete", true);
+        }else{
+
+            if (payload.equals("OFF")){
+                Log.d("Prova", "555: " + payload);
+                dc.update("cargaPatinete", false);
+            }
+        }
+
+        try {
+            Log.i(Mqtt.TAG, "Publicando mensaje: " + "cerradura/STATUS8");
+            MqttMessage message = new MqttMessage("8".getBytes());
+            message.setQos(Mqtt.qos);
+            message.setRetained(false);
+            client.publish(Mqtt.topicRoot + "cerradura/cmnd/status", message);
+        } catch (MqttException ex) {
+            Log.e(Mqtt.TAG, "Error al publicar.", ex);
+        }
+    }
+
+    public void registroPotencia(final double vatios){
+        final FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        final Query q = db.collection("registrosAlquiler").whereEqualTo("uId", ide)
+                .orderBy("fechaInicioAlquiler", Query.Direction.DESCENDING).limit(1);
+
+
+        db.collection("estaciones").document(estant).collection("taquillas").document(id)
+                .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()){
+                    boolean carga = task.getResult().getBoolean("cargaPatinete");
+
+                    if(carga == true){
+                        q.get()
+                                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                        if (task.isSuccessful()) {
+                                            Log.d("Prova10", "");
+                                            //Obtenció de cada estació de su ubicación y su geoposición
+                                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                                AlquilerTaquilla a = document.toObject(AlquilerTaquilla.class);
+                                                a.setVatiosInicio(vatios);
+                                                db.collection("registrosAlquiler").document(a.getFechaInicioAlquiler().toString()).set(a);
+                                            }
+                                        }
+                                    }
+                                });
+                    }else{
+                        q.get()
+                                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                        if (task.isSuccessful()) {
+                                            Log.d("Prova10", "");
+                                            //Obtenció de cada estació de su ubicación y su geoposición
+                                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                                AlquilerTaquilla a = document.toObject(AlquilerTaquilla.class);
+                                                a.calcularVatios(vatios);
+                                                db.collection("registrosAlquiler").document(a.getFechaInicioAlquiler().toString()).set(a);
+                                            }
+                                        }
+                                    }
+                                });
+                    }
+                }
+            }
+        });
+
     }
 
     @Override
