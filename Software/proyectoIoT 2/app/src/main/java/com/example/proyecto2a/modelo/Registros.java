@@ -20,10 +20,8 @@ public class Registros {
     private String estant;
     private String taquilla;
     private String ubicacion;
-    private double vatiosInicio;
 
-
-    public Registros(String correo, String ubicacionFinal, String ubicacionInicio, String uId, double importeAlquiler, double importeCarga, double importeTotal, long tiempoAlquilada, long fechaInicoAlquiler, double mWConsumidos, String tipoAlquiler, String estant, String taquilla, String ubicacion, double vatiosInicio) {
+    public Registros(String correo, String ubicacionFinal, String ubicacionInicio, String uId, double importeAlquiler, double importeCarga, double importeTotal, long tiempoAlquilada, long fechaInicoAlquiler, double mWConsumidos, String tipoAlquiler, String estant, String taquilla, String ubicacion) {
         this.correo = correo;
         this.ubicacionFinal = ubicacionFinal;
         this.ubicacionInicio = ubicacionInicio;
@@ -38,7 +36,6 @@ public class Registros {
         this.estant = estant;
         this.taquilla = taquilla;
         this.ubicacion = ubicacion;
-        this.vatiosInicio = vatiosInicio;
     }
 
     public Registros() {
@@ -163,13 +160,5 @@ public class Registros {
 
     public void setUbicacion(String ubicacion) {
         this.ubicacion = ubicacion;
-    }
-
-    public double getVatiosInicio() {
-        return vatiosInicio;
-    }
-
-    public void setVatiosInicio(double vatiosInicio) {
-        this.vatiosInicio = vatiosInicio;
     }
 }

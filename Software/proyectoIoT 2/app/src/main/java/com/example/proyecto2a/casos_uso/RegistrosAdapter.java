@@ -55,22 +55,21 @@ public class RegistrosAdapter extends FirestoreRecyclerAdapter<Registros, Regist
     protected void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull Registros model) {
         DocumentSnapshot documentSnapshot = getSnapshots().getSnapshot(holder.getAdapterPosition());
         final String id = documentSnapshot.getId();
-        holder.estant.setText("Estant: " + model.getEstant());
-        holder.taquilla.setText("Taquilla: " + model.getTaquilla());
+        holder.estant.setText("estant:" + model.getEstant());
+        holder.taquilla.setText("taquilla:" + model.getTaquilla());
         holder.tipoAlquiler.setText(model.getTipoAlquiler());
-        holder.fecha.setText(model.getDate(model.getFechaInicoAlquiler(), "dd/MM/yyyy HH:mm:ss"));
+        holder.fecha.setText(String.valueOf(model.getFechaInicoAlquiler()));
 
 
-        if (model.getTipoAlquiler() != null) {
-            if (model.getTipoAlquiler().equals("taquilla")) {
-                holder.ubicacion.setText(model.getUbicacion());
-                holder.ubicacionFin.setVisibility(View.GONE);
-            } else {
-                holder.ubicacion.setText(model.getUbicacionInicio());
-                holder.ubicacionFin.setText(model.getUbicacionFinal());
-            }
 
+
+        if(model.getTipoAlquiler() == "taquilla"){
+            holder.ubicacion.setText(model.getUbicacion());
+        }else{
+            holder.ubicacion.setText(model.getUbicacionInicio());
+            holder.ubicacionFin.setText(model.getUbicacionFinal());
         }
+
     }
 
     @NonNull

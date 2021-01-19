@@ -11,7 +11,6 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
@@ -79,9 +78,6 @@ import static android.view.Gravity.END;
 
 public class ResActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, OnMapReadyCallback, GoogleMap.OnMapClickListener, LocationListener {
 
-
-    final private int REQUEST_CODE_ASK_PERMISSION = 111;
-
     public static final String metodo = "metodo";
     private static String method = "sin iniciar";
     TextView txtUser;
@@ -102,7 +98,6 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
     private double[] lats = new double[100];
     private double[] longs = new double[100];
     private DrawerLayout drawerLayout;
-
     private LocationManager manejador;
     private Location mejorLocaliz;
 
@@ -181,7 +176,12 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
                 });
 
         manejador = (LocationManager) getSystemService(LOCATION_SERVICE);
-        solicitarPermisos();
+
+        //solicitarPermisos();
+
+        //solicitarPermisos();
+
+
         //Tutorial
         try {
             db.collection("usuarios").document(firebaseAuth.getUid()).get()
@@ -345,6 +345,26 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
 
     }
 
+    @Override
+    public void onLocationChanged(@NonNull Location location) {
+
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(@NonNull String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(@NonNull String provider) {
+
+    }
+
     //  Receptor broadcast
     public class ReceptorOperacion extends BroadcastReceiver {
         public static final String ACTION_RESP= "com.example.exempleexam20192.LATITUD_LONGITUD";
@@ -380,6 +400,20 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+    }
+
+    public void logOut(View view) {
+        Auth.GoogleSignInApi.signOut(googleApiClient).setResultCallback(new ResultCallback<Status>() {
+            @Override
+            public void onResult(@NonNull Status status) {
+                if (status.isSuccess()) {
+                    goMain();
+                    finish();
+                } else {
+                    Toast.makeText(getApplicationContext(), "No se pudo cerrar sesion", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     public void logOut() {
@@ -460,6 +494,19 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
 
     }
 
+    public void revoke(View view) {
+        Auth.GoogleSignInApi.revokeAccess(googleApiClient).setResultCallback(new ResultCallback<Status>() {
+            @Override
+            public void onResult(@NonNull Status status) {
+                if (status.isSuccess()) {
+                    goMain();
+                } else {
+                    Toast.makeText(getApplicationContext(), "No se pudo cerrar sesion", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
@@ -486,23 +533,6 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
                 return false;
             }
         });
-
-        if (ActivityCompat.checkSelfPermission(this,
-                android.Manifest.permission.ACCESS_FINE_LOCATION) ==
-                PackageManager.PERMISSION_GRANTED) {
-
-            mMap.setMyLocationEnabled(true);
-            mMap.getUiSettings().setZoomControlsEnabled(true);
-            mMap.getUiSettings().setCompassEnabled(true);
-            mMap.getUiSettings().setMyLocationButtonEnabled(true);
-        }
-
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
-        mMap.setMyLocationEnabled(true);
-        mMap.getUiSettings().setMyLocationButtonEnabled(true);
     }
 
     @Override
@@ -589,6 +619,9 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
             case R.id.nav_settings:
                 lanzarConfiguracion();
                 break;
+            case R.id.nav_historial:
+                lanzarRegistros();
+                break;
         }
 
     }
@@ -618,6 +651,14 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
         startActivity(i);
     }
 
+
+    public void lanzarRegistros() {
+        Intent intent = new Intent(this, RegistrosActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra("id", user.getUid());
+        startActivity(intent);
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_actividad_principal, menu);
@@ -634,18 +675,36 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
         return super.onOptionsItemSelected(item);
     }
 
+    //public void onMapClick(LatLng latLng) {
+
+    @Override
     public void onMapClick(LatLng latLng) {
 
     }
 
-    private void solicitarPermisos() {
-        int permisoUbicacion = ActivityCompat.checkSelfPermission(ResActivity.this, Manifest.permission.ACCESS_FINE_LOCATION);
-
-        if (permisoUbicacion != PackageManager.PERMISSION_GRANTED) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE_ASK_PERMISSION);
-            }
+    /*public void onLocationChanged(Location location) {
+        mLastLocation = location;
+        if (mCurrLocationMarker != null) {
+            mCurrLocationMarker.remove();
         }
+>>>>>>> Stashed changes
+
+        //Place current location marker
+        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        MarkerOptions markerOptions = new MarkerOptions();
+        markerOptions.position(latLng);
+        markerOptions.title("Current Position");
+        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
+        mCurrLocationMarker = mGoogleMap.addMarker(markerOptions);
+
+        //move map camera
+        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+        mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(11));
+
+        if (mGoogleApiClient != null) {
+            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+        }
+<<<<<<< Updated upstream
     }
 
     public void abrirCercano(View view){
@@ -675,5 +734,7 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
     public void onProviderDisabled(@NonNull String provider) {
 
     }
+=======
+    }*/
 }
 

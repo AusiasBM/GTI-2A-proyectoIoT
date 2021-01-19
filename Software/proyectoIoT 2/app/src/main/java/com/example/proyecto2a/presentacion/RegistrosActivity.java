@@ -29,7 +29,6 @@ import java.io.IOException;
 
 public class RegistrosActivity extends AppCompatActivity {
 
-    String id;
     RecyclerView recyclerView;
     RegistrosAdapter adapter;
     FirebaseFirestore firebaseFirestore;
@@ -38,13 +37,10 @@ public class RegistrosActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registro);
 
-
-        id = getIntent().getStringExtra("id");
-
         recyclerView = findViewById(R.id.recyclerViewRegistro);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         firebaseFirestore = FirebaseFirestore.getInstance();
-        Query query = firebaseFirestore.collection("registrosAlquiler").whereEqualTo("uId" , id);
+        Query query = firebaseFirestore.collection("registrosAlquiler");
 
         FirestoreRecyclerOptions<Registros> firestoreRecyclerOptions =
                 new FirestoreRecyclerOptions.Builder<Registros>().setQuery(query, Registros.class).build();

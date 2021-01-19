@@ -40,6 +40,12 @@
             android:textSize="22dp"
             android:title="@string/menu_incidencias"
             android:visible="false" />
+        <item
+            android:id="@+id/nav_historial"
+            android:fontFamily="@font/poppins_medium"
+            android:textSize="22dp"
+            android:icon="@drawable/usuario"
+            android:title="Historial" />
     </group>
     <group
         android:id="@+id/secundario"

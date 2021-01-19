@@ -119,6 +119,9 @@
             android:label="¡Contacta con nosotros!"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.Dialog" />
+        <activity
+            android:name=".presentacion.RegistrosActivity"
+            android:screenOrientation="portrait" />
 
         <meta-data
             android:name="preloaded_fonts"
