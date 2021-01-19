@@ -126,6 +126,7 @@
 
         <service android:name=".presentacion.ServicioLocalizacion" />
         <service android:name=".presentacion.ServicioReservaAlquilerTaquilla" />
+        <service android:name=".presentacion.ServicioReservaAlquilerPatinete" />
     </application>
 
 </manifest>

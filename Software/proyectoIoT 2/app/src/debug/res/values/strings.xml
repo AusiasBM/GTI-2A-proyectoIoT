@@ -195,6 +195,7 @@
 
     <string name="taquillasDisponibles">Taquillas disponibles</string>
     <string name="patinReservado">Patinetes reservados</string>
+
     <string name="patinetesDisponibles">Patinetes disponibles</string>
 
 
@@ -209,7 +210,7 @@
 
     <string name="btEmpezar">¡Empieza!</string>
     <string name="tvAbrir">Abrir puerta</string>
-    <string name="tvCancelar">Cancelar</string>
+    <string name="tvCancelar">Finalizar</string>
     <string name="tvAtras">Atrás</string>
 
     <string name="tvTaquilla">Taquilla</string>
