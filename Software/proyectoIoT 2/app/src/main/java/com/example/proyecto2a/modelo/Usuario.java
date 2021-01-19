@@ -6,7 +6,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 public class Usuario {
     private String uId, nombre, correo, dirección, población, llave, foto;
     private int telefono,dni,pin;
-    private boolean admin = false, reservaAlquiler = false, nuevo = true;
+    private boolean admin = false, reservaAlquiler = false, nuevo = true, reservaAlquilerPatin = false;
     private DatosAlquiler datos;
 
     //Constructores
@@ -112,7 +112,29 @@ public class Usuario {
         this.nuevo = nuevo;
     }
 
+    public boolean isReservaAlquilerPatin() {
+        return reservaAlquilerPatin;
+    }
 
+    public void setReservaAlquilerPatin(boolean reservaAlquilerPatin) {
+        this.reservaAlquilerPatin = reservaAlquilerPatin;
+    }
+
+    public boolean isReservaAlquiler() {
+        return reservaAlquiler;
+    }
+
+    public void setReservaAlquiler(boolean reservaAlquiler) {
+        this.reservaAlquiler = reservaAlquiler;
+    }
+
+    public DatosAlquiler getDatos() {
+        return datos;
+    }
+
+    public void setDatos(DatosAlquiler datos) {
+        this.datos = datos;
+    }
 
     @Override
     public String toString() {
@@ -133,21 +155,7 @@ public class Usuario {
                 '}';
     }
 
-    public boolean isReservaAlquiler() {
-        return reservaAlquiler;
-    }
 
-    public void setReservaAlquiler(boolean reservaAlquiler) {
-        this.reservaAlquiler = reservaAlquiler;
-    }
-
-    public DatosAlquiler getDatos() {
-        return datos;
-    }
-
-    public void setDatos(DatosAlquiler datos) {
-        this.datos = datos;
-    }
 
 
 }

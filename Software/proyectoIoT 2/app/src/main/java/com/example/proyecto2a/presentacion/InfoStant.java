@@ -186,6 +186,7 @@ public class InfoStant extends AppCompatActivity {
             taquilla.setOcupada(false);
             taquilla.setPuertaAbierta(false);
             taquilla.setReservada(false);
+            taquilla.setEstacionFinal(true);
             firebaseFirestore.collection("estaciones").document(stantID).collection("taquillas").document((String.valueOf(contador))).set(taquilla).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
@@ -210,6 +211,7 @@ public class InfoStant extends AppCompatActivity {
             taquilla.setOcupada(false);
             taquilla.setPuertaAbierta(false);
             taquilla.setReservada(false);
+            taquilla.setEstacionFinal(true);
             firebaseFirestore.collection("estaciones").document(stantID).collection("taquillas").document((String.valueOf(contador))).set(taquilla).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {

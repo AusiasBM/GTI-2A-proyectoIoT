@@ -2,20 +2,20 @@ package com.example.proyecto2a.modelo;
 
 import static java.lang.System.currentTimeMillis;
 
-public class Alquiler {
+public class AlquilerTaquilla {
 
-    private String uId, correo, ubicacion, estant, taquilla;
+    private String uId, correo, ubicacion, estant, taquilla, tipoAlquiler;
     private long fechaInicioAlquiler, tiempoAlquilada;
     private double importeAlquiler;
     private double mWConsumidos;
     private double importeCarga;
     private double importeTotal;
 
-    public Alquiler() {
+    public AlquilerTaquilla() {
     }
 
-    public Alquiler(String uId, String correo, String ubicacion, String estant, String id, long fechaInicioAlquiler,
-                    long tiempoAlquilada, double importeAlquiler, double importeCarga, double importeTotal) {
+    public AlquilerTaquilla(String uId, String correo, String ubicacion, String estant, String id, long fechaInicioAlquiler,
+                            long tiempoAlquilada, double importeAlquiler, double importeCarga, double importeTotal) {
         this.uId = uId;
         this.correo = correo;
         this.ubicacion = ubicacion;
@@ -27,11 +27,12 @@ public class Alquiler {
         this.importeCarga = importeCarga;
         this.importeTotal = importeTotal;
         mWConsumidos = 0;
+        tipoAlquiler = "taquilla";
 
     }
 
 
-    public Alquiler(String uId, String correo, String ubicacion, String estant, String id) {
+    public AlquilerTaquilla(String uId, String correo, String ubicacion, String estant, String id) {
         this.uId = uId;
         this.correo = correo;
         this.ubicacion = ubicacion;
@@ -41,6 +42,7 @@ public class Alquiler {
         importeCarga = 0;
         mWConsumidos = 0;
         importeTotal = 0;
+        tipoAlquiler = "taquilla";
 
     }
 
@@ -134,6 +136,13 @@ public class Alquiler {
         this.importeTotal = importeTotal;
     }
 
+    public String getTipoAlquiler() {
+        return tipoAlquiler;
+    }
+
+    public void setTipoAlquiler(String tipoAlquiler) {
+        this.tipoAlquiler = tipoAlquiler;
+    }
 
     private void calcularTiempoAlquiler(){
         this.tiempoAlquilada = currentTimeMillis() - fechaInicioAlquiler;
@@ -141,18 +150,22 @@ public class Alquiler {
 
     private void calcularImporte(){
         calcularTiempoAlquiler();
-        //El import mínim per alquilar una taquilla serà de 2€, fins a 1 minut (per a fer la prova)
+        //El import mínim per alquilar una taquilla serà de 2€, fins a 1 minut (per a fer la simulació)
+
+        //Tarifa para alquiler de taquilla
         importeAlquiler = 2;
 
         //A partir d'1 minut es cobrarà 0.05€ per segon
         //Per a fer-ho en temps > 1 hora, canviar a 3600000
-        if(tiempoAlquilada > 60000){
+        if(tiempoAlquilada > 60000) {
             //Calcular els segons que ha estat de més d'un 1minut per aplicar la tarifa
             //Per a fer-ho en temps > 1 hora, canviar a 3600000 i 60000
-            long tiempoExtra = (tiempoAlquilada-60000)/1000;
+            long tiempoExtra = (tiempoAlquilada - 60000) / 1000;
 
             importeAlquiler += tiempoExtra * 0.05;
         }
+
+
     }
 
     private void calcularImporteCarga() {
