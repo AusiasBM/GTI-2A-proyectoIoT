@@ -168,7 +168,8 @@ public class MainActivity extends AppCompatActivity implements MqttCallback {
                                         document.getData().get("idUsuario").toString(),
                                         Boolean.parseBoolean(document.getData().get("ocupada").toString()),
                                         Boolean.parseBoolean(document.getData().get("patinNuestro").toString()),
-                                        Boolean.parseBoolean(document.getData().get("puertaAbierta").toString())
+                                        Boolean.parseBoolean(document.getData().get("puertaAbierta").toString()),
+                                        Boolean.parseBoolean(document.getData().get("reservada").toString())
                                 ));
                             }
 
@@ -177,11 +178,21 @@ public class MainActivity extends AppCompatActivity implements MqttCallback {
                             adapter.setOnItemClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(final View v) {
-                                    if (!taquillas.get(recycler.getChildAdapterPosition(v)).alquilada){
+                                    if (taquillas.get(recycler.getChildAdapterPosition(v)).isAlquilada()){
+                                        if (taquillas.get(recycler.getChildAdapterPosition(v)).getIdUsuario().equals(user.getuId())){
+                                            int pos = recycler.getChildAdapterPosition(v);
+                                            Intent i = new Intent(v.getContext(), MenuTaquilla.class);
+                                            i.putExtra("pos", pos);
+                                            startActivity(i);
+                                        }
+                                    }else{
                                         AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
                                         // Add the buttons
                                         builder.setPositiveButton("Alquilar", new DialogInterface.OnClickListener() {
                                             public void onClick(DialogInterface dialog, int id) {
+                                                pararContadorTiempoReserva(); // Para el contador de reserva
+
+                                                inicioContadorAlquilerTaquilla();
                                                 int pos = recycler.getChildAdapterPosition(v);
                                                 Intent i = new Intent(v.getContext(), MenuTaquilla.class);
                                                 i.putExtra("pos", pos);
@@ -197,13 +208,7 @@ public class MainActivity extends AppCompatActivity implements MqttCallback {
                                                 .setTitle("Alquilar taquilla " + recycler.getChildAdapterPosition(v));
                                         AlertDialog dialog = builder.create();
                                         dialog.show();
-                                    }else{
-                                        if (taquillas.get(recycler.getChildAdapterPosition(v)).getIdUsuario().equals(user.getuId())){
-                                            int pos = recycler.getChildAdapterPosition(v);
-                                            Intent i = new Intent(v.getContext(), MenuTaquilla.class);
-                                            i.putExtra("pos", pos);
-                                            startActivity(i);
-                                        }
+
                                     }
 
                                 }
@@ -218,6 +223,41 @@ public class MainActivity extends AppCompatActivity implements MqttCallback {
                     }
                 });
 
+    }
+
+    public void pararContadorTiempoReserva(){
+        try {
+            Log.i(Mqtt.TAG, "Conectando al broker " + Mqtt.broker);
+            client = new MqttClient(Mqtt.broker, Mqtt.clientId,
+                    new MemoryPersistence());
+            client.connect();
+        } catch (MqttException e) {
+            Log.e(Mqtt.TAG, "Error al conectar.", e);
+        }
+        try {
+            MqttMessage message = new MqttMessage("parar".getBytes());
+            message.setQos(Mqtt.qos);
+            message.setRetained(false);
+            client.publish(Mqtt.topicRoot + "tiempoReserva", message);
+        } catch (MqttException e) {
+            Log.e(Mqtt.TAG, "Error al publicar.", e);
+        }
+    }
+
+    private void inicioContadorAlquilerTaquilla(){
+        //Inicio lógica de alquiler
+        db.collection("estaciones").document("UPV-EPSG").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task){
+                if (task.isSuccessful()) {
+                    String ubicacion = task.getResult().getString("ubicacion");
+                    Alquiler a = new Alquiler(user.getuId(), user.correo, ubicacion, 0 + "", 0 + "", false);
+                    db.collection("registrosAlquiler").document(a.getFechaInicioAlquiler().toString()).set(a);
+                } else {
+                    Log.e("Firestore", "Error al leer", task.getException());
+                }
+            }
+        });
     }
 
     // Se ejecuta cuando se pierde la conexión

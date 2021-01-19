@@ -31,6 +31,7 @@ WiFiClient wifiClient;
 MqttClient mqttClient(wifiClient);
 
 const int cerradura = 14;
+const int luzTaquilla = 26;
 
 const char broker[]    = "broker.hivemq.com";
 int        port        = 1883;
@@ -112,6 +113,9 @@ void setup() {
 
   pinMode(cerradura, OUTPUT);
   digitalWrite(cerradura, HIGH);
+
+  pinMode(luzTaquilla, OUTPUT);
+  digitalWrite(luzTaquilla, LOW);
 
   //Sensor magnético
   pinMode(pinSensorMagnetico, INPUT_PULLUP); //DEFINE PIN COMO ENTRADA / "_PULLUP" PARA ACTIVAR EL RESISTOR INTERNO

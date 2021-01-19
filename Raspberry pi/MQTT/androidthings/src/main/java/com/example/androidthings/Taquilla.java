@@ -9,8 +9,9 @@ public class Taquilla {
     boolean ocupada;
     boolean patineteNuestro;
     boolean puertaAbierta;
+    boolean reservada;
 
-    public Taquilla(int id,boolean alquilada, boolean cargarPatinete, String idUsuario, boolean ocupada, boolean patinNuestro, boolean puertaAbierta) {
+    public Taquilla(int id,boolean alquilada, boolean cargarPatinete, String idUsuario, boolean ocupada, boolean patinNuestro, boolean puertaAbierta, boolean reservada) {
         this.id = id;
         this.alquilada = alquilada;
         this.cargarPatinete = cargarPatinete;
@@ -18,6 +19,22 @@ public class Taquilla {
         this.ocupada = ocupada;
         this.patineteNuestro = patinNuestro;
         this.puertaAbierta = puertaAbierta;
+    }
+
+    public boolean isPatineteNuestro() {
+        return patineteNuestro;
+    }
+
+    public void setPatineteNuestro(boolean patineteNuestro) {
+        this.patineteNuestro = patineteNuestro;
+    }
+
+    public boolean isReservada() {
+        return reservada;
+    }
+
+    public void setReservada(boolean reservada) {
+        this.reservada = reservada;
     }
 
     public boolean isAlquilada() {

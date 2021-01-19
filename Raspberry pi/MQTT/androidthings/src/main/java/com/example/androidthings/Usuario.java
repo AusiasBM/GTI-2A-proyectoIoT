@@ -6,19 +6,17 @@ public class Usuario {
     boolean admin;
     String correo;
     String direccion;
-    String foto;
     String nombre;
     int pin;
     String poblacion;
     int telefono;
     String uId;
 
-    public Usuario(int dni, boolean admin, String correo, String direccion, String foto, String nombre, int pin, String poblacion, int telefono, String uId) {
+    public Usuario(int dni, boolean admin, String correo, String direccion, String nombre, int pin, String poblacion, int telefono, String uId) {
         this.dni = dni;
         this.admin = admin;
         this.correo = correo;
         this.direccion = direccion;
-        this.foto = foto;
         this.nombre = nombre;
         this.pin = pin;
         this.poblacion = poblacion;
@@ -56,14 +54,6 @@ public class Usuario {
 
     public void setDireccion(String direccion) {
         this.direccion = direccion;
-    }
-
-    public String getFoto() {
-        return foto;
-    }
-
-    public void setFoto(String foto) {
-        this.foto = foto;
     }
 
     public String getNombre() {

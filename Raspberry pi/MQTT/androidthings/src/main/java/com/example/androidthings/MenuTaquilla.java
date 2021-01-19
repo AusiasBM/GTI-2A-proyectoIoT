@@ -1,5 +1,6 @@
 package com.example.androidthings;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -13,11 +14,19 @@ import android.widget.Button;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static android.app.PendingIntent.getActivity;
 import static com.example.androidthings.LoginActivity.user;
@@ -99,7 +108,7 @@ public class MenuTaquilla extends AppCompatActivity {
     }
 
     public void terminarAlquiler(View v){
-        if (taquillas.get(taquilla).ocupada){
+        if (taquillas.get(taquilla).ocupada && taquillas.get(taquilla).isPuertaAbierta()){
             eleccionOcupada(v);
         }else{
             eleccion(v);
@@ -112,6 +121,7 @@ public class MenuTaquilla extends AppCompatActivity {
         // Add the buttons
         builder.setPositiveButton("Si", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
+                finContadorAlquiler();
                 terminarBd();
                 cerrar(v);
             }
@@ -125,6 +135,29 @@ public class MenuTaquilla extends AppCompatActivity {
                 .setTitle("Terminar alquiler");
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    private void finContadorAlquiler(){
+        //Fin de la lógica de alquiler
+        Query query = db.collection("registrosAlquiler").whereEqualTo("uId", user.getuId())
+                .orderBy("fechaInicioAlquiler", Query.Direction.DESCENDING ). limit(1);
+
+        query.get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+
+                            //Obtenció de cada estació de su ubicación y su geoposición
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+
+                                Alquiler a = document.toObject(Alquiler.class);
+                                a.calcularImporteTotal();
+                                db.collection("registrosAlquiler").document(a.getFechaInicioAlquiler().toString()).set(a);
+                            }
+                        }
+                    }
+                });
     }
 
     public void eleccionOcupada(final View v){
@@ -148,9 +181,26 @@ public class MenuTaquilla extends AppCompatActivity {
     }
 
     public void empezarBd(){
+
+        db.collection("usuarios/")
+                .document(user.getuId() + "")
+                .update("reservaAlquiler", true);
+
+        Map<String, Object> flagReserva = new HashMap<>();
+        flagReserva.put("flagReserva", false);
+        flagReserva.put("ubicacionTaquilla", "UPV-EPSG");
+
+        db.collection("usuarios/")
+                .document(user.getuId() + "")
+                .update("datos", flagReserva);
+
         db.collection("estaciones/0/taquillas/")
                 .document(taquilla + "")
                 .update("alquilada", true);
+
+        db.collection("estaciones/0/taquillas/")
+                .document(taquilla + "")
+                .update("reservada", true);
 
         db.collection("estaciones/0/taquillas/")
                 .document(taquilla + "")
@@ -160,9 +210,26 @@ public class MenuTaquilla extends AppCompatActivity {
     }
 
     public void terminarBd(){
+
+        db.collection("usuarios/")
+                .document(user.getuId() + "")
+                .update("reservaAlquiler", false);
+
+        Map<String, Object> flagReserva = new HashMap<>();
+        flagReserva.put("flagReserva", false);
+        flagReserva.put("ubicacionTaquilla", "");
+
+        db.collection("usuarios/")
+                .document(user.getuId() + "")
+                .update("datos", flagReserva);
+
         db.collection("estaciones/0/taquillas/")
                 .document(taquilla + "")
                 .update("alquilada", false);
+
+        db.collection("estaciones/0/taquillas/")
+                .document(taquilla + "")
+                .update("reservada", false);
 
         db.collection("estaciones/0/taquillas/")
                 .document(taquilla + "")
