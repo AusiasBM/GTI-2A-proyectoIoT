@@ -330,8 +330,7 @@ public class MainActivity extends AppCompatActivity implements MqttCallback {
     private Runnable tomaFoto = new Runnable() {
         @Override public void run() {
             mCamera.takePicture();
-            //temporizadorHandler.postDelayed(tomaFoto, 60 * 1000);
-            //Programamos siguiente llamada dentro de 60 segundos
+
         }
     };
     private ImageReader.OnImageAvailableListener

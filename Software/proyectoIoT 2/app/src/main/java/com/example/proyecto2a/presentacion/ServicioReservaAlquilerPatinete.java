@@ -45,6 +45,8 @@ public class ServicioReservaAlquilerPatinete extends Service implements MqttCall
     private String ide;
     private String ubicacion;
     private boolean flagReserva;
+    private boolean flagAbrirPuerta;
+
 
     private NotificationManager notificationManager;
     static final String CANAL_ID = "mi_canal";
@@ -76,6 +78,7 @@ public class ServicioReservaAlquilerPatinete extends Service implements MqttCall
         // Nos suscribimos al topic "tiempoExpirado"
         // Servirá para que una vez pasado un tiempo determinado desde que se reserva la taquilla
         // si no se ha alquilado, liberar la taquilla.
+
         try {
             Log.i(Mqtt.TAG, "Suscrito a " + topicRoot+"tiempoReserva");
             client.subscribe(topicRoot+"tiempoReserva", qos);
@@ -91,6 +94,8 @@ public class ServicioReservaAlquilerPatinete extends Service implements MqttCall
         } catch (MqttException e) {
             Log.e(Mqtt.TAG, "Error al suscribir.", e);
         }
+
+
     }
 
     @Override
@@ -114,7 +119,19 @@ public class ServicioReservaAlquilerPatinete extends Service implements MqttCall
         id = e.getString("id");
         ubicacion = e.getString("ubicacion");
         flagReserva = e.getBoolean("flagReserva");
+        flagAbrirPuerta = e.getBoolean("flagAbrir", false);
 
+        if (flagAbrirPuerta == true){
+            try {
+                Log.i(Mqtt.TAG, "Publicando mensaje: " + "cerradura ON");
+                MqttMessage message = new MqttMessage("cerradura ON".getBytes());
+                message.setQos(Mqtt.qos);
+                message.setRetained(false);
+                client.publish(Mqtt.topicRoot + "cerradura", message);
+            } catch (MqttException ex) {
+                Log.e(Mqtt.TAG, "Error al publicar.", ex);
+            }
+        }
         DatosAlquiler d = new DatosAlquiler();
         d.setFlagReserva(flagReserva);
         d.setUbicacionTaquilla(ubicacion);
@@ -230,33 +247,6 @@ public class ServicioReservaAlquilerPatinete extends Service implements MqttCall
         dc.update("idUsuario", "");
 
     }
-
-
-    /*//Finalizar contador del tiempo alquilada i calcular el importe
-    private void finContadorAlquiler(){
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        //Fin de la lógica de alquiler
-        Query query = db.collection("registrosAlquiler").whereEqualTo("uId", ide)
-                .orderBy("fechaInicioAlquiler", Query.Direction.DESCENDING ). limit(1);
-
-        query.get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            Log.d("Prova10", "");
-                            //Obtenció de cada estació de su ubicación y su geoposición
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Log.d("Prova20", "");
-                                Alquiler a = document.toObject(Alquiler.class);
-                                a.calcularImporteTotal();
-                                FirebaseFirestore db = FirebaseFirestore.getInstance();
-                                db.collection("registrosAlquiler").document(a.getFechaInicioAlquiler().toString()).set(a);
-                            }
-                        }
-                    }
-                });
-    }*/
 
     //Comprobar que la taquilla cerrada y vacía. Sirve para que cuando el usuario retira el patín alquilado
     //la taquilla pase a estar disponible para dejar un patín de la empresa

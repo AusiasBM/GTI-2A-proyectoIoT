@@ -85,7 +85,6 @@ public class PatinesAdapter extends FirestoreRecyclerAdapter<Taquilla, PatinesAd
                 if (snapshot != null && snapshot.exists()) {
                     usuario.setReservaAlquilerPatin((Boolean) snapshot.getData().get("reservaAlquilerPatin"));
                     boolean flagReserva = ((Boolean) ((HashMap) snapshot.getData().get("datos")).get("flagReserva"));
-                    Log.d("TAG", " 123: " + usuario.isReservaAlquilerPatin() + flagReserva);
                     visualizarBotones( holder,  position, taquilla, flagReserva, usuario.isReservaAlquilerPatin());
                 } else {
                     Log.d("TAG", " 987: null");
@@ -98,7 +97,6 @@ public class PatinesAdapter extends FirestoreRecyclerAdapter<Taquilla, PatinesAd
     public void visualizarBotones(@NonNull Viewholder holder, int position,
                                   @NonNull Taquilla taquilla, boolean isReservado, boolean isAlquilado){
         if(isAlquilado == true){
-            Log.d("a", "USUARIO " + idUser);
             //Patinete reservado
             if(!taquilla.isEstacionFinal()){
                 if (taquilla.isReservada() && !taquilla.isAlquilada()) {
@@ -277,9 +275,6 @@ public class PatinesAdapter extends FirestoreRecyclerAdapter<Taquilla, PatinesAd
 
                     break;
 
-                case R.id.imagenchufe:
-                    enchufa(v);
-                    break;
 
                 case R.id.buttonCan:
                     AlertDialog.Builder builderFin = new AlertDialog.Builder(context);
@@ -313,6 +308,7 @@ public class PatinesAdapter extends FirestoreRecyclerAdapter<Taquilla, PatinesAd
                         public void onClick(DialogInterface dialog, int which) {
                             i.putExtra("ide", idUser);
                             i.putExtra("flagReserva", false);
+                            i.putExtra("flagAbrir", false);
                             context.stopService(i);
                             context.startService(i);
                             alquilar();
@@ -551,52 +547,14 @@ public class PatinesAdapter extends FirestoreRecyclerAdapter<Taquilla, PatinesAd
 
 
         public void abreTaquilla() {
+            i.putExtra("ide", idUser);
+            i.putExtra("flagReserva", false);
+            i.putExtra("flagAbrir", true);
+            context.startService(i);
 
-            try {
-                Log.i(Mqtt.TAG, "Conectando al broker " + Mqtt.broker);
-                client = new MqttClient(Mqtt.broker, Mqtt.clientId,
-                        new MemoryPersistence());
-                client.connect();
-            } catch (MqttException e) {
-                Log.e(Mqtt.TAG, "Error al conectar.", e);
-            }
-            try {
-                Log.i(Mqtt.TAG, "Publicando mensaje: " + "cerradura ON");
-                MqttMessage message = new MqttMessage("cerradura ON".getBytes());
-                message.setQos(Mqtt.qos);
-                message.setRetained(false);
-                client.publish(Mqtt.topicRoot + "cerradura", message);
-            } catch (MqttException e) {
-                Log.e(Mqtt.TAG, "Error al publicar.", e);
-            }
-
-            //DocumentReference taq = db.collection("estaciones").document(estant).collection("taquillas").document(id);
-            //taq.update("idUsuario", ide);
-            //taq.update("reservada", true );
         }
 
-        public void enchufa(View v) {
 
-            try {
-                Log.i(Mqtt.TAG, "Conectando al broker " + Mqtt.broker);
-                client = new MqttClient(Mqtt.broker, Mqtt.clientId,
-                        new MemoryPersistence());
-                client.connect();
-            } catch (MqttException e) {
-                Log.e(Mqtt.TAG, "Error al conectar.", e);
-            }
-            try {
-                Log.i(Mqtt.TAG, "Publicando mensaje: " + "power OFF");
-                //MqttMessage message = new MqttMessage("toggle".getBytes());
-                Log.i(Mqtt.TAG, "Publicando mensaje: " + "power Toggle");
-                MqttMessage message = new MqttMessage("TOGGLE".getBytes());
-                message.setQos(Mqtt.qos);
-                message.setRetained(false);
-                client.publish(Mqtt.topicRoot + "cerradura/cmnd/power", message);
-            } catch (MqttException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
 }
