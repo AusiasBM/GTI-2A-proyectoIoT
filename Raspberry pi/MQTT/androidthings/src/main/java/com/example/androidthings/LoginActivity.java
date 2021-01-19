@@ -50,7 +50,7 @@ public class LoginActivity extends AppCompatActivity {
         edTxPin = findViewById(R.id.edTxPin);
         try {
             db.collection("usuarios")
-                    .whereEqualTo("DNI", Integer.parseInt(edTxDNI.getText().toString()))
+                    .whereEqualTo("dni", Integer.parseInt(edTxDNI.getText().toString()))
                     .whereEqualTo("pin", Integer.parseInt(edTxPin.getText().toString()))
                     .get()
                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -61,11 +61,10 @@ public class LoginActivity extends AppCompatActivity {
                                     Log.d("Resultado consulta de entrada", document.getId() + " => " + document.getData());
 
                                     user = new Usuario(
-                                            Integer.parseInt(document.getData().get("DNI").toString()),
+                                            Integer.parseInt(document.getData().get("dni").toString()),
                                             Boolean.parseBoolean(document.getData().get("admin").toString()),
                                             document.getData().get("correo").toString(),
                                             document.getData().get("dirección").toString(),
-                                            document.getData().get("foto").toString(),
                                             document.getData().get("nombre").toString(),
                                             Integer.parseInt(document.getData().get("pin").toString()),
                                             document.getData().get("población").toString(),

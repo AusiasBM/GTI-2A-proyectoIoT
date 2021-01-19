@@ -97,13 +97,17 @@ public class AdapterDatos extends RecyclerView.Adapter<AdapterDatos.ViewHolderDa
 
                     if (snapshot != null && snapshot.exists()) {
                         Log.d("Escucha", "Current data: " + snapshot.getData());
-                        if (Boolean.parseBoolean(snapshot.getData().get("alquilada").toString())){
+                        if (Boolean.parseBoolean(snapshot.getData().get("reservada").toString())){
                             cardTaquilla.setCardBackgroundColor(Color.GRAY);
-                            //item.setClickable(false);
-                            taquilla.setAlquilada(true);
+                            item.setClickable(false);
+                            taquilla.setReservada(true);
 
                             if (snapshot.getData().get("idUsuario").equals(user.getuId())){
-                                // Poner la foto del usuario donde está el patín
+                                cardTaquilla.setCardBackgroundColor(Color.argb(255, 0, 179, 71));
+                                item.setClickable(true);
+                                if (Boolean.parseBoolean(snapshot.getData().get("alquilada").toString())){
+                                    taquilla.setAlquilada(true);
+                                }
                             }
                         }else{
                             taquilla.setAlquilada(false);
