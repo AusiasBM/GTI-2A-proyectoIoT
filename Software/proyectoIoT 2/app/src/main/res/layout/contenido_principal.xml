@@ -108,6 +108,8 @@
                 android:layout_marginBottom="16dp"
                 android:background="@color/colorPrimary"
                 android:fontFamily="@font/poppins_light"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
                 android:text="@string/tvCercano"
                 android:textColor="#FFFFFF"
                 app:layout_constraintBottom_toBottomOf="parent"

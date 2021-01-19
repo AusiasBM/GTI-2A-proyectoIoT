@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.proyecto2a.R;
+import com.example.proyecto2a.casos_uso.PatinesAdapter;
 import com.example.proyecto2a.modelo.Taquilla;
 import com.example.proyecto2a.casos_uso.TaquillasAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
@@ -21,10 +22,13 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-public class Tab2 extends Fragment {RecyclerView recyclerView;
+public class Tab2 extends Fragment {
+    RecyclerView recyclerViewPatinesDisponibles;
     RecyclerView recyclerViewReservas;
-    TaquillasAdapter nAdapter;
-    TaquillasAdapter mAdapter;
+    RecyclerView recyclerViewTaquillasDisponibles;
+    PatinesAdapter nAdapter;
+    PatinesAdapter mAdapter;
+    PatinesAdapter oAdapter;
     FirebaseFirestore mFirestore = FirebaseFirestore.getInstance();
     public String id = "1";
     public String nombre;
@@ -44,12 +48,14 @@ public class Tab2 extends Fragment {RecyclerView recyclerView;
         Bundle bundle = getArguments();
         nombre = bundle.getString("CID");
         idUsuario = bundle.getString("idUser");
-        recyclerView = v.findViewById(R.id.recycler_view_taquillas);
-        recyclerView.setLayoutManager(new LinearLayoutManager( this.getContext()));
+        recyclerViewPatinesDisponibles = v.findViewById(R.id.recycler_view_patines_disponibles);
+        recyclerViewPatinesDisponibles.setLayoutManager(new LinearLayoutManager( this.getContext()));
         //recyclerView.setHasFixedSize(true);
-        recyclerViewReservas = v.findViewById(R.id.recycler_view_taquillas_reservadas);
+        recyclerViewReservas = v.findViewById(R.id.recycler_view_patines_reservados);
         recyclerViewReservas.setLayoutManager(new LinearLayoutManager( this.getContext()));
         //recyclerViewReservas.setHasFixedSize(true);
+        recyclerViewTaquillasDisponibles = v.findViewById(R.id.recycler_view_taquillas_disponibles);
+        recyclerViewTaquillasDisponibles.setLayoutManager(new LinearLayoutManager( this.getContext()));
         setUpRecyclerView();
         return v;
     }
@@ -58,19 +64,51 @@ public class Tab2 extends Fragment {RecyclerView recyclerView;
     public void setUpRecyclerView(){
                             FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-                            db.collection("estaciones").whereEqualTo("ubicacion", nombre).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        db.collection("estaciones").whereEqualTo("ubicacion", nombre).get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                id = (String) document.getId();
+                                Query lista = mFirestore.collection("estaciones").document(id).collection("taquillas")
+                                        .whereEqualTo("reservada", true)
+                                        .whereEqualTo("idUsuario", idUsuario)
+                                        .whereEqualTo("patinNuestro", true)
+                                        .whereEqualTo("estacionFinal", false);
+
+
+                                FirestoreRecyclerOptions<Taquilla> options = new FirestoreRecyclerOptions.Builder<Taquilla>()
+                                        .setQuery(lista, Taquilla.class)
+                                        .build();
+                                oAdapter = new PatinesAdapter(options,getActivity(), nombre,idUsuario);
+                                oAdapter.notifyDataSetChanged();
+                                recyclerViewReservas.setAdapter(oAdapter);
+                                listeno();
+                            }
+                        }
+                    }
+                });
+                            db.collection("estaciones").whereEqualTo("ubicacion", nombre).get()
+                                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                 @Override
                                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                     if (task.isSuccessful()) {
                                         for (QueryDocumentSnapshot document : task.getResult()) {
                                             id = (String) document.getId();
-                                            Query lista = mFirestore.collection("estaciones").document(id).collection("taquillas").whereEqualTo("reservada", true).whereEqualTo("idUsuario", idUsuario).whereEqualTo("patinNuestro", true);
+                                            Query lista = mFirestore.collection("estaciones").document(id).collection("taquillas")
+                                                    .whereEqualTo("reservada", false)
+                                                    .whereEqualTo("idUsuario", "")
+                                                    .whereEqualTo("patinNuestro", true)
+                                                    .whereEqualTo("estacionFinal", false);
+
+
                                             FirestoreRecyclerOptions<Taquilla> options = new FirestoreRecyclerOptions.Builder<Taquilla>()
                                                     .setQuery(lista, Taquilla.class)
                                                     .build();
-                                            mAdapter = new TaquillasAdapter(options,getActivity(), nombre);
+                                            mAdapter = new PatinesAdapter(options,getActivity(), nombre,idUsuario);
                                             mAdapter.notifyDataSetChanged();
-                                            recyclerViewReservas.setAdapter(mAdapter);
+                                            recyclerViewPatinesDisponibles.setAdapter(mAdapter);
                                             listenm();
                                         }
                                     }
@@ -83,16 +121,20 @@ public class Tab2 extends Fragment {RecyclerView recyclerView;
                                     if (task.isSuccessful()) {
                                         for (QueryDocumentSnapshot document : task.getResult()) {
                                             id = (String) document.getId();
-                                            Query lista = mFirestore.collection("estaciones").document(id).collection("taquillas").whereEqualTo("reservada", false).whereEqualTo("patinNuestro", true);
+                                            Query lista = mFirestore.collection("estaciones").document(id)
+                                                    .collection("taquillas")
+                                                    //.whereEqualTo("reservada", false)
+                                                    .whereEqualTo("patinNuestro", true)
+                                                    .whereEqualTo("estacionFinal", true);
 
                         FirestoreRecyclerOptions<Taquilla> options = new FirestoreRecyclerOptions.Builder<Taquilla>()
                                 .setQuery(lista, Taquilla.class)
                                 .build();
 
-                        nAdapter = new TaquillasAdapter(options,getActivity(), nombre);
+                        nAdapter = new PatinesAdapter(options,getActivity(), nombre,idUsuario);
 
                         nAdapter.notifyDataSetChanged();
-                        recyclerView.setAdapter(nAdapter);
+                        recyclerViewTaquillasDisponibles.setAdapter(nAdapter);
 
                         listen();
                     }
@@ -115,10 +157,15 @@ public class Tab2 extends Fragment {RecyclerView recyclerView;
         mAdapter.startListening();
     }
 
+    public void listeno(){
+        oAdapter.startListening();
+    }
+
     @Override
     public void onStop() {
         super.onStop();
         nAdapter.stopListening();
         mAdapter.stopListening();
+        oAdapter.stopListening();
     }
 }
