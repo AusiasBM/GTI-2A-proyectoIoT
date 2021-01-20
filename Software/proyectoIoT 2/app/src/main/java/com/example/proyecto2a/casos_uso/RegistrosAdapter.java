@@ -19,6 +19,7 @@ import com.bumptech.glide.Glide;
 import com.example.proyecto2a.R;
 import com.example.proyecto2a.modelo.Registros;
 import com.example.proyecto2a.modelo.Usuario;
+import com.example.proyecto2a.presentacion.InfoRegistros;
 import com.example.proyecto2a.presentacion.InfoUsuario;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
@@ -38,14 +39,7 @@ public class RegistrosAdapter extends FirestoreRecyclerAdapter<Registros, Regist
     private StorageReference storageReference;
     Activity activity;
     Registros registros= new Registros();
-    //Saco la id de cada usuario
-    //String idUsuario = firebaseFirestore.collection("usuarios").getId();
-    /**
-     * Create a new RecyclerView adapter that listens to a Firestore Query.  See {@link
-     * FirestoreRecyclerOptions} for configuration options.
-     *
-     * @param options
-     */
+
     public RegistrosAdapter(@NonNull FirestoreRecyclerOptions<Registros> options, Activity activity) {
         super(options);
         this.activity = activity;
@@ -54,21 +48,20 @@ public class RegistrosAdapter extends FirestoreRecyclerAdapter<Registros, Regist
     @Override
     protected void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull Registros model) {
         DocumentSnapshot documentSnapshot = getSnapshots().getSnapshot(holder.getAdapterPosition());
-        final String id = documentSnapshot.getId();
-        holder.estant.setText("estant:" + model.getEstant());
-        holder.taquilla.setText("taquilla:" + model.getTaquilla());
-        holder.tipoAlquiler.setText(model.getTipoAlquiler());
-        holder.fecha.setText(String.valueOf(model.getFechaInicoAlquiler()));
+        final String id = model.getFechaInicioAlquiler() + "";
 
+        Log.d("fecha", model.toString());
 
-
-
-        if(model.getTipoAlquiler() == "taquilla"){
-            holder.ubicacion.setText(model.getUbicacion());
-        }else{
-            holder.ubicacion.setText(model.getUbicacionInicio());
-            holder.ubicacionFin.setText(model.getUbicacionFinal());
-        }
+        holder.coste.setText(String.format("%.2f", model.getImporteTotal())+"€");
+        holder.fecha.setText(model.getDate(model.getFechaInicioAlquiler(),"dd/MM/yyyy HH:mm:ss"));
+        holder.vInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(activity, InfoRegistros.class);
+                intent.putExtra("registrosID", id);
+                activity.startActivity(intent);
+            }
+        });
 
     }
 
@@ -82,21 +75,14 @@ public class RegistrosAdapter extends FirestoreRecyclerAdapter<Registros, Regist
 
 
     public class ViewHolder extends RecyclerView.ViewHolder{
-        TextView estant, taquilla, tipoAlquiler, fecha, ubicacion, ubicacionFin;
-        ImageView logo;
+        TextView fecha, coste;
         View vInfo;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-
-            estant = itemView.findViewById(R.id.tvEstant);
-            taquilla = itemView.findViewById(R.id.tvTaquilla);
-            tipoAlquiler = itemView.findViewById(R.id.tipoAlquiler);
             fecha = itemView.findViewById(R.id.Fecha);
-            ubicacion = itemView.findViewById(R.id.Ubicacion);
-            ubicacionFin = itemView.findViewById(R.id.UbicacionFin);
-            logo = itemView.findViewById(R.id.logo);
-            vInfo = (View) itemView.findViewById(R.id.vInfoRegistro);
+            coste = itemView.findViewById(R.id.Coste);
+            vInfo = itemView.findViewById(R.id.vInfoHistorial);
         }
     }
 }
