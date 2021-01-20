@@ -106,7 +106,6 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
     private Location mejorLocaliz;
 
     Usuario usuario = new Usuario();
-    private static ProgressDialog progressDialog;
     private double latUsu, longUsu;
 
     @SuppressLint("WrongViewCast")
@@ -353,17 +352,6 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
     @Override
     public void onProviderDisabled(@NonNull String provider) {
 
-    }
-
-    //  Receptor broadcast
-    public class ReceptorOperacion extends BroadcastReceiver {
-        public static final String ACTION_RESP= "com.example.exempleexam20192.LATITUD_LONGITUD";
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            latUsu = intent.getDoubleExtra("latitud", 0.0);
-            longUsu = intent.getDoubleExtra("longitud", 0.0);
-        }
     }
 
 
@@ -663,6 +651,9 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
             solicitarPermisoLocalizaciones(Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION,
                     "Se necesita permiso de ubicaión", 1);
         }
+        if (!checkIfLocationOpened()){
+            Toast.makeText(this, R.string.ubicacionNecesaria, Toast.LENGTH_SHORT).show();
+        }
          else {
             Intent i = new Intent(this, StantsCercanos.class);
             i.putExtra("idUser", user.getUid());
@@ -731,6 +722,17 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
         } else {
             ActivityCompat.requestPermissions(this,
                     new String[]{fine}, requestCode);
+        }
+    }
+
+    //  Receptor broadcast
+    public class ReceptorOperacion extends BroadcastReceiver {
+        public static final String ACTION_RESP= "com.example.exempleexam20192.LATITUD_LONGITUD";
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            latUsu = intent.getDoubleExtra("latitud", 0.0);
+            longUsu = intent.getDoubleExtra("longitud", 0.0);
         }
     }
 }
