@@ -103,7 +103,7 @@ public class ServicioReservaAlquilerPatinete extends Service implements MqttCall
 
         try {
             //Cerrar el servicio de alquiler de taquilla cuando el usuario haga Logout
-            if (intent.getAction().equals( "terminar")) {
+            if (intent.getAction().equals( "terminarPatin")) {
                 //your end servce code
                 stopForeground(true);
                 //Parar el servicio con el id 0

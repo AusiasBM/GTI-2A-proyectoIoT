@@ -410,10 +410,15 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
         acceptButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                //Cerrar el servicio de alquiler de taquilla
+                //Cerrar el servicio de alquiler de taquilla (si es que hay alguno lanzado)
                 Intent stopIntent = new Intent(ResActivity.this, ServicioReservaAlquilerTaquilla.class);
                 stopIntent.setAction("terminar");
                 startService(stopIntent);
+
+                //Cerrar el servicio de alquiler de patín (si es que hay alguno lanzado)
+                Intent stopIntentPatin = new Intent(ResActivity.this, ServicioReservaAlquilerPatinete.class);
+                stopIntentPatin.setAction("terminarPatin");
+                startService(stopIntentPatin);
 
                 Auth.GoogleSignInApi.signOut(googleApiClient).setResultCallback(new ResultCallback<Status>() {
                     @Override
