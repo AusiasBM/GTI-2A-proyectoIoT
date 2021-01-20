@@ -3,6 +3,7 @@ package com.example.proyecto2a.presentacion;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -49,6 +50,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -104,7 +106,7 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
     private Location mejorLocaliz;
 
     Usuario usuario = new Usuario();
-
+    private static ProgressDialog progressDialog;
     private double latUsu, longUsu;
 
     @SuppressLint("WrongViewCast")
@@ -112,6 +114,7 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.result);
+
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         cercano = findViewById(R.id.faBCercano);
         txCercano = findViewById(R.id.textView26);
@@ -200,6 +203,7 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
         }catch (Exception ex){
             goMain();
         }
+
 
     }
 
@@ -473,8 +477,8 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
             mMap.addMarker(new MarkerOptions().position(posiciones[i]).title(nombresEstaciones[i]).icon(BitmapDescriptorFactory.
                     fromResource(R.drawable.icon_pat)).anchor(0.5f, 1f));
             mMap.getUiSettings().setZoomControlsEnabled(true);
-            nombre = nombresEstaciones[i];
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(posiciones[0], 13));
+            nombre = nombresEstaciones[i];
             final String finalNombre = nombre;
         }
 
@@ -485,6 +489,24 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
                 return false;
             }
         });
+
+
+        if (ActivityCompat.checkSelfPermission(this,
+                android.Manifest.permission.ACCESS_FINE_LOCATION) ==
+                PackageManager.PERMISSION_GRANTED) {
+
+            mMap.setMyLocationEnabled(true);
+            mMap.getUiSettings().setZoomControlsEnabled(true);
+            mMap.getUiSettings().setCompassEnabled(true);
+            mMap.getUiSettings().setMyLocationButtonEnabled(true);
+        }
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        mMap.setMyLocationEnabled(true);
+        mMap.getUiSettings().setMyLocationButtonEnabled(true);
     }
 
     @Override
@@ -635,9 +657,13 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
     }
 
     public void abrirCercano(View view){
-        if (!checkIfLocationOpened()){
-            Toast.makeText(this, R.string.ubicacionNecesaria, Toast.LENGTH_SHORT).show();
-        } else {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+            solicitarPermisoLocalizaciones(Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION,
+                    "Se necesita permiso de ubicaión", 1);
+        }
+         else {
             Intent i = new Intent(this, StantsCercanos.class);
             i.putExtra("idUser", user.getUid());
             i.putExtra("latitud", latUsu);
@@ -652,7 +678,6 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
         if (mCurrLocationMarker != null) {
             mCurrLocationMarker.remove();
         }
->>>>>>> Stashed changes
 
         //Place current location marker
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
@@ -669,7 +694,7 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
         if (mGoogleApiClient != null) {
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
         }
-<<<<<<< Updated upstream
+
     }
 
     @Override
@@ -686,7 +711,27 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
     public void onProviderDisabled(@NonNull String provider) {
 
     }
-=======
+
     }*/
+
+    public void solicitarPermisoLocalizaciones(final String fine, final String corase, String
+            justificacion, final int requestCode/*, final View.OnClickListener actividad*/) {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this, fine)){
+            new AlertDialog.Builder(this)
+                    .setTitle("Solicitud de permiso")
+                    .setMessage(justificacion)
+                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            ActivityCompat.requestPermissions(ResActivity.this/*(Activity) actividad*/,
+                                    new String[]{fine}, requestCode);
+                            ActivityCompat.requestPermissions(ResActivity.this/*(Activity) actividad*/,
+                                    new String[]{corase}, requestCode);
+                        }}).show();
+
+        } else {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{fine}, requestCode);
+        }
+    }
 }
 
