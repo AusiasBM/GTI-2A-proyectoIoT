@@ -32,15 +32,17 @@ public class RegistrosActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     RegistrosAdapter adapter;
     FirebaseFirestore firebaseFirestore;
+    private String idUser;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registro);
 
+        idUser = getIntent().getStringExtra("id");
         recyclerView = findViewById(R.id.recyclerViewRegistro);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         firebaseFirestore = FirebaseFirestore.getInstance();
-        Query query = firebaseFirestore.collection("registrosAlquiler");
+        Query query = firebaseFirestore.collection("registrosAlquiler").whereEqualTo("uId", idUser).orderBy("fechaInicioAlquiler", Query.Direction.DESCENDING).limit(10);
 
         FirestoreRecyclerOptions<Registros> firestoreRecyclerOptions =
                 new FirestoreRecyclerOptions.Builder<Registros>().setQuery(query, Registros.class).build();
@@ -63,6 +65,12 @@ public class RegistrosActivity extends AppCompatActivity {
     }
 
     public void VolverRegistros(View view){
+        Intent intent = new Intent(this, ResActivity.class);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onBackPressed() {
         Intent intent = new Intent(this, ResActivity.class);
         startActivity(intent);
     }

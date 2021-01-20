@@ -64,40 +64,34 @@ public class InfoRegistros extends AppCompatActivity {
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         if (documentSnapshot.exists()) {
 
+                            String tipoAlquilerfb = documentSnapshot.getString("tipoAlquiler");
+                            tipoAlquiler.setText(tipoAlquilerfb + "");
 
-                         /*  if (registros.getTipoAlquiler() == "taquilla") {
-                                String ubicacionTaquilla = documentSnapshot.getString("ubicacion");
-
+                            String ubicacionTaquilla = documentSnapshot.getString("ubicacion");
+                            String ubicacionInicio = documentSnapshot.getString("ubicacionInicio");
+                            if (tipoAlquilerfb.equals("taquilla")) {
                                 ubicacion.setText(ubicacionTaquilla);
                             } else {
-                                String ubicacionInicio = documentSnapshot.getString("ubicacionInicio");
-                                String ubicacionFinal = documentSnapshot.getString("ubicacionFinal");
-
                                 ubicacion.setText(ubicacionInicio);
-                               // ubicacion.setText(ubicacionFinal);
-                            }*/
-                        double costeAlquiler = documentSnapshot.getDouble("importeTotal");
-                        coste.setText(String.format("%.2f", costeAlquiler) +"€");
+                            }
+                            long fechaAlquiler = documentSnapshot.getLong("fechaInicioAlquiler");
+                            fecha.setText(registros.getDate(fechaAlquiler,"dd/MM/yyyy HH:mm:ss"));
 
+                            double costeAlquiler = documentSnapshot.getDouble("importeAlquiler");
+                            coste.setText(String.format("%.2f", costeAlquiler) +"€");
 
                             double duracionAlquiler = documentSnapshot.getDouble("tiempoAlquilada");
-                             if (duracionAlquiler>= 60000){
-                                duracion.setText(String.format("%.2f",duracionAlquiler/60000) + "min");
-                            }else if (duracionAlquiler>= 360000){
-                                duracion.setText(String.format("%.2f" + duracionAlquiler/360000) + "h");
-                            }else if (duracionAlquiler >= 1000){
-                                 duracion.setText(String.format("%.2f" + duracionAlquiler/1000)  + "s.");
-                             }else{
-                                 duracion.setText("<1s");
-                             }
-
-
-
-
+                            if (duracionAlquiler >= 3600000) {
+                                duracion.setText(String.format("%.0f", duracionAlquiler/3600000) + "h");
+                            } else if (duracionAlquiler >= 60000){
+                                duracion.setText(String.format("%.0f",duracionAlquiler/60000) + "min");
+                            }else if (duracionAlquiler < 60000 && duracionAlquiler >= 1000){
+                                    duracion.setText("<1min");
+                            }else if (duracionAlquiler == 0){
+                                duracion.setText("<1s");
+                            }
                         }
-
                     }
                 });
     }
-
 }
