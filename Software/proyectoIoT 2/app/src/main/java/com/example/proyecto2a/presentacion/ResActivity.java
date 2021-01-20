@@ -20,6 +20,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,6 +33,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
+import androidx.core.view.MenuCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.proyecto2a.R;
@@ -105,10 +107,6 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
 
     private double latUsu, longUsu;
 
-
-    //--------
-
-
     @SuppressLint("WrongViewCast")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -176,12 +174,6 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
                 });
 
         manejador = (LocationManager) getSystemService(LOCATION_SERVICE);
-
-        //solicitarPermisos();
-
-        //solicitarPermisos();
-
-
         //Tutorial
         try {
             db.collection("usuarios").document(firebaseAuth.getUid()).get()
@@ -290,12 +282,6 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
                 navigationView.getMenu().findItem(R.id.nav_users).setVisible(true);
                 navigationView.getMenu().findItem(R.id.nav_incidencias).setVisible(true);
                 navigationView.getMenu().findItem(R.id.nav_settings).setVisible(true);
-            }
-            else {
-                navigationView.getMenu().findItem(R.id.nav_gallery).setVisible(true);
-                navigationView.getMenu().findItem(R.id.nav_pays).setVisible(true);
-                navigationView.getMenu().findItem(R.id.nav_asistencia).setVisible(true);
-                navigationView.getMenu().findItem(R.id.nav_ayuda).setVisible(true);
             }
 
             prepararDrawer(navigationView);
@@ -417,45 +403,6 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
     }
 
     public void logOut() {
-        /*
-        final AlertDialog.Builder alert =new AlertDialog.Builder(this);
-        alert.setMessage(R.string.preguntaCerrarSesion);
-        alert.setTitle(R.string.cerrarSesion);
-        alert.setPositiveButton(R.string.si, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-                //Cerrar el servicio de alquiler de taquilla
-                Intent stopIntent = new Intent(ResActivity.this, ServicioReservaAlquilerTaquilla.class);
-                stopIntent.setAction("terminar");
-                startService(stopIntent);
-
-                Auth.GoogleSignInApi.signOut(googleApiClient).setResultCallback(new ResultCallback<Status>() {
-                    @Override
-                    public void onResult(@NonNull Status status) {
-                        if (status.isSuccess()) {
-                            goMain();
-                            finish();
-                        } else {
-                            Toast.makeText(getApplicationContext(), R.string.cerrarSesionError, Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-
-            }
-        });
-        alert.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-        AlertDialog dialog=alert.create();
-        dialog.show();
-        */
-        //
-        //
-
         final LayoutInflater inflater = LayoutInflater.from(this);
         final View view = inflater.inflate(R.layout.custom_dialog,null);
         Button acceptButton= view.findViewById(R.id.btn_accp);
@@ -682,6 +629,19 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
 
     }
 
+    public void abrirCercano(View view){
+        if (!checkIfLocationOpened()){
+            Toast.makeText(this, R.string.ubicacionNecesaria, Toast.LENGTH_SHORT).show();
+        } else {
+            Intent i = new Intent(this, StantsCercanos.class);
+            i.putExtra("idUser", user.getUid());
+            i.putExtra("latitud", latUsu);
+            i.putExtra("longitud", longUsu);
+            startActivity(i);
+        }
+
+    }
+
     /*public void onLocationChanged(Location location) {
         mLastLocation = location;
         if (mCurrLocationMarker != null) {
@@ -705,19 +665,6 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
         }
 <<<<<<< Updated upstream
-    }
-
-    public void abrirCercano(View view){
-        if (!checkIfLocationOpened()){
-            Toast.makeText(this, R.string.ubicacionNecesaria, Toast.LENGTH_SHORT).show();
-        } else {
-            Intent i = new Intent(this, StantsCercanos.class);
-            i.putExtra("idUser", user.getUid());
-            i.putExtra("latitud", latUsu);
-            i.putExtra("longitud", longUsu);
-            startActivity(i);
-        }
-
     }
 
     @Override

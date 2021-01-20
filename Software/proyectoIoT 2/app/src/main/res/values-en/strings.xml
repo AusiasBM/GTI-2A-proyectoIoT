@@ -238,6 +238,7 @@
     <string name="reservada">Locker rental start</string>
     <string name="txt_reservada">Do you want to rent the locker? If you accept, it will start the counter for "+" after applying the corresponding charges</string>
     <string name="reservada_fin">End of locker rental</string>
+    <string name="tarjetaIncorrecta">Invalid card</string>
     <string name="txt_reservada_fin"> Do you want to finish the rental of the locker? If you accept, you will no longer be able to open it.</string>
 
 

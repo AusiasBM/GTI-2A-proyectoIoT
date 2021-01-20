@@ -74,37 +74,10 @@ public class InfoPago extends AppCompatActivity {
         );
     }
     public void returnAyuda(View view){
-        actualizarPerfilTarjeta();
         Intent intent=new Intent(this, RecyclerTarjetas.class);
         startActivity(intent);
     }
     public void guardarTarjeta(View h){
-       /* final AlertDialog.Builder alert =new AlertDialog.Builder(InfoPago.this);
-        alert.setMessage(R.string.preguntaTarjeta);
-        alert.setTitle(R.string.añadirTarjeta);
-        alert.setPositiveButton(R.string.si, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Log.d("hi", num.getText().equals("") + "");
-                if (num.getText().toString().isEmpty() || mes.getText().toString().isEmpty()
-                        || año.getText().toString().isEmpty()
-                        || cvv.getText().toString().isEmpty() || name.getText().toString().isEmpty()
-                        || apellido.getText().toString().isEmpty()){
-
-                } else {
-                    actualizarPerfilTarjeta();
-                }
-            }
-        });
-        alert.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-        AlertDialog dialog=alert.create();
-        dialog.show();*/
-//
         final LayoutInflater inflater = LayoutInflater.from(InfoPago.this);
         final View view = inflater.inflate(R.layout.custom_dialog_anyadir_tarjeta,null);
         Button acceptButton= view.findViewById(R.id.btn_si);
@@ -138,26 +111,29 @@ public class InfoPago extends AppCompatActivity {
     public void actualizarPerfilTarjeta(){
         try{
             tarjeta.setuID(firebaseAuth.getUid());
-            tarjeta.setNumTarjeta(Integer.parseInt(num.getText().toString()));
-
-            if (mes.getText().toString().length() > 2 || Integer.parseInt(mes.getText().toString()) > 12 || Integer.parseInt(mes.getText().toString()) <= 0 ){
-                Toast.makeText(this, R.string.mesIncorrecto, Toast.LENGTH_SHORT).show();
-            } else {
-                tarjeta.setMes(Integer.parseInt(mes.getText().toString()));
-            }
-            tarjeta.setAño(Integer.parseInt(año.getText().toString()));
-            if (cvv.getText().toString().length() != 3 ) {
-                Toast.makeText(this, R.string.cvvIncorrecto, Toast.LENGTH_SHORT).show();
-            } else {
-                tarjeta.setCvv(Integer.parseInt(cvv.getText().toString()));
-            }
             tarjeta.setNombrePropietario(name.getText().toString());
             tarjeta.setApellidoPropietario(apellido.getText().toString());
+            tarjeta.setAño(Integer.parseInt(año.getText().toString()));
+            if (num.getText().toString().length() == 8){
+                tarjeta.setNumTarjeta(Integer.parseInt(num.getText().toString()));
+                if (mes.getText().toString().length() > 2 || Integer.parseInt(mes.getText().toString()) > 12 || Integer.parseInt(mes.getText().toString()) <= 0 ){
+                    Toast.makeText(this, R.string.mesIncorrecto, Toast.LENGTH_SHORT).show();
+                } else {
+                    tarjeta.setMes(Integer.parseInt(mes.getText().toString()));
+                    if (cvv.getText().toString().length() != 3 ) {
+                        Toast.makeText(this, R.string.cvvIncorrecto, Toast.LENGTH_SHORT).show();
+                    } else {
+                        tarjeta.setCvv(Integer.parseInt(cvv.getText().toString()));
+                        tarjetas.actualizarTarjeta(tarjeta);
+                        Toast.makeText(this, R.string.tarjetaIntroducida, Toast.LENGTH_SHORT).show();
+                        Intent intent=new Intent(this, RecyclerTarjetas.class);
+                        startActivity(intent);
+                    }
+                }
+            } else {
+                Toast.makeText(this, R.string.tarjetaIncorrecta, Toast.LENGTH_SHORT).show();
+            }
 
-            tarjetas.actualizarTarjeta(tarjeta);
-            Toast.makeText(this, R.string.tarjetaIntroducida, Toast.LENGTH_SHORT).show();
-            Intent intent=new Intent(this, RecyclerTarjetas.class);
-            startActivity(intent);
         }catch (Exception e){
             Toast.makeText(this, R.string.errorModificar, Toast.LENGTH_SHORT).show();
         }
@@ -165,7 +141,6 @@ public class InfoPago extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        actualizarPerfilTarjeta();
         Intent intent = new Intent(this, RecyclerTarjetas.class);
         startActivity(intent);
         finish();

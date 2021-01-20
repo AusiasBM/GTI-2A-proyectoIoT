@@ -97,7 +97,7 @@
     <!-- Pago usuario-->
     <string name="btn_AñadirTarjeta">Añadir una tarjeta de crédito</string>
     <string name="tv_Tarjetas">Opciones de pago</string>
-    <string name="et_NumTarjeta">Número de tarjeta(XXX-XXX-XXX)</string>
+    <string name="et_NumTarjeta">Número de tarjeta(XX-XX-XX-XX)</string>
     <string name="et_Mes">Mes(XX)</string>
     <string name="et_Año">Año(XX)</string>
     <string name="et_CVV">CVV(XXX)</string>
@@ -240,6 +240,7 @@
     <string name="patines_tutorial"> Nuestros patienetes </string>
     <string name="usuario_tutorial"> Tus datos de usuario</string>
     <string name="pagos_tutorial"> Tarifas y pagos</string>
+    <string name="tarjetaIncorrecta">Longitud tarjeta errónea</string>
     <string name="fin_tutorial"> Cobro y asistencia</string>
 
     <string name="ubicacionNecesaria">Active la localización para usar esta funcionalidad</string>
