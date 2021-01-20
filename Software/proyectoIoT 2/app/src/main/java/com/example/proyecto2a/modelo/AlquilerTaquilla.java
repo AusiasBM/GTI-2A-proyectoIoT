@@ -181,7 +181,7 @@ public class AlquilerTaquilla {
 
     //Per connectar el sonoff es cobrarà 0.1€ i cada Watt consumit (no són mW perque el sonoff va en W) costarà 0.05€
     private void calcularImporteCarga() {
-        importeCarga += (mWConsumidos * 0.05);
+        importeCarga += (mWConsumidos*1000 * 0.05);
     }
 
     public void calcularImporteTotal(){
