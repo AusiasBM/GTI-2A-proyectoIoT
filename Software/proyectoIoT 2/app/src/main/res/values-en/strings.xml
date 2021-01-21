@@ -252,6 +252,7 @@
 
 
     <!--Historial-->
+    <string name="tv_DetallesDelPedido">Travel details</string>
     <string name="tv_DetallesDeLosViajes">Travel details: </string>
     <string name="tv_TipoDeAlquiler">Type of rental: </string>
     <string name="tv_Ubicación">Location: </string>
