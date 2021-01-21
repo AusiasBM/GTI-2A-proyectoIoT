@@ -298,7 +298,6 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
                             i.putExtra("ide", idUser);
                             i.putExtra("flagReserva", true);
                             context.startService(i);
-
                         }else{
                             //En caso de que ya haya reservado/alquilado algo, aparecerá un Alert informando de
                             // por qué no puede reservar
