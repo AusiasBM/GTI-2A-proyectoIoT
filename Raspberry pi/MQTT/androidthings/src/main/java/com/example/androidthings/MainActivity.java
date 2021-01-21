@@ -16,7 +16,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -25,11 +24,9 @@ import com.example.comun.Imagen;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
@@ -43,6 +40,7 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
+import org.json.JSONObject;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -131,6 +129,14 @@ public class MainActivity extends AppCompatActivity implements MqttCallback {
         try {
             Log.i(Mqtt.TAG, "Suscrito a " + topicRoot+"cmnd");
             client.subscribe(topicRoot+"cerradura/POWER", qos);
+            client.setCallback(this);
+        } catch (MqttException e) {
+            Log.e(Mqtt.TAG, "Error al suscribir.", e);
+        }
+
+        try {
+            Log.i(Mqtt.TAG, "Suscrito a " + topicRoot+"cmnd");
+            client.subscribe(topicRoot+"cerradura/STATUS8", qos);
             client.setCallback(this);
         } catch (MqttException e) {
             Log.e(Mqtt.TAG, "Error al suscribir.", e);
@@ -251,7 +257,7 @@ public class MainActivity extends AppCompatActivity implements MqttCallback {
             public void onComplete(@NonNull Task<DocumentSnapshot> task){
                 if (task.isSuccessful()) {
                     String ubicacion = task.getResult().getString("ubicacion");
-                    Alquiler a = new Alquiler(user.getuId(), user.correo, ubicacion, 0 + "", 0 + "", false);
+                    AlquilerTaquilla a = new AlquilerTaquilla(user.getuId(), user.correo, "UPV-EPSG", 0 + "", 0 + "");
                     db.collection("registrosAlquiler").document(a.getFechaInicioAlquiler().toString()).set(a);
                 } else {
                     Log.e("Firestore", "Error al leer", task.getException());
@@ -289,6 +295,16 @@ public class MainActivity extends AppCompatActivity implements MqttCallback {
             sonoff(payload);
         }
 
+        if(topic.equals(topicRoot+"cerradura/STATUS8")){
+            Log.d(Mqtt.TAG, "66666: " + topic + "->" + payload);
+            JSONObject jsonObject = new JSONObject(payload);
+            JSONObject jsonObject1 = jsonObject.getJSONObject("StatusSNS");
+            JSONObject jsonObject2 = jsonObject1.getJSONObject("ENERGY");
+            double total = jsonObject2.getDouble("Total");
+            Log.d("Prova", "333: " + total);
+            registroPotencia(total);
+        }
+
     }
 
     public static void sonoff(final String payload) {
@@ -306,6 +322,70 @@ public class MainActivity extends AppCompatActivity implements MqttCallback {
                     .update("cargaPatinete", false);
             }
         }
+
+        try {
+            Log.i(Mqtt.TAG, "Publicando mensaje: " + "cerradura/STATUS8");
+            MqttMessage message = new MqttMessage("8".getBytes());
+            message.setQos(Mqtt.qos);
+            message.setRetained(false);
+            client.publish(Mqtt.topicRoot + "cerradura/cmnd/status", message);
+        } catch (MqttException ex) {
+            Log.e(Mqtt.TAG, "Error al publicar.", ex);
+        }
+
+    }
+
+    public void registroPotencia(final double vatios){
+        final FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        final Query q = db.collection("registrosAlquiler").whereEqualTo("uId", user.getuId())
+                .orderBy("fechaInicioAlquiler", Query.Direction.DESCENDING).limit(1);
+
+
+        db.collection("estaciones").document("0").collection("taquillas").document("0")
+                .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()){
+                    Log.d("aa", "aaaa " + task.getResult().getBoolean("cargaPatinete"));
+                    boolean carga = task.getResult().getBoolean("cargaPatinete");
+
+                    if(carga == true){
+                        q.get()
+                                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                        if (task.isSuccessful()) {
+                                            Log.d("Prova10", "");
+                                            //Obtenció de cada estació de su ubicación y su geoposición
+                                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                                AlquilerTaquilla a = document.toObject(AlquilerTaquilla.class);
+                                                a.setVatiosInicio(vatios);
+                                                db.collection("registrosAlquiler").document(a.getFechaInicioAlquiler().toString()).set(a);
+                                            }
+                                        }
+                                    }
+                                });
+                    }else{
+                        q.get()
+                                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                        if (task.isSuccessful()) {
+                                            Log.d("Prova10", "");
+                                            //Obtenció de cada estació de su ubicación y su geoposición
+                                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                                AlquilerTaquilla a = document.toObject(AlquilerTaquilla.class);
+                                                a.calcularVatios(vatios);
+                                                db.collection("registrosAlquiler").document(a.getFechaInicioAlquiler().toString()).set(a);
+                                            }
+                                        }
+                                    }
+                                });
+                    }
+                }
+            }
+        });
 
     }
 

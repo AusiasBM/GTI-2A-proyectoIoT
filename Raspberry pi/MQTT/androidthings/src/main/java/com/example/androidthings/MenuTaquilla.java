@@ -19,7 +19,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -32,7 +31,6 @@ import static android.app.PendingIntent.getActivity;
 import static com.example.androidthings.LoginActivity.user;
 import static com.example.androidthings.MainActivity.abrirCerradura;
 import static com.example.androidthings.MainActivity.apagarEncenderCarga;
-import static com.example.androidthings.MainActivity.sonoff;
 import static com.example.androidthings.MainActivity.taquillas;
 import static com.example.androidthings.MainActivity.db;
 
@@ -151,7 +149,7 @@ public class MenuTaquilla extends AppCompatActivity {
                             //Obtenció de cada estació de su ubicación y su geoposición
                             for (QueryDocumentSnapshot document : task.getResult()) {
 
-                                Alquiler a = document.toObject(Alquiler.class);
+                                AlquilerTaquilla a = document.toObject(AlquilerTaquilla.class);
                                 a.calcularImporteTotal();
                                 db.collection("registrosAlquiler").document(a.getFechaInicioAlquiler().toString()).set(a);
                             }
