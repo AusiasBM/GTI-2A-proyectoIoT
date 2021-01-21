@@ -180,11 +180,11 @@
     <string name="taquillaOPatin">Taquilla o patín</string>
     <string name="reserva">Reserva</string>
 
-    <string name="faq1">¿Como puedo reservar un patín?</string>
+    <string name="faq1">¿Cómo puedo reservar un patín?</string>
     <string name="faq2">Puedes reservar un patín clicando en la ubicación del stan de patines desde el propio mapa.</string>
-    <string name="faq3">¿Como puedo editar mi perfil?</string>
+    <string name="faq3">¿Cómo puedo editar mi perfil?</string>
     <string name="faq4">Desde el menu lateral puedes acceder a tu perfil y desde ahí modificar todos los campos.</string>
-    <string name="faq5">¿Como cambiar de ciudad?</string>
+    <string name="faq5">¿Cómo cambiar de ciudad?</string>
     <string name="faq6">Para poder ir a otra ciudad a ver los stants puedes ir desde el propio mapa navegando y buscado la ciudad deseada. En el caso de que quieras volver a tu posicion existe un boton arriba a la derecha  </string>
     <string name="faq7">¿Para que se sirve poner el DNI y el Pin?</string>
     <string name="faq8">El pin y el DNI son utilizados unicamente para acceder de una forma distinta a la aplicación.¿Cómo se usan? en las distintas estaciones encontrarás una pantalla donde podrás introducir los datos </string>
