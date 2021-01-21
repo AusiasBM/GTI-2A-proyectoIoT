@@ -249,4 +249,15 @@
     <string name="anyadir_tarjeta_text">Do you want to add this card?</string>
     <string name="eliminar_tarjeta">Delete card</string>
     <string name="eleminar_tarjeta_text">Do you want to delete this card?</string>
+
+
+    <!--Historial-->
+    <string name="tv_DetallesDeLosViajes">Travel details: </string>
+    <string name="tv_TipoDeAlquiler">Type of rental: </string>
+    <string name="tv_Ubicación">Location: </string>
+    <string name="tv_Coste">"Cost: "</string>
+    <string name="tv_Duracion">"Duration: "</string>
+    <string name="tv_Historial_últimos_10_servicios">Last 10 services</string>
+    <string name="historial">Record</string>
+    <string name="tv_UbicaciónFinal">"Final location: "</string>
 </resources>
