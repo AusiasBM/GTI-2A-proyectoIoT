@@ -11,6 +11,21 @@
     android:textColor="#000000">
 
     <TextView
+        android:id="@+id/ubicacionFinal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:fontFamily="@font/poppins_medium"
+        android:gravity="center"
+        android:text="TextView"
+        android:textColor="#000000"
+        app:layout_constraintBottom_toBottomOf="@+id/tvUbicacionFinal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/tvUbicacion"
+        app:layout_constraintTop_toTopOf="@+id/tvUbicacionFinal" />
+
+    <TextView
         android:id="@+id/tvDuracion"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -153,9 +168,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="44dp"
         android:fontFamily="@font/poppins_light"
         android:text="Coste: "
+        android:textColor="#000000"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ubicacion" />
+
+    <TextView
+        android:id="@+id/tvUbicacionFinal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="12dp"
+        android:fontFamily="@font/poppins_light"
+        android:text="Ubicación final:"
         android:textColor="#000000"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ubicacion" />

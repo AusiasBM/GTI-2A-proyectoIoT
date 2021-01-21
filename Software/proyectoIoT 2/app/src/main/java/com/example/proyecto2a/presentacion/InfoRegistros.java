@@ -24,7 +24,7 @@ public class InfoRegistros extends AppCompatActivity {
     private TextView tipoAlquiler;
     private TextView coste;
     private TextView duracion;
-    private TextView ubicacion;
+    private TextView ubicacion, etUbicacionFinal, tvUbicacionFinal;
     FirebaseFirestore firebaseFirestore;
 
     Registros registros = new Registros();
@@ -39,6 +39,8 @@ public class InfoRegistros extends AppCompatActivity {
         ubicacion = findViewById(R.id.tvUbicacion);
         coste = findViewById(R.id.tvCoste);
         duracion = findViewById(R.id.tvDuracion);
+        etUbicacionFinal= findViewById(R.id.ubicacionFinal);
+        tvUbicacionFinal= findViewById(R.id.tvUbicacionFinal);
 
         firebaseFirestore = FirebaseFirestore.getInstance();
 
@@ -69,10 +71,15 @@ public class InfoRegistros extends AppCompatActivity {
 
                             String ubicacionTaquilla = documentSnapshot.getString("ubicacion");
                             String ubicacionInicio = documentSnapshot.getString("ubicacionInicio");
+                            String ubicacionFinal = documentSnapshot.getString("ubicacionFinal");
                             if (tipoAlquilerfb.equals("taquilla")) {
                                 ubicacion.setText(ubicacionTaquilla);
+                                tvUbicacionFinal.setVisibility(View.GONE);
+                                etUbicacionFinal.setVisibility(View.GONE);
                             } else {
                                 ubicacion.setText(ubicacionInicio);
+                                etUbicacionFinal.setText(ubicacionFinal);
+
                             }
                             long fechaAlquiler = documentSnapshot.getLong("fechaInicioAlquiler");
                             fecha.setText(registros.getDate(fechaAlquiler,"dd/MM/yyyy HH:mm:ss"));

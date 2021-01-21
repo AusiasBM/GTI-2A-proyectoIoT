@@ -52,7 +52,7 @@ public class RegistrosAdapter extends FirestoreRecyclerAdapter<Registros, Regist
 
         Log.d("fecha", model.toString());
 
-        holder.coste.setText(String.format("%.2f", model.getImporteTotal())+"€");
+        holder.coste.setText(String.format("%.2f", model.getImporteAlquiler())+"€");
         holder.fecha.setText(model.getDate(model.getFechaInicioAlquiler(),"dd/MM/yyyy HH:mm:ss"));
         holder.vInfo.setOnClickListener(new View.OnClickListener() {
             @Override
