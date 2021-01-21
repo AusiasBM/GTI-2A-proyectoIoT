@@ -13,7 +13,7 @@ public class Registros {
     private double importeCarga;
     private double importeTotal;
     private long tiempoAlquilada;
-    private long fechaInicoAlquiler;
+    private long fechaInicioAlquiler;
 
     private double mWConsumidos;
     private String tipoAlquiler;
@@ -21,7 +21,7 @@ public class Registros {
     private String taquilla;
     private String ubicacion;
 
-    public Registros(String correo, String ubicacionFinal, String ubicacionInicio, String uId, double importeAlquiler, double importeCarga, double importeTotal, long tiempoAlquilada, long fechaInicoAlquiler, double mWConsumidos, String tipoAlquiler, String estant, String taquilla, String ubicacion) {
+    public Registros(String correo, String ubicacionFinal, String ubicacionInicio, String uId, double importeAlquiler, double importeCarga, double importeTotal, long tiempoAlquilada, long fechaInicioAlquiler, double mWConsumidos, String tipoAlquiler, String estant, String taquilla, String ubicacion) {
         this.correo = correo;
         this.ubicacionFinal = ubicacionFinal;
         this.ubicacionInicio = ubicacionInicio;
@@ -30,12 +30,20 @@ public class Registros {
         this.importeCarga = importeCarga;
         this.importeTotal = importeTotal;
         this.tiempoAlquilada = tiempoAlquilada;
-        this.fechaInicoAlquiler = fechaInicoAlquiler;
+        this.fechaInicioAlquiler = fechaInicioAlquiler;
         this.mWConsumidos = mWConsumidos;
         this.tipoAlquiler = tipoAlquiler;
         this.estant = estant;
         this.taquilla = taquilla;
         this.ubicacion = ubicacion;
+    }
+
+    public long getFechaInicioAlquiler() {
+        return fechaInicioAlquiler;
+    }
+
+    public void setFechaInicioAlquiler(long fechaInicioAlquiler) {
+        this.fechaInicioAlquiler = fechaInicioAlquiler;
     }
 
     public Registros() {
@@ -114,14 +122,6 @@ public class Registros {
         this.tiempoAlquilada = tiempoAlquilada;
     }
 
-    public long getFechaInicoAlquiler() {
-        return fechaInicoAlquiler;
-    }
-
-    public void setFechaInicoAlquiler(long fechaInicoAlquiler) {
-        this.fechaInicoAlquiler = fechaInicoAlquiler;
-    }
-
     public double getmWConsumidos() {
         return mWConsumidos;
     }
@@ -160,5 +160,25 @@ public class Registros {
 
     public void setUbicacion(String ubicacion) {
         this.ubicacion = ubicacion;
+    }
+
+    @Override
+    public String toString() {
+        return "Registros{" +
+                "correo='" + correo + '\'' +
+                ", ubicacionFinal='" + ubicacionFinal + '\'' +
+                ", ubicacionInicio='" + ubicacionInicio + '\'' +
+                ", uId='" + uId + '\'' +
+                ", importeAlquiler=" + importeAlquiler +
+                ", importeCarga=" + importeCarga +
+                ", importeTotal=" + importeTotal +
+                ", tiempoAlquilada=" + tiempoAlquilada +
+                ", fechaInicioAlquiler=" + fechaInicioAlquiler +
+                ", mWConsumidos=" + mWConsumidos +
+                ", tipoAlquiler='" + tipoAlquiler + '\'' +
+                ", estant='" + estant + '\'' +
+                ", taquilla='" + taquilla + '\'' +
+                ", ubicacion='" + ubicacion + '\'' +
+                '}';
     }
 }

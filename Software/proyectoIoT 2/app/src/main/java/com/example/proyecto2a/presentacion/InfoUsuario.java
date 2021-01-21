@@ -3,16 +3,13 @@ package com.example.proyecto2a.presentacion;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.icu.text.IDNA;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.proyecto2a.R;
-import com.example.proyecto2a.casos_uso.UsuariosAdapter;
 import com.example.proyecto2a.modelo.Usuario;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -30,9 +27,9 @@ public class InfoUsuario extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_info_usuario);
         ivVolver = (ImageView) findViewById(R.id.ivBackUsuario);
-        direccion = findViewById(R.id.tvDireccion_info);
+        direccion = findViewById(R.id.tvFecha_info);
         nombre = findViewById(R.id.tvNombreUsuario_info);
-        telefono = findViewById(R.id.tv_telefono_info);
+        telefono = findViewById(R.id.tv_Alquiler_info);
         correo = findViewById(R.id.tvCorreoUsuario_info);
         fotoPerfil = findViewById(R.id.ivUsuario_info);
 
