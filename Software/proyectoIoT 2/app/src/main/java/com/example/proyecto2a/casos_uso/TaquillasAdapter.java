@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -21,6 +22,8 @@ import com.example.proyecto2a.modelo.AlquilerTaquilla;
 
 import com.example.proyecto2a.modelo.DatosAlquiler;
 import com.example.proyecto2a.modelo.Taquilla;
+import com.example.proyecto2a.modelo.Tarjeta;
+import com.example.proyecto2a.modelo.Usuario;
 import com.example.proyecto2a.presentacion.MenuDialogActivity;
 import com.example.proyecto2a.presentacion.ServicioReservaAlquilerTaquilla;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
@@ -44,6 +47,8 @@ import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
+
+import java.util.ArrayList;
 
 import static com.example.proyecto2a.datos.Mqtt.qos;
 import static com.example.proyecto2a.datos.Mqtt.topicRoot;
@@ -119,6 +124,7 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
         public boolean alquilada;
 
         public FirebaseFirestore db = FirebaseFirestore.getInstance();
+        public boolean tieneTarjetas;
         public MqttClient client = null;
         TextView textViewNombre;
         Button boton;
@@ -288,11 +294,11 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
                         if (reservaAlquiler == false && reservaAlquilerPatin == false){
                             //Reservamos la taquilla
                             reservar();
-
                             //Lanzamos el servicio en primer plano
                             i.putExtra("ide", idUser);
                             i.putExtra("flagReserva", true);
                             context.startService(i);
+
                         }else{
                             //En caso de que ya haya reservado/alquilado algo, aparecerá un Alert informando de
                             // por qué no puede reservar
@@ -309,39 +315,39 @@ public class TaquillasAdapter extends FirestoreRecyclerAdapter<Taquilla, Taquill
         }
 
         private void reservar(){
+                DocumentReference taq = db.collection("estaciones").document(estant).collection("taquillas").document(id);
+                taq.update("idUsuario", idUser).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d("ocupada", "DocumentSnapshot successfully updated!");
+                    }
+                })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.w("ocupada", "Error updating document", e);
+                            }
+                        });
+                taq.update("reservada", true).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d("ocupada", "DocumentSnapshot successfully updated!");
+                    }
+                })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.w("ocupada", "Error updating document", e);
+                            }
+                        });
 
-            DocumentReference taq = db.collection("estaciones").document(estant).collection("taquillas").document(id);
-            taq.update("idUsuario", idUser).addOnSuccessListener(new OnSuccessListener<Void>() {
-                @Override
-                public void onSuccess(Void aVoid) {
-                    Log.d("ocupada", "DocumentSnapshot successfully updated!");
-                }
-            })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.w("ocupada", "Error updating document", e);
-                        }
-                    });
-            taq.update("reservada", true).addOnSuccessListener(new OnSuccessListener<Void>() {
-                @Override
-                public void onSuccess(Void aVoid) {
-                    Log.d("ocupada", "DocumentSnapshot successfully updated!");
-                }
-            })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.w("ocupada", "Error updating document", e);
-                        }
-                    });
+                db.collection("usuarios").document(idUser).update("reservaAlquiler", true);
 
-            db.collection("usuarios").document(idUser).update("reservaAlquiler", true);
+                //Enviar mensage MQTT a la taquilla para que inicie la cuenta de tiempo que puede estar reservada
+                // Durante ese tiempo la taquilla estará esperando otro MQTT confirmando el alquiler o la cancelación de la resrva.
+                // En caso de expirar el tiempo, enviará otro MQTT para que la taquilla quede liberada
+                contadorTiempoReserva();
 
-            //Enviar mensage MQTT a la taquilla para que inicie la cuenta de tiempo que puede estar reservada
-            // Durante ese tiempo la taquilla estará esperando otro MQTT confirmando el alquiler o la cancelación de la resrva.
-            // En caso de expirar el tiempo, enviará otro MQTT para que la taquilla quede liberada
-            contadorTiempoReserva();
         }
 
         private void cancelarReserva(){
