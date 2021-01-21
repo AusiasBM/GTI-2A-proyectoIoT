@@ -52,8 +52,6 @@ public class InfoRegistros extends AppCompatActivity {
         ivVolver.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(InfoRegistros.this, RegistrosActivity.class);
-                startActivity(intent);
                 finish();
             }
         });

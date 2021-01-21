@@ -182,5 +182,7 @@ public class CercanosAdapter extends FirestoreRecyclerAdapter<Stant, CercanosAda
             distanica = itemView.findViewById(R.id.tvDistancia);
         }
 
+        
+
     }
 }

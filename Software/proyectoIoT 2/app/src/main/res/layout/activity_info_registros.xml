@@ -14,30 +14,24 @@
         android:id="@+id/ubicacionFinal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
         android:fontFamily="@font/poppins_medium"
         android:gravity="center"
         android:text="TextView"
         android:textColor="#000000"
         app:layout_constraintBottom_toBottomOf="@+id/tvUbicacionFinal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/tvUbicacion"
+        app:layout_constraintEnd_toEndOf="@+id/tvUbicacion"
         app:layout_constraintTop_toTopOf="@+id/tvUbicacionFinal" />
 
     <TextView
         android:id="@+id/tvDuracion"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
         android:fontFamily="@font/poppins_medium"
         android:gravity="center"
         android:text="TextView"
         android:textColor="#000000"
         app:layout_constraintBottom_toBottomOf="@+id/duracion"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/tvCoste"
+        app:layout_constraintEnd_toEndOf="@+id/tvCoste"
         app:layout_constraintTop_toTopOf="@+id/duracion" />
 
     <TextView
@@ -56,30 +50,24 @@
         android:id="@+id/tvCoste"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
         android:fontFamily="@font/poppins_medium"
         android:gravity="center"
         android:text="TextView"
         android:textColor="#000000"
         app:layout_constraintBottom_toBottomOf="@+id/Coste"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/tvUbicacion"
+        app:layout_constraintEnd_toEndOf="@+id/ubicacionFinal"
         app:layout_constraintTop_toTopOf="@+id/Coste" />
 
     <TextView
         android:id="@+id/tvUbicacion"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
         android:fontFamily="@font/poppins_medium"
         android:gravity="center"
         android:text="TextView"
         android:textColor="#000000"
         app:layout_constraintBottom_toBottomOf="@+id/ubicacion"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/tv_Alquiler_info"
+        app:layout_constraintEnd_toEndOf="@+id/tv_Alquiler_info"
         app:layout_constraintTop_toTopOf="@+id/ubicacion"
         app:layout_constraintVertical_bias="0.0" />
 
@@ -133,8 +121,6 @@
         android:textColor="#000000"
         app:layout_constraintBottom_toBottomOf="@+id/textView22"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.957"
-        app:layout_constraintStart_toEndOf="@+id/textView22"
         app:layout_constraintTop_toTopOf="@+id/textView22"
         app:layout_constraintVertical_bias="0.0" />
 
