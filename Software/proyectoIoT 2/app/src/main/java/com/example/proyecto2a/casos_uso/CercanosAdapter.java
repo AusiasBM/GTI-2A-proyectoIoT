@@ -129,8 +129,8 @@ public class CercanosAdapter extends FirestoreRecyclerAdapter<Stant, CercanosAda
         //Posicion usuario
         Location locationB = new Location("punto B");
         miUbicacion();
-        locationB.setLatitude(latitud);
-        locationB.setLongitude(longitud);
+        locationB.setLatitude(holder.latUsu);
+        locationB.setLongitude(holder.longUsu);
 
         //Sacar distancia
         double radioTierra = 6371;//en kilómetros
@@ -146,7 +146,7 @@ public class CercanosAdapter extends FirestoreRecyclerAdapter<Stant, CercanosAda
         //Mostrar distancia
         Log.d("TAGdistancia", locationB + "," + locationA + ", " + dist);
 
-        if (latitud == 0 && longitud == 0){
+        if (holder.latUsu == 0 && holder.longUsu == 0){
             holder.distanica.setText("...");
         } else {
             if (dist > 1){
@@ -174,6 +174,7 @@ public class CercanosAdapter extends FirestoreRecyclerAdapter<Stant, CercanosAda
         TextView nombreStant;
         ConstraintLayout clcercano;
         TextView distanica;
+        double latUsu, longUsu;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -182,7 +183,20 @@ public class CercanosAdapter extends FirestoreRecyclerAdapter<Stant, CercanosAda
             distanica = itemView.findViewById(R.id.tvDistancia);
         }
 
-        
+        //  Receptor broadcast
+        public class ReceptorOperacion extends BroadcastReceiver {
+            public static final String ACTION_RESP= "com.example.exempleexam20192.LATITUD_LONGITUD";
+
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                latUsu = intent.getDoubleExtra("latitud", 0.0);
+                longUsu = intent.getDoubleExtra("longitud", 0.0);
+                Log.d("TAGdReceptor", latUsu + "," + longUsu + ", ");
+
+            }
+        }
+
+
 
     }
 }
