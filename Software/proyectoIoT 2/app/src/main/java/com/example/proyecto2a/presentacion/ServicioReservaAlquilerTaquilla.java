@@ -112,6 +112,13 @@ public class ServicioReservaAlquilerTaquilla extends Service implements MqttCall
         } catch (MqttException e) {
             Log.e(Mqtt.TAG, "Error al suscribir.", e);
         }
+        try {
+            Log.i(Mqtt.TAG, "Suscrito a " + topicRoot+"alarma");
+            client.subscribe(topicRoot+"peso", qos);
+            client.setCallback(this);
+        } catch (MqttException e) {
+            Log.e(Mqtt.TAG, "Error al suscribir.", e);
+        }
 
     }
 
@@ -242,7 +249,17 @@ public class ServicioReservaAlquilerTaquilla extends Service implements MqttCall
             finTiempoReserva();
             stopSelf();
         }
+        if(topic.equals(topicRoot+"peso")){
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            if(payload.equals("Patin guardado")){
+                db.collection("estaciones").document(estant).collection("taquillas").document(id)
+                        .update("ocupada", true);
+            }else{
+                db.collection("estaciones").document("UPV-EPSG").collection("taquillas").document("0")
+                        .update("ocupada", false);
+            }
 
+        }
         if(topic.equals(topicRoot+"cerradura/POWER")){
 
             sonoff(payload);
