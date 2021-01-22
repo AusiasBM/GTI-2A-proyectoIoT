@@ -184,12 +184,17 @@ public class ResActivity extends AppCompatActivity implements GoogleApiClient.On
                                 @Override
                                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                                     if (task.isSuccessful()) {
-                                        usuario = task.getResult().toObject(Usuario.class);
-                                        boolean esNuevo = task.getResult().toObject(Usuario.class).isNuevo();
-                                        if (esNuevo){
-                                            lanzaTutorial();
+                                        try {
+                                            usuario = task.getResult().toObject(Usuario.class);
+                                            //boolean esNuevo = task.getResult().toObject(Usuario.class).isNuevo();
+                                            if (usuario.isNuevo()){
+                                                lanzaTutorial();
+                                            }
+                                            menuTipoUsuario(usuario);
+                                        }catch (Exception ex){
+                                            goMain();
                                         }
-                                        menuTipoUsuario(usuario);
+
 
                                     }else {
                                         Log.d("Error usuario", "");

@@ -21,7 +21,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.NoActionBar">
         <activity android:name=".presentacion.StantsCercanos"></activity>
-        <activity android:name=".presentacion.AnadirTaquilla" />
         <activity android:name=".presentacion.InfoFoto" />
         <activity
             android:name=".presentacion.InfoStant"

@@ -31,7 +31,7 @@
             android:fontFamily="@font/poppins_medium"
             android:icon="@drawable/hiatorial"
             android:textSize="22dp"
-            android:title="Historial"
+            android:title="@string/historial"
             android:visible="true" />
     </group>
     <group

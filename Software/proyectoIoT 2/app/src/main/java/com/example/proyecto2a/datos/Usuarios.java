@@ -4,6 +4,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.example.proyecto2a.modelo.DatosAlquiler;
 import com.example.proyecto2a.modelo.Usuario;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -34,11 +35,15 @@ public class Usuarios {
             Usuario usuario = new Usuario();
             usuario.setCorreo(email);
             usuario.setuId(id);
+            usuario.setNuevo(true);
+            usuario.setDatos(new DatosAlquiler());
             usuarios.document(id).set(usuario);
         } catch (Exception err){
             Usuario usuario = new Usuario();
             usuario.setCorreo(email);
+            usuario.setNuevo(true);
             usuario.setuId(id);
+            usuario.setDatos(new DatosAlquiler());
             usuarios.document(id).set(usuario);
         }
 

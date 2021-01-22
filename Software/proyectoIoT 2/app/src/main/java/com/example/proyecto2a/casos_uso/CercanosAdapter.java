@@ -146,7 +146,7 @@ public class CercanosAdapter extends FirestoreRecyclerAdapter<Stant, CercanosAda
         //Mostrar distancia
         Log.d("TAGdistancia", locationB + "," + locationA + ", " + dist);
 
-        if (latitud == 0 && longitud == 0){
+        if (longitud == 0 && latitud == 0){
             holder.distanica.setText("...");
         } else {
             if (dist > 1){
@@ -181,6 +181,7 @@ public class CercanosAdapter extends FirestoreRecyclerAdapter<Stant, CercanosAda
             clcercano = itemView.findViewById(R.id.clcercano);
             distanica = itemView.findViewById(R.id.tvDistancia);
         }
+
 
     }
 }
